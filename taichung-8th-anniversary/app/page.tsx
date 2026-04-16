@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -293,7 +293,7 @@ function StateF() {
 }
 
 // ── Root page ────────────────────────────────────────────────────────────────
-export default function Home() {
+function HomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading: userLoading, login } = useLiffUser();
@@ -368,5 +368,13 @@ export default function Home() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-gray-50"><div className="animate-spin size-8 rounded-full border-4 border-[#00694B] border-t-transparent" /></div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
