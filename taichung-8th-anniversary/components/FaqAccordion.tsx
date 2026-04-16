@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const FAQ_ITEMS = [
+export const FAQ_ITEMS = [
   {
     id: "q1",
     question: "掃描後沒有蓋印，怎麼辦？",
@@ -50,14 +50,36 @@ const FAQ_ITEMS = [
     answer:
       "請確認鏡頭對焦正確，保持 10–30 公分距離並保持穩定。若仍無法掃描，請洽現場工作人員以手動協助蓋印。",
   },
+  {
+    id: "q8",
+    question: "活動何時開始、何時結束？",
+    answer:
+      "活動期間為 2026/04/23（週四）— 2026/05/13（週三），共 21 天。活動結束後，集章與抽獎功能將自動停用。",
+  },
+  {
+    id: "q9",
+    question: "一個帳號可以集章幾次？",
+    answer:
+      "每個集印點每人限蓋 1 次，店內共有 8 個集印點。因此每位使用者最多可累積 8 枚印章。",
+  },
+  {
+    id: "q10",
+    question: "獎項核銷後還能再使用嗎？",
+    answer:
+      "每張獎券限使用 1 次，一旦由工作人員核銷即視同已使用，無法撤回或再次使用。",
+  },
 ];
 
-export default function FaqAccordion() {
+interface FaqAccordionProps {
+  items?: typeof FAQ_ITEMS;
+}
+
+export default function FaqAccordion({ items = FAQ_ITEMS }: FaqAccordionProps) {
   return (
     <section id="faq" className="space-y-2">
       <h2 className="text-base font-bold text-gray-800">常見問題</h2>
       <Accordion>
-        {FAQ_ITEMS.map((item) => (
+        {items.map((item) => (
           <AccordionItem key={item.id} value={item.id}>
             <AccordionTrigger className="text-sm font-medium text-gray-800">
               {item.question}
