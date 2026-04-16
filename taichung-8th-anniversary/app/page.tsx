@@ -1,65 +1,110 @@
-import Image from "next/image";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import StampCard from "@/components/StampCard";
+import RewardCard from "@/components/RewardCard";
+import FaqAccordion from "@/components/FaqAccordion";
+import StepFlow from "@/components/StepFlow";
+import StaffRedeemNotice from "@/components/StaffRedeemNotice";
+import EmptyState from "@/components/ui-state/EmptyState";
+import ErrorState from "@/components/ui-state/ErrorState";
+
+// ── Dev-only preview data ─────────────────────────────────────────
+const MOCK_STAMPS = [
+  { stamp_id: "01", collected_at: "2026-04-23T10:05:00+08:00" },
+  { stamp_id: "03", collected_at: "2026-04-23T10:12:00+08:00" },
+  { stamp_id: "06", collected_at: "2026-04-23T10:25:00+08:00" },
+];
+
+const MOCK_REWARD = {
+  id: "R03",
+  name: "買一送一飲品券",
+  conditions: "限飲品區使用，每人限一次，不與其他優惠併用",
+  validity_days: 7,
+};
+// ─────────────────────────────────────────────────────────────────
+
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="space-y-3">
+      <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 border-b pb-1">
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+    <div className="flex min-h-full flex-col bg-gray-50">
+      <Header
+        pictureUrl="https://profile.line-scdn.net/0hGMRMPMDX"
+        displayName="Dev User"
+      />
+
+      <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-6">
+        {/* DEV banner */}
+        {process.env.NODE_ENV === "development" && (
+          <div className="rounded-lg bg-amber-50 border border-amber-200 px-4 py-2 text-xs text-amber-700 font-medium">
+            🛠️ Dev Preview — 各元件展示用頁面
+          </div>
+        )}
+
+        <Section title="StepFlow">
+          <StepFlow />
+        </Section>
+
+        <Section title="StampCard — 3/8 已收集">
+          <StampCard stamps={MOCK_STAMPS} totalStamps={3} />
+        </Section>
+
+        <Section title="StampCard — 集章完成（8/8）">
+          <StampCard
+            stamps={[
+              { stamp_id: "01", collected_at: "2026-04-23T10:05:00+08:00" },
+              { stamp_id: "02", collected_at: "2026-04-23T10:07:00+08:00" },
+              { stamp_id: "03", collected_at: "2026-04-23T10:12:00+08:00" },
+              { stamp_id: "04", collected_at: "2026-04-23T10:15:00+08:00" },
+              { stamp_id: "05", collected_at: "2026-04-23T10:19:00+08:00" },
+              { stamp_id: "06", collected_at: "2026-04-23T10:25:00+08:00" },
+              { stamp_id: "07", collected_at: "2026-04-23T10:28:00+08:00" },
+              { stamp_id: "08", collected_at: "2026-04-23T10:30:00+08:00" },
+            ]}
+            totalStamps={8}
+          />
+        </Section>
+
+        <Section title="RewardCard">
+          <RewardCard reward={MOCK_REWARD} drawDate="2026-04-23" />
+        </Section>
+
+        <Section title="StaffRedeemNotice">
+          <StaffRedeemNotice />
+        </Section>
+
+        <Section title="EmptyState">
+          <EmptyState message="尚無抽獎紀錄" icon="🎫" />
+        </Section>
+
+        <Section title="ErrorState（含重試）">
+          {/* onRetry must be wired in a Client Component in real usage */}
+          <ErrorState message="載入失敗，請稍候再試" />
+        </Section>
+
+        <div id="faq">
+          <Section title="FaqAccordion">
+            <FaqAccordion />
+          </Section>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
