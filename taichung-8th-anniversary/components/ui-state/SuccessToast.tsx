@@ -14,14 +14,14 @@ export function showStampSuccess(stampId: string) {
     "08": "結帳櫃檯旁",
   };
   const name = stampNames[stampId] ?? `印章 ${stampId}`;
-  toast.success(`✅ 蓋印成功！`, {
+  toast.success("蓋印成功", {
     description: `已收集：${name}`,
     duration: 3000,
   });
 }
 
 export function showDrawSuccess(rewardName: string) {
-  toast.success(`🎁 抽獎成功！`, {
+  toast.success("抽獎成功", {
     description: `您獲得：${rewardName}`,
     duration: 5000,
   });

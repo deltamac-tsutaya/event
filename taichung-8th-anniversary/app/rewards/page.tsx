@@ -29,7 +29,7 @@ function getTaipeiDateString(): string {
 function DrawAnimation() {
   return (
     <div className="flex flex-col items-center gap-4 py-12">
-      <span className="animate-spin-infinity text-6xl font-bold text-[#00694B] leading-none select-none">
+      <span className="animate-spin-infinity text-6xl font-bold text-[#1A2B4A] leading-none select-none">
         ∞
       </span>
       <p className="text-sm text-gray-500">抽獎中…</p>
@@ -103,10 +103,10 @@ export default function RewardsPage() {
   // ── Insufficient stamps ──────────────────────────────────────────────────
   if (!progressLoading && progress && progress.totalStamps < 8) {
     return (
-      <div className="flex min-h-full flex-col bg-gray-50">
+      <div className="flex min-h-full flex-col bg-[#F5F2ED]">
         <Header pictureUrl={user?.pictureUrl} displayName={user?.displayName} />
         <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
-          <span className="text-5xl">🎫</span>
+          <span className="font-mono text-5xl font-bold text-[#1A2B4A]/20">∞</span>
           <div className="space-y-1">
             <p className="text-base font-bold text-gray-800">
               需集滿 8 枚印章才能抽獎
@@ -117,8 +117,8 @@ export default function RewardsPage() {
             </p>
           </div>
           <Link href="/stamp">
-            <Button className="h-11 rounded-full bg-[#00694B] text-white hover:bg-[#00694B]/90 px-8">
-              📷 去集章
+            <Button className="h-11 rounded-full bg-[#1A2B4A] text-white hover:bg-[#1A2B4A]/90 px-8">
+              去集章
             </Button>
           </Link>
           <Link href="/" className="text-xs text-gray-400 hover:underline">
@@ -131,7 +131,7 @@ export default function RewardsPage() {
 
   if (progressError) {
     return (
-      <div className="flex min-h-full flex-col bg-gray-50">
+      <div className="flex min-h-full flex-col bg-[#F5F2ED]">
         <Header pictureUrl={user?.pictureUrl} displayName={user?.displayName} />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
           <ErrorState message={progressError} onRetry={refetch} />
@@ -143,13 +143,13 @@ export default function RewardsPage() {
   const drawnToday = progress?.drawnToday ?? false;
 
   return (
-    <div className="flex min-h-full flex-col bg-gray-50">
+    <div className="flex min-h-full flex-col bg-[#F5F2ED]">
       <Header pictureUrl={user?.pictureUrl} displayName={user?.displayName} />
 
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-6">
         {/* Back link */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-sm text-gray-400 hover:text-[#00694B]">
+          <Link href="/" className="text-sm text-gray-400 hover:text-[#1A2B4A]">
             ← 返回
           </Link>
           <h1 className="text-base font-bold text-gray-900">獎項抽獎</h1>
@@ -163,8 +163,7 @@ export default function RewardsPage() {
         {drawState === "revealed" && drawnReward && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
-              <p className="text-2xl">🎊</p>
-              <p className="text-base font-bold text-[#00694B]">抽獎成功！</p>
+              <p className="text-base font-bold text-[#1A2B4A]">抽獎成功</p>
               <p className="text-xs text-gray-400">
                 獎券已存入 LINE 優惠券夾
               </p>
@@ -174,7 +173,7 @@ export default function RewardsPage() {
             </div>
             <StaffRedeemNotice />
             <p className="text-center text-xs text-gray-400">
-              🌙 明天可以再抽一次，記得回來
+              明天可以再抽一次，記得回來
             </p>
           </div>
         )}
@@ -182,7 +181,7 @@ export default function RewardsPage() {
         {/* ── Error ────────────────────────────────────────────── */}
         {drawState === "error" && (
           <div className="flex flex-col items-center gap-4 py-6 text-center">
-            <span className="text-3xl">⚠️</span>
+            <p className="text-xs font-semibold uppercase tracking-widest text-red-500">Error</p>
             <p className="text-sm text-red-600">{drawError}</p>
             <Button
               variant="outline"
@@ -197,7 +196,7 @@ export default function RewardsPage() {
         {/* ── Idle: already drawn today ─────────────────────────── */}
         {drawState === "idle" && drawnToday && (
           <div className="space-y-4">
-            <div className="rounded-2xl bg-gray-100 p-4 text-center space-y-1">
+            <div className="rounded-2xl bg-[#EEE9E2] p-4 text-center space-y-1">
               <p className="text-sm font-semibold text-gray-700">
                 今日抽獎已完成
               </p>
@@ -225,9 +224,9 @@ export default function RewardsPage() {
               </p>
               <Button
                 onClick={handleDraw}
-                className="h-14 w-full rounded-full bg-[#00694B] text-lg font-bold text-white hover:bg-[#00694B]/90 animate-pulse-cta"
+                className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold text-white hover:bg-[#1A2B4A]/90 animate-pulse-cta"
               >
-                🎁 立即抽獎
+                立即抽獎
               </Button>
             </div>
 
@@ -258,7 +257,7 @@ export default function RewardsPage() {
         )}
 
         {!progressLoading && !progress && (
-          <EmptyState message="尚無抽獎紀錄" icon="🎫" />
+          <EmptyState message="尚無抽獎紀錄" />
         )}
       </main>
     </div>
