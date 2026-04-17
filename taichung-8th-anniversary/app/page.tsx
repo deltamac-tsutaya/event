@@ -184,7 +184,7 @@ function StateB({
         </h1>
         {totalStamps === 7 ? (
           <p className="text-sm font-semibold text-orange-600">
-            ✨ 再 1 枚即可抽獎！
+            再 1 枚即可抽獎
           </p>
         ) : totalStamps >= 4 ? (
           <p className="text-sm text-[#1A2B4A]">
@@ -201,7 +201,7 @@ function StateB({
 
       <Link href="/stamp">
         <Button className="w-full h-12 rounded-full bg-[#1A2B4A] text-white text-base font-semibold hover:bg-[#1A2B4A]/90">
-          📷 掃描 QR code 集章
+          掃描 QR code 集章
         </Button>
       </Link>
 
@@ -227,7 +227,6 @@ function StateC({
   return (
     <div className="space-y-5">
       <div className="text-center space-y-1">
-        <p className="text-4xl">🎉</p>
         <h1 className="text-xl font-bold text-gray-900">集印完成</h1>
         <p className="text-sm text-[#1A2B4A] font-medium">
           今日抽獎已解鎖。立即前往抽獎！
@@ -238,7 +237,7 @@ function StateC({
         onClick={() => router.push("/rewards")}
         className="w-full h-12 rounded-full bg-[#1A2B4A] text-white text-base font-semibold hover:bg-[#1A2B4A]/90 animate-pulse-cta"
       >
-        🎁 立即抽獎
+        立即抽獎
       </Button>
     </div>
   );
@@ -250,7 +249,6 @@ function StateD({ reward, drawDate }: { reward: Reward; drawDate: string }) {
   return (
     <div className="space-y-5">
       <div className="text-center space-y-1">
-        <p className="text-4xl animate-flip-reveal">🎊</p>
         <h1 className="text-xl font-bold text-gray-900">抽獎結果</h1>
         <p className="text-xs text-gray-500">獎券已存入 LINE 優惠券夾</p>
       </div>
@@ -258,7 +256,7 @@ function StateD({ reward, drawDate }: { reward: Reward; drawDate: string }) {
         <RewardCard reward={reward} drawDate={drawDate} />
       </div>
       <p className="text-center text-xs text-gray-400">
-        🌙 明天可以再抽一次，記得回來
+        明天可以再抽一次，記得回來
       </p>
       <div className="flex flex-col gap-2">
         <Button

@@ -12,18 +12,15 @@ interface StampCardProps {
   totalStamps: number;
 }
 
-const STAMP_META: Record<
-  string,
-  { area: string; emoji: string }
-> = {
-  "01": { area: "入口主題陳列區", emoji: "📚" },
-  "02": { area: "生活雜貨區",     emoji: "🪴" },
-  "03": { area: "文具選品牆",     emoji: "🖊️" },
-  "04": { area: "兒童繪本區",     emoji: "⭐" },
-  "05": { area: "後方深處書櫃",   emoji: "🕶️" },
-  "06": { area: "WIRED TOKYO 吧檯區", emoji: "☕" },
-  "07": { area: "WIRED TOKYO 座位區", emoji: "🍽️" },
-  "08": { area: "結帳櫃檯旁",     emoji: "∞" },
+const STAMP_META: Record<string, { area: string }> = {
+  "01": { area: "入口主題陳列區" },
+  "02": { area: "生活雜貨區" },
+  "03": { area: "文具選品牆" },
+  "04": { area: "兒童繪本區" },
+  "05": { area: "後方深處書櫃" },
+  "06": { area: "WIRED TOKYO 吧檯" },
+  "07": { area: "WIRED TOKYO 座位" },
+  "08": { area: "結帳櫃檯旁" },
 };
 
 function formatCollectedAt(iso: string): string {
@@ -87,7 +84,7 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
           isComplete ? "animate-all-complete rounded-2xl" : ""
         }`}
       >
-        {Object.entries(STAMP_META).map(([id, { area, emoji }]) => {
+        {Object.entries(STAMP_META).map(([id, { area }]) => {
           const collected = collectedIds.has(id);
           const isNew = animating.has(id);
           const collectedAt = collectedMap[id];
@@ -108,11 +105,11 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
               `}
             >
               <span
-                className={`text-xl leading-none ${
-                  collected ? "" : "grayscale"
+                className={`font-mono text-sm font-bold leading-none ${
+                  collected ? "text-[#1A2B4A]" : "text-gray-300"
                 }`}
               >
-                {emoji}
+                {id}
               </span>
               <span
                 className={`mt-1 text-[9px] leading-tight font-medium ${
@@ -126,9 +123,6 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
                   {formatCollectedAt(collectedAt)}
                 </span>
               )}
-              {!collected && (
-                <span className="mt-1 text-[9px] text-gray-300">🔒</span>
-              )}
             </div>
           );
         })}
@@ -136,7 +130,7 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
 
       {isComplete && (
         <p className="text-center text-sm font-semibold text-[#1A2B4A]">
-          🎉 集章完成！可以抽獎了
+          集章完成！可以抽獎了
         </p>
       )}
     </div>

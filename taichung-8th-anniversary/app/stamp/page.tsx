@@ -75,7 +75,7 @@ export default function StampPage() {
   };
 
   return (
-    <div className="flex min-h-full flex-col bg-gray-50">
+    <div className="flex min-h-full flex-col bg-[#F5F2ED]">
       <Header
         pictureUrl={user?.pictureUrl}
         displayName={user?.displayName}
@@ -84,10 +84,10 @@ export default function StampPage() {
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-6 gap-5">
         {/* Progress indicator */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-sm text-gray-400 hover:text-[#00694B]">
+          <Link href="/" className="text-sm text-gray-400 hover:text-[#1A2B4A]">
             ← 返回
           </Link>
-          <span className="text-sm font-semibold text-[#00694B]">
+          <span className="text-sm font-semibold text-[#1A2B4A]">
             {totalStamps} / 8 枚
           </span>
         </div>
@@ -106,18 +106,20 @@ export default function StampPage() {
 
         {status === "submitting" && (
           <div className="flex flex-col items-center gap-3 py-8">
-            <div className="size-10 animate-spin rounded-full border-4 border-[#00694B] border-t-transparent" />
+            <div className="size-10 animate-spin rounded-full border-4 border-[#1A2B4A] border-t-transparent" />
             <p className="text-sm text-gray-600">蓋章中…</p>
           </div>
         )}
 
         {status === "success" && (
           <div className="flex flex-col items-center gap-4 py-8 text-center">
-            <div className="animate-stamp-drop rounded-full bg-[#e6f4ef] p-6">
-              <span className="text-5xl leading-none">✅</span>
+            <div className="animate-stamp-drop rounded-full bg-[#EEE9E2] p-6">
+              <span className="font-mono text-3xl font-bold text-[#1A2B4A] leading-none">
+                {lastStampId}
+              </span>
             </div>
             <div className="space-y-1">
-              <p className="text-lg font-bold text-[#00694B]">蓋章成功！</p>
+              <p className="text-lg font-bold text-[#1A2B4A]">蓋章成功</p>
               <p className="text-sm text-gray-500">
                 印章 {lastStampId} 已收集
               </p>
@@ -128,7 +130,9 @@ export default function StampPage() {
 
         {status === "already_stamped" && (
           <div className="flex flex-col items-center gap-4 py-8 text-center">
-            <span className="text-4xl">🔒</span>
+            <div className="rounded-full bg-[#EEE9E2] px-5 py-3">
+              <span className="font-mono text-sm font-semibold text-[#8A6F5C]">已收集</span>
+            </div>
             <div className="space-y-1">
               <p className="text-base font-semibold text-gray-700">
                 此印記已收集過
@@ -139,7 +143,7 @@ export default function StampPage() {
             </div>
             <button
               onClick={reset}
-              className="text-sm text-[#00694B] underline underline-offset-2"
+              className="text-sm text-[#1A2B4A] underline underline-offset-2"
             >
               掃描其他 QR code
             </button>
@@ -148,11 +152,11 @@ export default function StampPage() {
 
         {status === "error" && (
           <div className="flex flex-col items-center gap-4 py-8 text-center">
-            <span className="text-4xl">⚠️</span>
+            <p className="text-xs font-semibold uppercase tracking-widest text-red-500">Error</p>
             <p className="text-sm text-red-600">{errorMsg}</p>
             <button
               onClick={reset}
-              className="rounded-full bg-[#00694B] px-6 py-2 text-sm font-medium text-white hover:bg-[#00694B]/90"
+              className="rounded-full bg-[#1A2B4A] px-6 py-2 text-sm font-medium text-white hover:bg-[#1A2B4A]/90"
             >
               重試
             </button>

@@ -100,16 +100,16 @@ export default function QrScanner({ onScan }: QrScannerProps) {
       {state === "idle" && (
         <Button
           onClick={startScan}
-          className="w-full bg-[#00694B] text-white hover:bg-[#00694B]/90 h-12 text-base font-semibold"
+          className="w-full bg-[#1A2B4A] text-white hover:bg-[#1A2B4A]/90 h-12 text-base font-semibold"
         >
-          📷 掃描 QR code
+          掃描 QR code
         </Button>
       )}
 
       {state === "scanning" && (
         <div className="flex w-full flex-col items-center gap-3">
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span className="inline-block size-4 animate-spin rounded-full border-2 border-[#00694B] border-t-transparent" />
+            <span className="inline-block size-4 animate-spin rounded-full border-2 border-[#1A2B4A] border-t-transparent" />
             掃描中，請對準 QR code…
           </div>
           <Button variant="outline" onClick={handleCancel} className="w-full">
@@ -123,7 +123,7 @@ export default function QrScanner({ onScan }: QrScannerProps) {
           <p className="text-sm text-red-600 text-center">{errorMsg}</p>
           <Button
             onClick={startScan}
-            className="w-full bg-[#00694B] text-white hover:bg-[#00694B]/90"
+            className="w-full bg-[#1A2B4A] text-white hover:bg-[#1A2B4A]/90"
           >
             重試
           </Button>
