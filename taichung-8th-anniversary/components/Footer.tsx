@@ -7,8 +7,11 @@ export default function Footer() {
           alt="TSUTAYA BOOKSTORE"
           className="h-8 w-auto mx-auto brightness-0 invert opacity-80"
         />
-        <p className="font-semibold text-white">
-          台中市政店（含 WIRED TOKYO）
+        <p className="text-[10px] font-mono tracking-widest text-white/50 uppercase">
+          × WIRED TOKYO
+        </p>
+        <p className="font-semibold text-white/70 text-xs">
+          台中市政店
         </p>
         <p className="text-white/50 italic text-[11px]">
           ∞ Connecting Life, Living in Stride.

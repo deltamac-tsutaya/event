@@ -21,9 +21,9 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "TSUTAYA BOOKSTORE 8th Anniversary｜無限日常 ∞ 連結生活",
+  title: "TSUTAYA BOOKSTORE × WIRED TOKYO 8th Anniversary｜無限日常 ∞ 連結生活",
   description:
-    "無限日常 ∞ 連結生活。集印抽獎活動期間：2026/04/23 — 2026/05/13",
+    "TSUTAYA BOOKSTORE × WIRED TOKYO 台中市政店 8 週年。無限日常 ∞ 連結生活。集印抽獎活動期間：2026/04/23 — 2026/05/13",
 };
 
 export default function RootLayout({

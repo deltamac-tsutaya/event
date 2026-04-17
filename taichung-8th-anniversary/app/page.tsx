@@ -95,7 +95,7 @@ function StateA({ onLogin }: { onLogin: () => void }) {
             className="h-10 w-auto"
           />
           <p className="text-[10px] tracking-[0.22em] uppercase text-[#8A6F5C] font-mono">
-            台中市政店 × WIRED TOKYO
+            TSUTAYA BOOKSTORE × WIRED TOKYO
           </p>
         </div>
 
@@ -271,7 +271,7 @@ function StateD({ reward, drawDate }: { reward: Reward; drawDate: string }) {
           onClick={() => {
             if (navigator.share) {
               navigator.share({
-                title: "台中市政店 8 週年集印抽獎",
+                title: "TSUTAYA BOOKSTORE × WIRED TOKYO 8th Anniversary",
                 text: `我抽到了「${reward.name}」！快來一起集章抽獎吧！`,
               });
             }

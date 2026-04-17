@@ -35,13 +35,13 @@ const SECTIONS = [
   {
     title: "免責聲明",
     content:
-      "TSUTAYA BOOKSTORE 台中市政店保有本活動最終解釋權，並得視情況修改或終止活動。如因不可抗力因素（天災、系統故障等）導致活動異常，本店不負相關責任。",
+      "TSUTAYA BOOKSTORE × WIRED TOKYO 台中市政店保有本活動最終解釋權，並得視情況修改或終止活動。如因不可抗力因素（天災、系統故障等）導致活動異常，本店不負相關責任。",
   },
   {
     title: "活動地點",
     content: (
       <>
-        TSUTAYA BOOKSTORE 台中市政店（含 WIRED TOKYO）
+        TSUTAYA BOOKSTORE × WIRED TOKYO 台中市政店
         <br />
         地址：<span className="italic text-gray-400">[地址待補]</span>
       </>
