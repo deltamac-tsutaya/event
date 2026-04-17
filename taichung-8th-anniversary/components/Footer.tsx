@@ -7,9 +7,14 @@ export default function Footer() {
           alt="TSUTAYA BOOKSTORE"
           className="h-8 w-auto mx-auto brightness-0 invert opacity-80"
         />
-        <p className="text-[10px] font-mono tracking-widest text-white/50 uppercase">
-          × WIRED TOKYO
-        </p>
+        <div className="flex items-center justify-center gap-2">
+          <span className="text-[10px] font-mono text-white/40">×</span>
+          <img
+            src="/wired-tokyo-logo.svg"
+            alt="WIRED TOKYO"
+            className="h-3.5 w-auto brightness-0 invert opacity-50"
+          />
+        </div>
         <p className="font-semibold text-white/70 text-xs">
           台中市政店
         </p>

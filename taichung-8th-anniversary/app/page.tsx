@@ -87,15 +87,23 @@ function StateA({ onLogin }: { onLogin: () => void }) {
           </span>
         </div>
 
-        {/* Top: logo + brand label */}
+        {/* Top: dual-brand logo lockup */}
         <div className="relative z-10 flex flex-col items-center gap-3">
-          <img
-            src="/tsutaya-logo.svg"
-            alt="TSUTAYA BOOKSTORE"
-            className="h-10 w-auto"
-          />
+          <div className="flex items-center gap-3">
+            <img
+              src="/tsutaya-logo.svg"
+              alt="TSUTAYA BOOKSTORE"
+              className="h-9 w-auto"
+            />
+            <span className="text-sm font-mono text-[#8A6F5C]/60">×</span>
+            <img
+              src="/wired-tokyo-logo.svg"
+              alt="WIRED TOKYO"
+              className="h-5 w-auto"
+            />
+          </div>
           <p className="text-[10px] tracking-[0.22em] uppercase text-[#8A6F5C] font-mono">
-            TSUTAYA BOOKSTORE × WIRED TOKYO
+            台中市政店 8th Anniversary
           </p>
         </div>
 
@@ -430,6 +438,22 @@ function HomeContent() {
       </main>
 
       <Footer />
+
+      {/* DEV ONLY: cache-clear button — delete before launch */}
+      <button
+        onClick={async () => {
+          localStorage.clear();
+          sessionStorage.clear();
+          if ("caches" in window) {
+            const keys = await caches.keys();
+            await Promise.all(keys.map((k) => caches.delete(k)));
+          }
+          window.location.reload();
+        }}
+        className="fixed bottom-4 right-4 z-[9999] rounded-full bg-red-600 px-3 py-1.5 text-[11px] font-mono font-bold text-white shadow-lg opacity-80 hover:opacity-100"
+      >
+        Clear Cache
+      </button>
     </div>
   );
 }

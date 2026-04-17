@@ -12,15 +12,18 @@ export default function Header({ pictureUrl, displayName }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b border-[#8A6F5C]/15 bg-[#F5F2ED]/90 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
         {/* Left: Co-brand lockup */}
-        <div className="flex flex-col items-start gap-0.5">
+        <div className="flex items-center gap-1.5">
           <img
             src="/tsutaya-logo.svg"
             alt="TSUTAYA BOOKSTORE"
-            className="h-6 w-auto"
+            className="h-5 w-auto"
           />
-          <span className="text-[9px] font-mono tracking-widest text-[#8A6F5C] leading-none">
-            × WIRED TOKYO
-          </span>
+          <span className="text-[9px] font-mono text-[#8A6F5C]/60">×</span>
+          <img
+            src="/wired-tokyo-logo.svg"
+            alt="WIRED TOKYO"
+            className="h-3 w-auto opacity-75"
+          />
         </div>
 
         {/* Center: Event title */}
