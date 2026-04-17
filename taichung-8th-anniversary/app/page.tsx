@@ -71,42 +71,98 @@ function LoadingSkeleton() {
 // ── State A: Landing (not logged in) ────────────────────────────────────────
 function StateA({ onLogin }: { onLogin: () => void }) {
   return (
-    <div className="flex flex-col items-center gap-5 py-6 text-center">
-      <img
-        src="/tsutaya-logo.svg"
-        alt="TSUTAYA BOOKSTORE"
-        className="h-14 w-auto"
-      />
-      <div className="space-y-1.5">
-        <p className="text-[10px] tracking-widest uppercase text-[#8A6F5C] font-mono">
-          台中市政店 × WIRED TOKYO
-        </p>
-        <h1 className="font-heading text-4xl font-semibold leading-tight text-[#1A2B4A]">
-          8th Anniversary
-        </h1>
-        <p className="text-sm font-medium text-[#1A2B4A]">
-          無限日常 ∞ 連結生活
-        </p>
-        <p className="text-xs italic text-[#8A6F5C]">
-          ∞ Connecting Life, Living in Stride.
-        </p>
-        <p className="text-[10px] font-mono text-gray-400 tracking-wide">
-          2,922 Days&nbsp;&nbsp;Est. 2018
-        </p>
+    <div className="flex flex-col -mx-4 -mt-6">
+
+      {/* ── Hero visual (full-viewport feel) ── */}
+      <div className="relative flex flex-col items-center justify-between min-h-[calc(100svh-3.5rem)] px-6 pt-10 pb-8 text-center overflow-hidden bg-[#F5F2ED]">
+
+        {/* Background: giant "8" watermark */}
+        <div
+          aria-hidden
+          className="pointer-events-none select-none absolute inset-0 flex items-center justify-center"
+        >
+          <span className="font-heading font-semibold text-[#1A2B4A]/[0.05]"
+                style={{ fontSize: "clamp(14rem, 60vw, 22rem)", lineHeight: 1 }}>
+            8
+          </span>
+        </div>
+
+        {/* Top: logo + brand label */}
+        <div className="relative z-10 flex flex-col items-center gap-3">
+          <img
+            src="/tsutaya-logo.svg"
+            alt="TSUTAYA BOOKSTORE"
+            className="h-10 w-auto"
+          />
+          <p className="text-[10px] tracking-[0.22em] uppercase text-[#8A6F5C] font-mono">
+            台中市政店 × WIRED TOKYO
+          </p>
+        </div>
+
+        {/* Center: headline */}
+        <div className="relative z-10 flex flex-col items-center gap-3">
+          <div className="w-10 h-px bg-[#8A6F5C]/40" />
+          <h1 className="font-heading font-semibold text-[#1A2B4A] leading-[0.9]"
+              style={{ fontSize: "clamp(4rem, 22vw, 6.5rem)" }}>
+            8<sup className="text-[0.45em] align-super">th</sup>
+            <br />
+            <span style={{ fontSize: "0.72em" }}>Anniversary</span>
+          </h1>
+          <div className="w-10 h-px bg-[#8A6F5C]/40" />
+          <p className="text-sm font-medium text-[#1A2B4A] tracking-wide">
+            無限日常 ∞ 連結生活
+          </p>
+          <p className="text-xs italic text-[#8A6F5C]">
+            ∞ Connecting Life, Living in Stride.
+          </p>
+        </div>
+
+        {/* Bottom: Gantt + date badge */}
+        <div className="relative z-10 w-full flex flex-col items-center gap-4">
+          <LifeGantt />
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] font-mono text-[#8A6F5C] tracking-widest">
+              2,922 Days
+            </span>
+            <span className="w-px h-3 bg-[#8A6F5C]/30" />
+            <span className="text-[10px] font-mono text-[#8A6F5C] tracking-widest">
+              Est. 2018
+            </span>
+            <span className="w-px h-3 bg-[#8A6F5C]/30" />
+            <span className="text-[10px] font-mono text-[#3B82C4] tracking-widest">
+              2026 / 04 / 23
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div className="w-full">
-        <LifeGantt />
+      {/* ── Below fold: how-to + CTA ── */}
+      <div className="px-4 pt-8 pb-10 space-y-6 bg-[#F5F2ED]">
+        <div className="text-center space-y-1">
+          <p className="text-base font-semibold text-[#1A2B4A]">
+            找出店內 8 個印記，集滿抽獎
+          </p>
+          <p className="text-xs text-[#8A6F5C]">每天一次抽獎機會 · 活動期間 2026/04/23—05/13</p>
+        </div>
+
+        <StepFlow />
+
+        <Button
+          onClick={onLogin}
+          className="h-12 w-full rounded-full bg-[#1A2B4A] text-base font-semibold text-white hover:bg-[#1A2B4A]/90 animate-pulse-cta"
+        >
+          用 LINE 帳號參加
+        </Button>
+
+        <div className="flex justify-center gap-6 text-xs text-gray-400">
+          <Link href="/faq" className="hover:text-[#1A2B4A] hover:underline">
+            常見問題
+          </Link>
+          <Link href="/terms" className="hover:text-[#1A2B4A] hover:underline">
+            活動規則
+          </Link>
+        </div>
       </div>
-
-      <StepFlow />
-
-      <Button
-        onClick={onLogin}
-        className="mt-2 h-12 w-full rounded-full bg-[#1A2B4A] text-base font-semibold text-white hover:bg-[#1A2B4A]/90 animate-pulse-cta"
-      >
-        用 LINE 帳號參加
-      </Button>
     </div>
   );
 }
@@ -346,7 +402,7 @@ function HomeContent() {
   const state = determineState();
 
   return (
-    <div className="flex min-h-full flex-col bg-gray-50">
+    <div className="flex min-h-full flex-col bg-[#F5F2ED]">
       <Header
         pictureUrl={user?.pictureUrl}
         displayName={user?.displayName}
