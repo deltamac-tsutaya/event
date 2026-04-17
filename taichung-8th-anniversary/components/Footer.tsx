@@ -1,35 +1,37 @@
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-gray-50 py-6 text-center text-xs text-gray-500">
+    <footer className="w-full bg-[#1A2B4A] py-8 text-center text-xs text-white/70">
       <div className="mx-auto max-w-2xl space-y-2 px-4">
-        <p className="font-semibold text-gray-700">
+        <p className="font-semibold text-white">
           TSUTAYA BOOKSTORE 台中市政店（含 WIRED TOKYO）
         </p>
-        <p className="text-gray-400">
-          地址：{/* TODO: 填入實際地址 */}
-          <span className="italic text-gray-300">[地址待補]</span>
+        <p className="text-white/50 italic text-[11px]">
+          ∞ Connecting Life, Living in Stride.
+        </p>
+        <p className="font-mono text-[10px] text-white/40 tracking-wide">
+          2,922 Days&nbsp;&nbsp;Est. 2018
         </p>
         <p>
           活動期間：
-          <span className="font-medium text-[#00694B]">
+          <span className="font-medium text-[#3B82C4]">
             2026/04/23 — 2026/05/13
           </span>
         </p>
         <nav className="flex justify-center gap-6 pt-1">
           <a
             href="#rules"
-            className="underline-offset-2 hover:underline hover:text-[#00694B] transition-colors"
+            className="underline-offset-2 hover:underline hover:text-white transition-colors"
           >
             活動規則
           </a>
           <a
             href="#faq"
-            className="underline-offset-2 hover:underline hover:text-[#00694B] transition-colors"
+            className="underline-offset-2 hover:underline hover:text-white transition-colors"
           >
             常見問題
           </a>
         </nav>
-        <p className="pt-2 text-[10px] text-gray-300">
+        <p className="pt-2 text-[10px] text-white/20">
           © 2026 TSUTAYA BOOKSTORE. All rights reserved.
         </p>
       </div>

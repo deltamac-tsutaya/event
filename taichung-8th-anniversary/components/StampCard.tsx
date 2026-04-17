@@ -72,11 +72,11 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
       {/* Progress bar */}
       <div className="flex items-center justify-between text-xs text-gray-500">
         <span>集印進度</span>
-        <span className="font-semibold text-[#00694B]">{totalStamps} / 8</span>
+        <span className="font-semibold text-[#1A2B4A]">{totalStamps} / 8</span>
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
         <div
-          className="h-full rounded-full bg-[#00694B] transition-all duration-700"
+          className="h-full rounded-full bg-[#1A2B4A] transition-all duration-700"
           style={{ width: `${(totalStamps / 8) * 100}%` }}
         />
       </div>
@@ -100,11 +100,11 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
                 transition-all duration-300 aspect-square
                 ${
                   collected
-                    ? "bg-[#e6f4ef] border border-[#00694B]/20 shadow-sm"
+                    ? "bg-[#EEE9E2] border border-[#8A6F5C]/20 shadow-sm"
                     : "bg-gray-100 border border-transparent opacity-50"
                 }
                 ${isNew ? "animate-stamp-drop" : ""}
-                ${isComplete && collected ? "ring-1 ring-[#00694B]/40" : ""}
+                ${isComplete && collected ? "ring-1 ring-[#1A2B4A]/40" : ""}
               `}
             >
               <span
@@ -116,7 +116,7 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
               </span>
               <span
                 className={`mt-1 text-[9px] leading-tight font-medium ${
-                  collected ? "text-[#00694B]" : "text-gray-400"
+                  collected ? "text-[#1A2B4A]" : "text-gray-400"
                 }`}
               >
                 {area}
@@ -135,7 +135,7 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
       </div>
 
       {isComplete && (
-        <p className="text-center text-sm font-semibold text-[#00694B]">
+        <p className="text-center text-sm font-semibold text-[#1A2B4A]">
           🎉 集章完成！可以抽獎了
         </p>
       )}

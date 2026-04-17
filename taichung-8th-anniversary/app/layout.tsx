@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import NetworkStatusBanner from "@/components/ui-state/NetworkStatusBanner";
@@ -14,10 +14,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["400", "600"],
+});
+
 export const metadata: Metadata = {
-  title: "台中市政店 8 週年｜TSUTAYA BOOKSTORE",
+  title: "TSUTAYA BOOKSTORE 8th Anniversary｜無限日常 ∞ 連結生活",
   description:
-    "Nexus Life × 無限日常 ∞ 連結生活。活動期間：2026/04/23 — 2026/05/13",
+    "無限日常 ∞ 連結生活。集印抽獎活動期間：2026/04/23 — 2026/05/13",
 };
 
 export default function RootLayout({
@@ -28,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-TW"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <NetworkStatusBanner />
