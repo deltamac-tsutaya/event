@@ -25,9 +25,9 @@ export default function StepFlow() {
       {STEPS.map((step, idx) => (
         <div key={step.number} className="flex flex-1 items-start gap-1">
           {/* Step card */}
-          <div className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-[#e6f4ef] px-2 py-3 text-center">
+          <div className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-[#EEE9E2] px-2 py-3 text-center">
             <span className="text-2xl leading-none">{step.icon}</span>
-            <span className="text-[10px] font-bold text-[#00694B]">
+            <span className="text-[10px] font-bold text-[#1A2B4A]">
               {step.number}
             </span>
             <span className="text-xs font-semibold text-gray-800 leading-tight">

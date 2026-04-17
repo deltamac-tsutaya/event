@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-cormorant);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,7 +49,7 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
+  --background: oklch(0.973 0.006 80);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -131,8 +131,13 @@
 
 /* ── Brand token ───────────────────────────── */
 :root {
-  --brand: #00694B;
-  --brand-light: #e6f4ef;
+  --brand: #1A2B4A;
+  --brand-light: #EEE9E2;
+  --brand-navy: #1A2B4A;
+  --brand-brown: #8A6F5C;
+  --brand-nexus: #3B82C4;
+  --brand-bg: #F5F2ED;
+  --background: #F5F2ED;
 }
 
 /* ── Stamp animations ──────────────────────── */
@@ -144,13 +149,13 @@
 }
 
 @keyframes stamp-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,105,75,0); }
-  50%       { box-shadow: 0 0 0 8px rgba(0,105,75,0.35); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26,43,74,0); }
+  50%       { box-shadow: 0 0 0 8px rgba(26,43,74,0.35); }
 }
 
 @keyframes all-complete-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,105,75,0); }
-  40%       { box-shadow: 0 0 24px 8px rgba(0,105,75,0.5); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26,43,74,0); }
+  40%       { box-shadow: 0 0 24px 8px rgba(26,43,74,0.5); }
 }
 
 @keyframes shine {
@@ -190,8 +195,8 @@
 }
 
 @keyframes pulse-cta {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,105,75,0.5); }
-  50%       { box-shadow: 0 0 0 12px rgba(0,105,75,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26,43,74,0.5); }
+  50%       { box-shadow: 0 0 0 12px rgba(26,43,74,0); }
 }
 
 @keyframes countdown-tick {

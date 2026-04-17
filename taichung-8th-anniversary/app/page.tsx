@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import StampCard from "@/components/StampCard";
 import RewardCard from "@/components/RewardCard";
 import StepFlow from "@/components/StepFlow";
+import LifeGantt from "@/components/LifeGantt";
 import { Button } from "@/components/ui/button";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
@@ -70,31 +71,34 @@ function LoadingSkeleton() {
 // ── State A: Landing (not logged in) ────────────────────────────────────────
 function StateA({ onLogin }: { onLogin: () => void }) {
   return (
-    <div className="flex flex-col items-center gap-6 py-6 text-center">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold leading-tight text-gray-900">
-          台中市政店 8 週年
-        </h1>
-        <p className="text-sm font-medium text-[#00694B]">
-          Nexus Life × 無限日常 ∞ 連結生活
+    <div className="flex flex-col items-center gap-5 py-6 text-center">
+      <div className="space-y-1.5">
+        <p className="text-[10px] tracking-widest uppercase text-[#8A6F5C] font-mono">
+          TSUTAYA BOOKSTORE × WIRED TOKYO
         </p>
-        <p className="text-xs text-gray-400 mt-1">
-          2026 / 04 / 23 — 2026 / 05 / 13
+        <h1 className="font-heading text-4xl font-semibold leading-tight text-[#1A2B4A]">
+          8th Anniversary
+        </h1>
+        <p className="text-sm font-medium text-[#1A2B4A]">
+          無限日常 ∞ 連結生活
+        </p>
+        <p className="text-xs italic text-[#8A6F5C]">
+          ∞ Connecting Life, Living in Stride.
+        </p>
+        <p className="text-[10px] font-mono text-gray-400 tracking-wide">
+          2,922 Days&nbsp;&nbsp;Est. 2018
         </p>
       </div>
 
-      <div className="w-full rounded-2xl bg-[#e6f4ef] px-5 py-6 space-y-1">
-        <p className="text-sm font-semibold text-[#00694B]">
-          找出店內 8 個印記，集滿抽獎
-        </p>
-        <p className="text-xs text-gray-600">每天一次抽獎機會</p>
+      <div className="w-full">
+        <LifeGantt />
       </div>
 
       <StepFlow />
 
       <Button
         onClick={onLogin}
-        className="mt-2 h-12 w-full rounded-full bg-[#00694B] text-base font-semibold text-white hover:bg-[#00694B]/90 animate-pulse-cta"
+        className="mt-2 h-12 w-full rounded-full bg-[#1A2B4A] text-base font-semibold text-white hover:bg-[#1A2B4A]/90 animate-pulse-cta"
       >
         用 LINE 帳號參加
       </Button>
@@ -115,14 +119,14 @@ function StateB({
     <div className="space-y-5">
       <div className="text-center space-y-1">
         <h1 className="text-xl font-bold text-gray-900">
-          已收集 <span className="text-[#00694B]">{totalStamps}</span> / 8 枚
+          已收集 <span className="text-[#1A2B4A]">{totalStamps}</span> / 8 枚
         </h1>
         {totalStamps === 7 ? (
           <p className="text-sm font-semibold text-orange-600">
             ✨ 再 1 枚即可抽獎！
           </p>
         ) : totalStamps >= 4 ? (
-          <p className="text-sm text-[#00694B]">
+          <p className="text-sm text-[#1A2B4A]">
             已完成一半，繼續前進！
           </p>
         ) : (
@@ -135,16 +139,16 @@ function StateB({
       <StampCard stamps={stamps} totalStamps={totalStamps} />
 
       <Link href="/stamp">
-        <Button className="w-full h-12 rounded-full bg-[#00694B] text-white text-base font-semibold hover:bg-[#00694B]/90">
+        <Button className="w-full h-12 rounded-full bg-[#1A2B4A] text-white text-base font-semibold hover:bg-[#1A2B4A]/90">
           📷 掃描 QR code 集章
         </Button>
       </Link>
 
       <div className="flex justify-center gap-6 text-xs text-gray-400">
-        <Link href="/faq" className="hover:text-[#00694B] hover:underline">
+        <Link href="/faq" className="hover:text-[#1A2B4A] hover:underline">
           常見問題
         </Link>
-        <Link href="/terms" className="hover:text-[#00694B] hover:underline">
+        <Link href="/terms" className="hover:text-[#1A2B4A] hover:underline">
           活動規則
         </Link>
       </div>
@@ -164,14 +168,14 @@ function StateC({
       <div className="text-center space-y-1">
         <p className="text-4xl">🎉</p>
         <h1 className="text-xl font-bold text-gray-900">集印完成</h1>
-        <p className="text-sm text-[#00694B] font-medium">
+        <p className="text-sm text-[#1A2B4A] font-medium">
           今日抽獎已解鎖。立即前往抽獎！
         </p>
       </div>
       <StampCard stamps={stamps} totalStamps={8} />
       <Button
         onClick={() => router.push("/rewards")}
-        className="w-full h-12 rounded-full bg-[#00694B] text-white text-base font-semibold hover:bg-[#00694B]/90 animate-pulse-cta"
+        className="w-full h-12 rounded-full bg-[#1A2B4A] text-white text-base font-semibold hover:bg-[#1A2B4A]/90 animate-pulse-cta"
       >
         🎁 立即抽獎
       </Button>
@@ -198,7 +202,7 @@ function StateD({ reward, drawDate }: { reward: Reward; drawDate: string }) {
       <div className="flex flex-col gap-2">
         <Button
           onClick={() => router.push("/rewards")}
-          className="w-full h-11 bg-[#00694B] text-white hover:bg-[#00694B]/90 rounded-full"
+          className="w-full h-11 bg-[#1A2B4A] text-white hover:bg-[#1A2B4A]/90 rounded-full"
         >
           查看我的獎券
         </Button>
@@ -237,13 +241,13 @@ function StateE({ lineUserId }: { lineUserId: string }) {
       <div className="rounded-2xl bg-gray-50 p-5 text-center space-y-2">
         <p className="text-base font-semibold text-gray-700">今日抽獎已完成</p>
         <p className="text-xs text-gray-400">距離下次抽獎機會</p>
-        <p className="text-3xl font-mono font-bold text-[#00694B] animate-countdown">
+        <p className="text-3xl font-mono font-bold text-[#1A2B4A] animate-countdown">
           {countdown}
         </p>
       </div>
 
       <Link href="/rewards">
-        <Button className="w-full h-11 bg-[#00694B] text-white hover:bg-[#00694B]/90 rounded-full">
+        <Button className="w-full h-11 bg-[#1A2B4A] text-white hover:bg-[#1A2B4A]/90 rounded-full">
           查看我的獎券
         </Button>
       </Link>
@@ -271,7 +275,7 @@ function StateF() {
       <p className="text-4xl">∞</p>
       <div className="space-y-2">
         <h1 className="text-xl font-bold text-gray-900">
-          感謝 21 天的相伴
+          感謝 2,922 個日子的相伴
         </h1>
         <p className="text-sm text-gray-500 leading-relaxed">
           期待下次與你連結。
@@ -284,7 +288,7 @@ function StateF() {
         </p>
       </div>
       <Link href="/rewards">
-        <Button className="w-full h-11 bg-[#00694B] text-white hover:bg-[#00694B]/90 rounded-full">
+        <Button className="w-full h-11 bg-[#1A2B4A] text-white hover:bg-[#1A2B4A]/90 rounded-full">
           查看我的獎券
         </Button>
       </Link>
@@ -373,7 +377,7 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-gray-50"><div className="animate-spin size-8 rounded-full border-4 border-[#00694B] border-t-transparent" /></div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-gray-50"><div className="animate-spin size-8 rounded-full border-4 border-[#1A2B4A] border-t-transparent" /></div>}>
       <HomeContent />
     </Suspense>
   );
