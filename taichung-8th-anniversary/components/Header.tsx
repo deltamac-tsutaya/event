@@ -12,12 +12,12 @@ export default function Header({ pictureUrl, displayName }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b border-[#8A6F5C]/15 bg-[#F5F2ED]/90 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
         {/* Left: Logo */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs font-bold tracking-widest text-[#1A2B4A] uppercase leading-tight">
-            TSUTAYA
-            <br />
-            BOOKSTORE
-          </span>
+        <div className="flex items-center">
+          <img
+            src="/tsutaya-logo.svg"
+            alt="TSUTAYA BOOKSTORE"
+            className="h-8 w-auto"
+          />
         </div>
 
         {/* Center: Event title */}

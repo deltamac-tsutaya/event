@@ -2,8 +2,13 @@ export default function Footer() {
   return (
     <footer className="w-full bg-[#1A2B4A] py-8 text-center text-xs text-white/70">
       <div className="mx-auto max-w-2xl space-y-2 px-4">
+        <img
+          src="/tsutaya-logo.svg"
+          alt="TSUTAYA BOOKSTORE"
+          className="h-8 w-auto mx-auto brightness-0 invert opacity-80"
+        />
         <p className="font-semibold text-white">
-          TSUTAYA BOOKSTORE 台中市政店（含 WIRED TOKYO）
+          台中市政店（含 WIRED TOKYO）
         </p>
         <p className="text-white/50 italic text-[11px]">
           ∞ Connecting Life, Living in Stride.

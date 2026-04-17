@@ -72,9 +72,14 @@ function LoadingSkeleton() {
 function StateA({ onLogin }: { onLogin: () => void }) {
   return (
     <div className="flex flex-col items-center gap-5 py-6 text-center">
+      <img
+        src="/tsutaya-logo.svg"
+        alt="TSUTAYA BOOKSTORE"
+        className="h-14 w-auto"
+      />
       <div className="space-y-1.5">
         <p className="text-[10px] tracking-widest uppercase text-[#8A6F5C] font-mono">
-          TSUTAYA BOOKSTORE × WIRED TOKYO
+          台中市政店 × WIRED TOKYO
         </p>
         <h1 className="font-heading text-4xl font-semibold leading-tight text-[#1A2B4A]">
           8th Anniversary
