@@ -142,26 +142,54 @@
     updateMyNumResult();
   });
 
-  // Firebase + smart reconnect via Page Visibility API
-  let db, queueRef, unsubscribe;
+  // Firebase + smart reconnect
+  // Strategy:
+  //   1. Page Visibility API — disconnect when tab is hidden, reconnect on return.
+  //   2. Watchdog timer — if no data arrives within 45 s, force a reconnect.
+  //      This catches silent WebSocket drops on mobile Safari.
+  //   3. Error retry — on Firebase error, retry after 5 s.
+
+  const WATCHDOG_MS = 45_000;
+  const RETRY_MS    = 5_000;
+
+  let unsubscribe   = null;
+  let watchdogTimer = null;
+  let retryTimer    = null;
+
+  function resetWatchdog() {
+    clearTimeout(watchdogTimer);
+    watchdogTimer = setTimeout(reconnect, WATCHDOG_MS);
+  }
+
+  function reconnect() {
+    disconnect();
+    connect();
+  }
 
   function connect() {
     if (unsubscribe) return;
-    queueRef = ref(db, QUEUE_PATH);
+    clearTimeout(retryTimer);
+    const queueRef = ref(db, QUEUE_PATH);
     unsubscribe = onValue(queueRef, (snap) => {
       render(snap.val());
+      resetWatchdog();
     }, (err) => {
       console.error(err);
       numberEl.textContent = "連線失敗";
       numberEl.classList.add("loading");
       unsubscribe = null;
+      retryTimer = setTimeout(connect, RETRY_MS);
     });
+    resetWatchdog();
   }
 
   function disconnect() {
+    clearTimeout(watchdogTimer);
+    clearTimeout(retryTimer);
     if (unsubscribe) { unsubscribe(); unsubscribe = null; }
   }
 
+  let db;
   try {
     const app = initializeApp(firebaseConfig);
     db = getDatabase(app);
