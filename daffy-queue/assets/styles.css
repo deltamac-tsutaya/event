@@ -144,6 +144,79 @@ body::before {
   50% { opacity: 0.4; transform: scale(0.7); }
 }
 
+@keyframes pop {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.18); }
+  60%  { transform: scale(0.94); }
+  80%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.big-number.pop {
+  animation: pop 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+/* My-number tracker */
+.my-number-box {
+  background: var(--white);
+  border: 4px solid var(--ink);
+  border-radius: 28px;
+  box-shadow: 6px 7px 0 var(--ink);
+  padding: 1.25rem 1.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.my-number-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+
+.my-number-form {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.my-number-input {
+  flex: 1;
+  font-family: 'Fredoka One', 'Nunito', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  border: 4px solid var(--ink);
+  border-radius: 18px;
+  background: var(--yellow);
+  color: var(--ink);
+  text-align: center;
+  min-width: 0;
+  -moz-appearance: textfield;
+}
+
+.my-number-input::-webkit-outer-spin-button,
+.my-number-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.my-number-input:focus { outline: none; box-shadow: 4px 5px 0 var(--ink); }
+
+.my-number-result {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.05rem;
+  text-align: center;
+  min-height: 1.4em;
+  color: var(--ink);
+}
+
+.my-number-result.ready  { color: var(--pink); font-size: 1.2rem; }
+.my-number-result.hidden { display: none; }
+
 /* Footer note */
 .note {
   text-align: center;

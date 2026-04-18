@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#FFE600">
 <title>目前叫號｜Daffy 似顏畫 × TSUTAYA BOOKSTORE 信義店</title>
 <meta name="description" content="Daffy 似顏畫活動現場叫號。請確認您的號碼，並留意現場廣播。">
+<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
@@ -17,25 +18,21 @@
 
   <header class="brand">
     <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <!-- Simple ghost-duck mascot, Daffy-style -->
       <path d="M50 10 C30 10, 18 25, 18 48 L18 86 C18 90, 22 92, 25 89 L32 83 C34 81, 37 81, 39 83 L44 88 C46 90, 49 90, 51 88 L56 83 C58 81, 61 81, 63 83 L70 89 C73 92, 77 90, 77 86 L77 48 C77 25, 70 10, 50 10 Z"
             fill="#FFFFFF" stroke="#1A1A1A" stroke-width="4" stroke-linejoin="round"/>
-      <!-- eyes -->
       <circle cx="40" cy="46" r="4.5" fill="#1A1A1A"/>
       <circle cx="60" cy="46" r="4.5" fill="#1A1A1A"/>
       <circle cx="41.5" cy="44.5" r="1.4" fill="#FFFFFF"/>
       <circle cx="61.5" cy="44.5" r="1.4" fill="#FFFFFF"/>
-      <!-- cheeks -->
       <circle cx="33" cy="58" r="4" fill="#FF2D78" opacity="0.75"/>
       <circle cx="67" cy="58" r="4" fill="#FF2D78" opacity="0.75"/>
-      <!-- beak -->
       <path d="M44 58 Q50 65 56 58 Q50 62 44 58 Z" fill="#FF2D78" stroke="#1A1A1A" stroke-width="2.5" stroke-linejoin="round"/>
     </svg>
     <p class="brand-title">Daffy 似顏畫</p>
     <p class="brand-sub">TSUTAYA BOOKSTORE 信義店</p>
   </header>
 
-  <section class="card" aria-live="polite">
+  <section class="card" aria-live="polite" aria-atomic="true">
     <span class="card-label">目前叫到</span>
     <div id="number" class="big-number loading">—</div>
     <p class="updated">
@@ -43,6 +40,17 @@
       <span>最後更新</span>
       <time id="updated-at">—</time>
     </p>
+  </section>
+
+  <section class="my-number-box">
+    <p class="my-number-label">查詢等待人數</p>
+    <form id="my-num-form" class="my-number-form" autocomplete="off">
+      <input id="my-num-input" class="my-number-input" type="number"
+             inputmode="numeric" min="1" max="9999" step="1"
+             placeholder="輸入您的號碼" aria-label="我的號碼">
+      <button class="btn btn-secondary" type="submit">查詢</button>
+    </form>
+    <p id="my-num-result" class="my-number-result hidden" aria-live="polite"></p>
   </section>
 
   <p class="note">
@@ -58,8 +66,13 @@
   import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
   import { firebaseConfig, QUEUE_PATH } from "./assets/config.js";
 
-  const numberEl = document.getElementById("number");
+  const numberEl  = document.getElementById("number");
   const updatedEl = document.getElementById("updated-at");
+  const myNumForm = document.getElementById("my-num-form");
+  const myNumInput = document.getElementById("my-num-input");
+  const myNumResult = document.getElementById("my-num-result");
+
+  let currentNumber = null;
 
   function formatTime(date) {
     const hh = String(date.getHours()).padStart(2, "0");
@@ -68,38 +81,104 @@
     return `${hh}:${mm}:${ss}`;
   }
 
+  function triggerPop() {
+    numberEl.classList.remove("pop");
+    // Force reflow so re-adding the class restarts the animation.
+    void numberEl.offsetWidth;
+    numberEl.classList.add("pop");
+    numberEl.addEventListener("animationend", () => numberEl.classList.remove("pop"), { once: true });
+  }
+
   function render(value) {
+    const prev = currentNumber;
     if (value == null || Number.isNaN(Number(value))) {
+      currentNumber = null;
       numberEl.textContent = "尚未開始";
       numberEl.classList.add("loading");
     } else {
-      numberEl.textContent = String(Number(value));
+      currentNumber = Number(value);
+      const changed = prev !== currentNumber;
+      numberEl.textContent = String(currentNumber);
       numberEl.classList.remove("loading");
+      if (changed && prev !== null) triggerPop();
     }
     updatedEl.textContent = formatTime(new Date());
+    updateMyNumResult();
   }
 
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const queueRef = ref(db, QUEUE_PATH);
+  function updateMyNumResult() {
+    const myNum = parseInt(myNumInput.dataset.saved, 10);
+    if (!myNumResult || isNaN(myNum)) return;
 
-    onValue(queueRef, (snap) => {
+    if (currentNumber === null) {
+      showResult("尚未開始叫號", false);
+      return;
+    }
+    const diff = myNum - currentNumber;
+    if (diff <= 0) {
+      showResult("輪到您了！請前往現場", true);
+    } else if (diff === 1) {
+      showResult("下一位就是您，請準備！", true);
+    } else {
+      showResult(`還有 ${diff} 人，請稍候`, false);
+    }
+  }
+
+  function showResult(text, isReady) {
+    myNumResult.textContent = text;
+    myNumResult.classList.remove("hidden", "ready");
+    if (isReady) myNumResult.classList.add("ready");
+  }
+
+  myNumForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const n = parseInt(myNumInput.value, 10);
+    if (!Number.isFinite(n) || n < 1) {
+      showResult("請輸入有效號碼", false);
+      return;
+    }
+    myNumInput.dataset.saved = n;
+    myNumInput.blur();
+    updateMyNumResult();
+  });
+
+  // Firebase + smart reconnect via Page Visibility API
+  let db, queueRef, unsubscribe;
+
+  function connect() {
+    if (unsubscribe) return;
+    queueRef = ref(db, QUEUE_PATH);
+    unsubscribe = onValue(queueRef, (snap) => {
       render(snap.val());
     }, (err) => {
       console.error(err);
       numberEl.textContent = "連線失敗";
       numberEl.classList.add("loading");
+      unsubscribe = null;
+    });
+  }
+
+  function disconnect() {
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  }
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    connect();
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        disconnect();
+      } else {
+        connect();
+      }
     });
   } catch (err) {
     console.error(err);
     numberEl.textContent = "設定錯誤";
     numberEl.classList.add("loading");
   }
-
-  // Auto-refresh every 30 seconds as a resilience fallback, in
-  // case the realtime socket drops silently on mobile Safari.
-  setTimeout(() => window.location.reload(), 30_000);
 </script>
 
 </body>
