@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#FFE600">
-<title>目前叫號｜Daffy 似顏畫 × TSUTAYA BOOKSTORE 信義店</title>
-<meta name="description" content="Daffy 似顏畫活動現場叫號。請確認您的號碼，並留意現場廣播。">
+<title>活動資訊｜Daffy 似顏畫 × TSUTAYA BOOKSTORE 信義店</title>
+<meta name="description" content="Daffy 似顏畫活動現場資訊與叫號進度。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="../assets/styles.css">
 </head>
 <body>
 
@@ -29,14 +29,6 @@
   <section class="card" aria-live="polite">
     <span class="card-label">目前叫到</span>
     <div id="number" class="big-number loading">—</div>
-    <div class="upcoming">
-      <span class="upcoming-label">即將叫號</span>
-      <div class="upcoming-numbers">
-        <span class="upcoming-num" id="next-1">—</span>
-        <span class="upcoming-num" id="next-2">—</span>
-        <span class="upcoming-num" id="next-3">—</span>
-      </div>
-    </div>
     <p class="updated">
       <span class="dot" aria-hidden="true"></span>
       <span>最後更新</span>
@@ -44,42 +36,34 @@
     </p>
   </section>
 
-  <p class="note">
-    預估等候時間僅供參考，請以現場叫號為準。
-  </p>
+  <section class="info-card">
+    <h2 class="info-title">費用</h2>
+    <p class="info-price">NT$500 / 人（或寵物一隻）</p>
+    <p class="info-price">NT$1,000 / 兩人，或人＋寵物一隻</p>
+    <p class="info-note">產出形式：小木板現場繪製，附親筆簽名，完成即可帶走。</p>
+  </section>
 
   <section class="info-card">
-    <h2 class="info-title">過號處理</h2>
-    <p class="info-body">號碼叫到時若不在場，視為過號。</p>
-    <p class="info-body">過號者返場後，將安排插入第四順位候補。</p>
+    <h2 class="info-title">參加方式</h2>
+    <ol class="info-list">
+      <li>開店起即可購票領號，費用於結帳時收取。</li>
+      <li>結帳後由店員發放實體號碼牌（附 QR Code）。</li>
+      <li>掃描 QR Code 查看當前叫號進度，自行估算等候時間。</li>
+      <li>畫寵物者請事先備妥清晰照片（正面或側面均可）。</li>
+      <li>前方剩餘 3–5 位時，請返回活動區報到。</li>
+      <li>號碼牌發完即額滿，不接受加號。</li>
+    </ol>
   </section>
-
-  <section class="disclaimer-card">
-    <h3 class="disclaimer-title">【注意事項】</h3>
-    <ul class="disclaimer-list">
-      <li>預估等候時間僅供參考，實際進度以現場叫號為準。</li>
-      <li>號碼牌遺失者，請持購買收據向店員核對；無法核實者不予補號。</li>
-      <li>寵物請以手機照片代替本體入店，避免違反百貨規定。</li>
-      <li>退款：老師尚未開始繪製前因故放棄者，退款與否由現場主管決定。</li>
-      <li>活動因不可抗力因素暫停或終止時，退款事宜由現場主管公告處理，主辦方保留最終決定權。</li>
-      <li>頁面叫號進度由門市人員手動更新，數據僅供參考，不構成任何等候時間之保證。</li>
-    </ul>
-  </section>
-
-  <a class="admin-link" href="admin/">STAFF</a>
 
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  import { firebaseConfig, QUEUE_PATH } from "./assets/config.js";
+  import { firebaseConfig, QUEUE_PATH } from "../assets/config.js";
 
   const numberEl = document.getElementById("number");
   const updatedEl = document.getElementById("updated-at");
-  const next1El = document.getElementById("next-1");
-  const next2El = document.getElementById("next-2");
-  const next3El = document.getElementById("next-3");
 
   function formatTime(date) {
     const hh = String(date.getHours()).padStart(2, "0");
@@ -92,16 +76,9 @@
     if (value == null || Number.isNaN(Number(value))) {
       numberEl.textContent = "尚未開始";
       numberEl.classList.add("loading");
-      next1El.textContent = "—";
-      next2El.textContent = "—";
-      next3El.textContent = "—";
     } else {
-      const n = Number(value);
-      numberEl.textContent = String(n);
+      numberEl.textContent = String(Number(value));
       numberEl.classList.remove("loading");
-      next1El.textContent = String(n + 1);
-      next2El.textContent = String(n + 2);
-      next3El.textContent = String(n + 3);
     }
     updatedEl.textContent = formatTime(new Date());
   }
@@ -124,8 +101,7 @@
     numberEl.classList.add("loading");
   }
 
-  // Auto-refresh every 30 seconds as a resilience fallback, in
-  // case the realtime socket drops silently on mobile Safari.
+  // Auto-refresh every 30 seconds as a resilience fallback.
   setTimeout(() => window.location.reload(), 30_000);
 </script>
 
