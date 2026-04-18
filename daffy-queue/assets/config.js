@@ -13,13 +13,13 @@
 // ---------------------------------------------------------------
 
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "0000000000",
-  appId: "1:0000000000:web:xxxxxxxxxxxxxxxxxxxxxx"
+  apiKey: "AIzaSyByGQiiKY1CjLOCyyzRXmeVR012HKTVDqQ",
+  authDomain: "daffy-queue.firebaseapp.com",
+  databaseURL: "https://daffy-queue-default-rtdb.firebaseio.com",
+  projectId: "daffy-queue",
+  storageBucket: "daffy-queue.firebasestorage.app",
+  messagingSenderId: "750628552909",
+  appId: "1:750628552909:web:1a889475dae9f3622f6984"
 };
 
 export const ADMIN_PASSWORD = "daffy2026";
