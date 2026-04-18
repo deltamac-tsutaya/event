@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#FFE600">
+<meta name="theme-color" content="#1A1A1A">
 <title>後台叫號管理｜Daffy 似顏畫</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,9 +15,9 @@
 
 <div class="wrap">
 
-  <header class="brand">
-    <p class="brand-title">Daffy 似顏畫｜後台</p>
-    <p class="brand-sub">STAFF ONLY</p>
+  <header class="admin-header">
+    <span class="admin-staff-badge">STAFF ONLY</span>
+    <p class="admin-header-title">Daffy 似顏畫｜後台管理</p>
   </header>
 
   <!-- Login view -->
@@ -27,15 +27,14 @@
       <input id="pw-input" type="password" inputmode="text"
              placeholder="密碼" aria-label="密碼" required>
       <div class="status" id="login-status"></div>
-      <div style="height:0.5rem"></div>
-      <button class="btn btn-plus" type="submit">登入</button>
+      <button class="btn btn-plus" type="submit" style="margin-top:0.5rem">登入</button>
     </form>
   </section>
 
   <!-- Admin view -->
-  <section id="admin-view" class="hidden" style="width:100%; display:flex; flex-direction:column; gap:1rem; align-items:center;">
+  <section id="admin-view" class="hidden admin-panel">
 
-    <div class="card">
+    <div class="card admin-number-card">
       <span class="card-label">目前叫到</span>
       <div id="current" class="admin-current">—</div>
       <p class="updated">
@@ -45,23 +44,30 @@
       </p>
     </div>
 
-    <button id="btn-plus" class="btn btn-plus" type="button">＋1 下一位</button>
+    <button id="btn-plus" class="btn btn-plus btn-hero" type="button">
+      ＋1　下一位
+    </button>
 
-    <form id="jump-form" class="jump-form" autocomplete="off">
-      <input id="jump-input" class="jump-input" type="number"
-             inputmode="numeric" min="0" max="9999" step="1"
-             placeholder="直接輸入號碼" aria-label="直接輸入號碼">
-      <button class="btn btn-secondary" type="submit">跳號</button>
-    </form>
+    <div class="admin-secondary">
+      <p class="admin-section-label">進階操作</p>
 
-    <div class="admin-row">
-      <button id="btn-minus" class="btn btn-secondary" type="button">−1</button>
-      <button id="btn-reset" class="btn btn-secondary" type="button">歸零</button>
+      <form id="jump-form" class="jump-form" autocomplete="off">
+        <input id="jump-input" class="jump-input" type="number"
+               inputmode="numeric" min="0" max="9999" step="1"
+               placeholder="直接輸入號碼" aria-label="直接輸入號碼">
+        <button class="btn btn-secondary" type="submit">跳號</button>
+      </form>
+
+      <div class="admin-row">
+        <button id="btn-minus" class="btn btn-secondary" type="button">−1 上一位</button>
+        <button id="btn-reset" class="btn btn-danger" type="button">歸零</button>
+      </div>
     </div>
 
     <div id="status" class="status"></div>
 
     <a class="admin-link" href="../">← 返回顧客頁</a>
+
   </section>
 
 </div>
@@ -71,23 +77,23 @@
   import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
   import { firebaseConfig, ADMIN_PASSWORD, QUEUE_PATH } from "../assets/config.js";
 
-  const loginView = document.getElementById("login-view");
-  const adminView = document.getElementById("admin-view");
-  const loginForm = document.getElementById("login-form");
-  const pwInput = document.getElementById("pw-input");
+  const loginView   = document.getElementById("login-view");
+  const adminView   = document.getElementById("admin-view");
+  const loginForm   = document.getElementById("login-form");
+  const pwInput     = document.getElementById("pw-input");
   const loginStatus = document.getElementById("login-status");
 
   const currentEl = document.getElementById("current");
   const updatedEl = document.getElementById("updated-at");
-  const statusEl = document.getElementById("status");
-  const btnPlus = document.getElementById("btn-plus");
-  const btnMinus = document.getElementById("btn-minus");
-  const btnReset = document.getElementById("btn-reset");
-  const jumpForm = document.getElementById("jump-form");
+  const statusEl  = document.getElementById("status");
+  const btnPlus   = document.getElementById("btn-plus");
+  const btnMinus  = document.getElementById("btn-minus");
+  const btnReset  = document.getElementById("btn-reset");
+  const jumpForm  = document.getElementById("jump-form");
   const jumpInput = document.getElementById("jump-input");
 
   const SESSION_KEY = "daffy-queue-auth";
-  let current = null;
+  let current  = null;
   let queueRef = null;
 
   function formatTime(date) {
@@ -101,9 +107,7 @@
     statusEl.textContent = msg;
     statusEl.classList.toggle("error", Boolean(isError));
     if (msg && !isError) {
-      setTimeout(() => {
-        if (statusEl.textContent === msg) statusEl.textContent = "";
-      }, 2500);
+      setTimeout(() => { if (statusEl.textContent === msg) statusEl.textContent = ""; }, 2500);
     }
   }
 
@@ -131,8 +135,8 @@
   function initFirebase() {
     try {
       const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
-      queueRef = ref(db, QUEUE_PATH);
+      const db  = getDatabase(app);
+      queueRef  = ref(db, QUEUE_PATH);
 
       onValue(queueRef, (snap) => {
         const v = snap.val();
@@ -151,10 +155,7 @@
 
   async function writeNumber(n) {
     if (!queueRef) return;
-    if (!Number.isFinite(n) || n < 0) {
-      setStatus("請輸入有效號碼", true);
-      return;
-    }
+    if (!Number.isFinite(n) || n < 0) { setStatus("請輸入有效號碼", true); return; }
     const clamped = Math.min(9999, Math.floor(n));
     try {
       await set(queueRef, clamped);
@@ -166,27 +167,26 @@
   }
 
   btnPlus.addEventListener("click", () => writeNumber((current ?? 0) + 1));
-  btnMinus.addEventListener("click", () => {
-    const next = Math.max(0, (current ?? 0) - 1);
-    writeNumber(next);
-  });
-  btnReset.addEventListener("click", () => {
-    if (confirm("確定要將叫號歸零嗎？")) writeNumber(0);
-  });
+  btnMinus.addEventListener("click", () => writeNumber(Math.max(0, (current ?? 0) - 1)));
+  btnReset.addEventListener("click", () => { if (confirm("確定要將叫號歸零嗎？")) writeNumber(0); });
 
   jumpForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const n = Number(jumpInput.value);
-    if (!Number.isFinite(n)) {
-      setStatus("請輸入數字", true);
-      return;
-    }
+    if (!Number.isFinite(n)) { setStatus("請輸入數字", true); return; }
     writeNumber(n);
     jumpInput.value = "";
     jumpInput.blur();
   });
 
-  // Session-based auth — persists for the tab only.
+  // Press Enter (when not in an input) to trigger +1 — handy for keyboard / tablet use.
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && document.activeElement.tagName !== "INPUT") {
+      e.preventDefault();
+      btnPlus.click();
+    }
+  });
+
   if (sessionStorage.getItem(SESSION_KEY) === "1") {
     showAdmin();
   } else {
