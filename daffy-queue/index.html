@@ -16,13 +16,27 @@
 <div class="wrap">
 
   <header class="brand">
-    <p class="brand-title">Daffy 似顏畫</p>
-    <p class="brand-sub">TSUTAYA BOOKSTORE 信義店</p>
+    <h1 class="brand-title">Daffy 似顏畫</h1>
+    <div class="brand-pills">
+      <span class="brand-store-pill">TSUTAYA BOOKSTORE 信義店</span>
+      <div class="brand-event-sticker">
+        <span class="brand-date-line">2026.4.19（日）</span>
+        <span class="brand-time-line">14:00 – 18:00</span>
+      </div>
+    </div>
   </header>
 
   <section class="card" aria-live="polite">
     <span class="card-label">目前叫到</span>
     <div id="number" class="big-number loading">—</div>
+    <div class="upcoming">
+      <span class="upcoming-label">即將叫號</span>
+      <div class="upcoming-numbers">
+        <span class="upcoming-num" id="next-1">—</span>
+        <span class="upcoming-num" id="next-2">—</span>
+        <span class="upcoming-num" id="next-3">—</span>
+      </div>
+    </div>
     <p class="updated">
       <span class="dot" aria-hidden="true"></span>
       <span>最後更新</span>
@@ -82,6 +96,9 @@
 
   const numberEl = document.getElementById("number");
   const updatedEl = document.getElementById("updated-at");
+  const next1El = document.getElementById("next-1");
+  const next2El = document.getElementById("next-2");
+  const next3El = document.getElementById("next-3");
 
   function formatTime(date) {
     const hh = String(date.getHours()).padStart(2, "0");
@@ -94,9 +111,16 @@
     if (value == null || Number.isNaN(Number(value))) {
       numberEl.textContent = "尚未開始";
       numberEl.classList.add("loading");
+      next1El.textContent = "—";
+      next2El.textContent = "—";
+      next3El.textContent = "—";
     } else {
-      numberEl.textContent = String(Number(value));
+      const n = Number(value);
+      numberEl.textContent = String(n);
       numberEl.classList.remove("loading");
+      next1El.textContent = String(n + 1);
+      next2El.textContent = String(n + 2);
+      next3El.textContent = String(n + 3);
     }
     updatedEl.textContent = formatTime(new Date());
   }
