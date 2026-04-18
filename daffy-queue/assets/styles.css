@@ -399,6 +399,44 @@ body::before {
   box-shadow: 5px 6px 0 var(--ink);
 }
 
+.overnum-card {
+  width: 100%;
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 22px;
+  box-shadow: 4px 5px 0 var(--ink);
+  padding: 1rem 1.25rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.overnum-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  opacity: 0.65;
+}
+
+.overnum-value {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(2.8rem, 14vw, 4rem);
+  color: var(--ink);
+  line-height: 1.0;
+  font-weight: 900;
+}
+
+.overnum-hint {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink);
+  opacity: 0.45;
+  text-align: center;
+  margin-top: 0.1rem;
+}
+
 .admin-secondary {
   width: 100%;
   background: rgba(255, 255, 255, 0.45);

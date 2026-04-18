@@ -48,6 +48,12 @@
       ＋1　下一位
     </button>
 
+    <div class="overnum-card">
+      <p class="overnum-label">過號補位號碼</p>
+      <p id="overnum" class="overnum-value">—</p>
+      <p class="overnum-hint">告知過號客人，等叫到此號碼時返回</p>
+    </div>
+
     <div class="admin-secondary">
       <p class="admin-section-label">進階操作</p>
 
@@ -85,6 +91,7 @@
 
   const currentEl = document.getElementById("current");
   const updatedEl = document.getElementById("updated-at");
+  const overnumEl = document.getElementById("overnum");
   const statusEl  = document.getElementById("status");
   const btnPlus   = document.getElementById("btn-plus");
   const btnMinus  = document.getElementById("btn-minus");
@@ -142,6 +149,7 @@
         const v = snap.val();
         current = (v == null || Number.isNaN(Number(v))) ? 0 : Number(v);
         currentEl.textContent = String(current);
+        overnumEl.textContent = String(current + 4);
         updatedEl.textContent = formatTime(new Date());
       }, (err) => {
         console.error(err);
