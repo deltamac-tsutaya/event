@@ -309,14 +309,14 @@ html, body {
 
   function reconnect() { disconnect(); connect(); }
 
-  // ── slideshow + page reload every 30s ──
+  // ── slideshow 30s per slide ──
   const slides = document.querySelectorAll(".slide");
-  const SLIDE_KEY = "daffy-slide-index";
-  const cur = Number(localStorage.getItem(SLIDE_KEY) || 0) % slides.length;
-  slides[0].classList.remove("active");
-  slides[cur].classList.add("active");
-  localStorage.setItem(SLIDE_KEY, (cur + 1) % slides.length);
-  setTimeout(() => location.reload(), 30000);
+  let cur = 0;
+  setInterval(() => {
+    slides[cur].classList.remove("active");
+    cur = (cur + 1) % slides.length;
+    slides[cur].classList.add("active");
+  }, 30000);
 
   try {
     const app = initializeApp(firebaseConfig);
