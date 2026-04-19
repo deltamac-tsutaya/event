@@ -45,125 +45,25 @@ html, body {
    ══════════════════════════════════════ */
 .info-panel {
   flex: 0 0 54%;
-  background: var(--ink);
-  color: var(--yellow);
-  display: flex;
-  flex-direction: column;
-  padding: 5vw 6vw 3vw;
-  gap: 2.8vw;
   position: relative;
   overflow: hidden;
+  background: var(--ink);
 }
 
-.info-panel::after {
-  content: '';
+.slide {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 2px, transparent 2.5px);
-  background-size: 44px 44px;
-  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
 }
 
-/* Brand */
-.brand-block { display: flex; flex-direction: column; gap: 0.6vw; }
+.slide.active { opacity: 1; }
 
-.brand-title {
-  font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(2rem, 7vw, 72px);
-  color: var(--yellow);
-  letter-spacing: 0.04em;
-  line-height: 1;
-}
-
-.brand-store {
-  font-family: 'Nunito', 'Noto Sans TC', sans-serif;
-  font-size: clamp(0.8rem, 2.4vw, 26px);
-  font-weight: 700;
-  color: var(--yellow);
-  opacity: 0.55;
-  letter-spacing: 0.08em;
-}
-
-/* Date / Time pills */
-.meta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2vw;
-}
-
-.pill {
-  font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(0.9rem, 2.8vw, 30px);
-  background: var(--yellow);
-  color: var(--ink);
-  padding: 0.28em 1em;
-  border-radius: 999px;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-}
-
-/* Pricing table */
-.price-table {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9vw;
-}
-
-.price-title {
-  font-family: 'Noto Sans TC', sans-serif;
-  font-size: clamp(0.7rem, 2vw, 22px);
-  font-weight: 700;
-  color: var(--yellow);
-  opacity: 0.5;
-  letter-spacing: 0.12em;
-}
-
-.price-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1vw;
-}
-
-.price-label {
-  font-family: 'Noto Sans TC', sans-serif;
-  font-size: clamp(0.85rem, 2.6vw, 28px);
-  font-weight: 700;
-  color: var(--yellow);
-  opacity: 0.85;
-}
-
-.price-amount {
-  font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(1rem, 3.2vw, 34px);
-  color: var(--pink);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-.price-divider {
-  flex: 1;
-  border: none;
-  border-top: 1.5px dashed rgba(255,230,0,0.2);
-  margin: 0 0.5vw;
-}
-
-/* Format notes */
-.format-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5vw;
-  border-top: 1.5px solid rgba(255,230,0,0.15);
-  padding-top: 1.5vw;
-}
-
-.format-item {
-  font-family: 'Noto Sans TC', sans-serif;
-  font-size: clamp(0.75rem, 2.2vw, 24px);
-  font-weight: 700;
-  color: var(--yellow);
-  opacity: 0.6;
-  line-height: 1.5;
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* ══════════════════════════════════════
@@ -309,44 +209,12 @@ html, body {
 
 <div class="board">
 
-  <!-- ── 活動資訊（旋轉後在左側） ── -->
+  <!-- ── 圖片輪播（旋轉後在左側） ── -->
   <div class="info-panel">
-
-    <div class="brand-block">
-      <p class="brand-title">Daffy 似顏繪</p>
-      <p class="brand-store">TSUTAYA BOOKSTORE 信義店</p>
-    </div>
-
-    <div class="meta-row">
-      <span class="pill">4/19（日）限定</span>
-      <span class="pill">14:00 – 18:00</span>
-    </div>
-
-    <div class="price-table">
-      <p class="price-title">費 用</p>
-      <div class="price-row">
-        <span class="price-label">每人</span>
-        <span class="price-divider"></span>
-        <span class="price-amount">NT$500</span>
-      </div>
-      <div class="price-row">
-        <span class="price-label">兩人一起畫</span>
-        <span class="price-divider"></span>
-        <span class="price-amount">NT$1,000</span>
-      </div>
-      <div class="price-row">
-        <span class="price-label">人＋寵物</span>
-        <span class="price-divider"></span>
-        <span class="price-amount">NT$1,000</span>
-      </div>
-    </div>
-
-    <div class="format-block">
-      <p class="format-item">小木板現場繪製・約 3 分鐘・含簽名</p>
-      <p class="format-item">本人・寵物・照片皆可</p>
-      <p class="format-item">現場即畫，可立即帶走</p>
-    </div>
-
+    <div class="slide active"><img src="../1.jpg" alt=""></div>
+    <div class="slide"><img src="../2.jpg" alt=""></div>
+    <div class="slide"><img src="../3.jpg" alt=""></div>
+    <div class="slide"><img src="../4.jpg" alt=""></div>
   </div>
 
   <!-- ── 叫號顯示（旋轉後在右側） ── -->
@@ -440,6 +308,15 @@ html, body {
   }
 
   function reconnect() { disconnect(); connect(); }
+
+  // ── slideshow ──
+  const slides = document.querySelectorAll(".slide");
+  let cur = 0;
+  setInterval(() => {
+    slides[cur].classList.remove("active");
+    cur = (cur + 1) % slides.length;
+    slides[cur].classList.add("active");
+  }, 4000);
 
   try {
     const app = initializeApp(firebaseConfig);
