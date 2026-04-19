@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#FFE600">
-<title>現場叫號看板｜Daffy 似顏畫</title>
+<title>現場叫號看板｜Daffy 似顏繪</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@900&family=Noto+Sans+TC:wght@900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -22,97 +22,203 @@
 html, body {
   width: 100%; height: 100%;
   overflow: hidden;
-  background: var(--yellow);
+  background: var(--ink);
   -webkit-font-smoothing: antialiased;
 }
 
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.28) 2.5px, transparent 3px);
-  background-size: 56px 56px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Portrait 1080×1920 grid */
+/* ── Rotate board -90deg for sideways TV ── */
 .board {
-  position: relative;
+  position: fixed;
+  transform-origin: center center;
+  transform: rotate(-90deg);
+  width: 100vh;
+  height: 100vw;
+  top: calc((100vh - 100vw) / 2);
+  left: calc((100vw - 100vh) / 2);
   z-index: 1;
-  width: 100%; height: 100%;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  padding: 5vh 6vw;
-}
-
-/* ── Top ── */
-.top {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1.2vh;
-  padding-bottom: 3vh;
 }
 
-.mascot {
-  width: clamp(80px, 18vw, 200px);
-  height: clamp(80px, 18vw, 200px);
-  filter: drop-shadow(4px 5px 0 var(--ink));
+/* ══════════════════════════════════════
+   INFO PANEL (top in CSS = left on TV)
+   ══════════════════════════════════════ */
+.info-panel {
+  flex: 0 0 54%;
+  background: var(--ink);
+  color: var(--yellow);
+  display: flex;
+  flex-direction: column;
+  padding: 5vw 6vw 3vw;
+  gap: 2.8vw;
+  position: relative;
+  overflow: hidden;
 }
 
-.brand-name {
+.info-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 2px, transparent 2.5px);
+  background-size: 44px 44px;
+  pointer-events: none;
+}
+
+/* Brand */
+.brand-block { display: flex; flex-direction: column; gap: 0.6vw; }
+
+.brand-title {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(1.6rem, 5.5vw, 60px);
-  color: var(--ink);
-  letter-spacing: 0.03em;
-  text-align: center;
-  line-height: 1.1;
+  font-size: clamp(2rem, 7vw, 72px);
+  color: var(--yellow);
+  letter-spacing: 0.04em;
+  line-height: 1;
 }
 
-.brand-sub {
+.brand-store {
   font-family: 'Nunito', 'Noto Sans TC', sans-serif;
-  font-size: clamp(0.75rem, 2.5vw, 28px);
-  font-weight: 900;
-  color: var(--ink);
-  opacity: 0.6;
-  letter-spacing: 0.1em;
-  text-align: center;
+  font-size: clamp(0.8rem, 2.4vw, 26px);
+  font-weight: 700;
+  color: var(--yellow);
+  opacity: 0.55;
+  letter-spacing: 0.08em;
 }
 
-/* ── Centre ── */
-.center {
+/* Date / Time pills */
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2vw;
+}
+
+.pill {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(0.9rem, 2.8vw, 30px);
+  background: var(--yellow);
+  color: var(--ink);
+  padding: 0.28em 1em;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* Pricing table */
+.price-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9vw;
+}
+
+.price-title {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.7rem, 2vw, 22px);
+  font-weight: 700;
+  color: var(--yellow);
+  opacity: 0.5;
+  letter-spacing: 0.12em;
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1vw;
+}
+
+.price-label {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.85rem, 2.6vw, 28px);
+  font-weight: 700;
+  color: var(--yellow);
+  opacity: 0.85;
+}
+
+.price-amount {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(1rem, 3.2vw, 34px);
+  color: var(--pink);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.price-divider {
+  flex: 1;
+  border: none;
+  border-top: 1.5px dashed rgba(255,230,0,0.2);
+  margin: 0 0.5vw;
+}
+
+/* Format notes */
+.format-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vw;
+  border-top: 1.5px solid rgba(255,230,0,0.15);
+  padding-top: 1.5vw;
+}
+
+.format-item {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.75rem, 2.2vw, 24px);
+  font-weight: 700;
+  color: var(--yellow);
+  opacity: 0.6;
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════
+   QUEUE PANEL (bottom in CSS = right on TV)
+   ══════════════════════════════════════ */
+.queue-panel {
+  flex: 1;
+  background: var(--yellow);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2vh;
+  gap: 1.5vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.queue-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.3) 2.5px, transparent 3px);
+  background-size: 50px 50px;
+  pointer-events: none;
 }
 
 .call-label {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(1.5rem, 5vw, 56px);
+  font-size: clamp(1.2rem, 3.8vw, 42px);
   background: var(--ink);
   color: var(--yellow);
-  padding: 0.45em 1.6em;
+  padding: 0.4em 1.6em;
   border-radius: 999px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
+  position: relative;
+  z-index: 1;
 }
 
 .big-num {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(180px, 72vw, 45vh);
+  font-size: clamp(100px, 26vw, 28vh);
   line-height: 0.9;
   color: var(--pink);
-  text-shadow: 10px 13px 0 var(--ink);
+  text-shadow: 7px 9px 0 var(--ink);
   letter-spacing: -0.02em;
   user-select: none;
+  position: relative;
+  z-index: 1;
 }
 
 .big-num.loading {
   color: var(--ink);
   opacity: 0.2;
   text-shadow: none;
-  font-size: clamp(80px, 20vw, 16vh);
+  font-size: clamp(50px, 10vw, 10vh);
 }
 
 @keyframes board-pop {
@@ -127,21 +233,24 @@ body::before {
   animation: board-pop 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
 }
 
+/* Live dot */
 .live-row {
   display: flex;
   align-items: center;
-  gap: 0.6em;
+  gap: 0.5em;
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(0.9rem, 2.8vw, 30px);
+  font-size: clamp(0.75rem, 2.2vw, 24px);
   color: var(--ink);
-  opacity: 0.65;
+  opacity: 0.55;
+  position: relative;
+  z-index: 1;
 }
 
 .live-row::before {
   content: '';
   display: block;
-  width: clamp(10px, 2vw, 18px);
-  height: clamp(10px, 2vw, 18px);
+  width: clamp(8px, 1.6vw, 14px);
+  height: clamp(8px, 1.6vw, 14px);
   border-radius: 50%;
   background: var(--pink);
   animation: pulse 1.8s ease-in-out infinite;
@@ -152,31 +261,47 @@ body::before {
   50%       { opacity: 0.3; transform: scale(0.6); }
 }
 
-/* ── Bottom ── */
-.bottom {
+/* Upcoming */
+.upcoming-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5vh;
-  padding-top: 3vh;
+  gap: 0.6vw;
+  position: relative;
+  z-index: 1;
 }
 
-.notice {
-  font-family: 'Nunito', 'Noto Sans TC', sans-serif;
-  font-size: clamp(0.9rem, 3vw, 34px);
-  font-weight: 900;
+.upcoming-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(0.7rem, 2vw, 22px);
   color: var(--ink);
-  opacity: 0.6;
-  line-height: 1.6;
+  opacity: 0.4;
+  letter-spacing: 0.15em;
+}
+
+.upcoming-nums {
+  display: flex;
+  gap: clamp(0.6rem, 2.5vw, 2rem);
+}
+
+.upcoming-num {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(2rem, 8vw, 9vh);
+  color: var(--ink);
+  opacity: 0.2;
+  line-height: 1;
+  min-width: 2ch;
   text-align: center;
 }
 
+/* Updated time */
 .updated-info {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(0.75rem, 2.2vw, 24px);
+  font-size: clamp(0.65rem, 1.8vw, 20px);
   color: var(--ink);
-  opacity: 0.45;
-  text-align: center;
+  opacity: 0.35;
+  position: relative;
+  z-index: 1;
 }
 </style>
 </head>
@@ -184,33 +309,59 @@ body::before {
 
 <div class="board">
 
-  <div class="top">
-    <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <path d="M50 10 C30 10, 18 25, 18 48 L18 86 C18 90, 22 92, 25 89 L32 83 C34 81, 37 81, 39 83 L44 88 C46 90, 49 90, 51 88 L56 83 C58 81, 61 81, 63 83 L70 89 C73 92, 77 90, 77 86 L77 48 C77 25, 70 10, 50 10 Z"
-            fill="#FFFFFF" stroke="#1A1A1A" stroke-width="4" stroke-linejoin="round"/>
-      <circle cx="40" cy="46" r="4.5" fill="#1A1A1A"/>
-      <circle cx="60" cy="46" r="4.5" fill="#1A1A1A"/>
-      <circle cx="41.5" cy="44.5" r="1.4" fill="#FFFFFF"/>
-      <circle cx="61.5" cy="44.5" r="1.4" fill="#FFFFFF"/>
-      <circle cx="33"   cy="58"   r="4"   fill="#FF2D78" opacity="0.75"/>
-      <circle cx="67"   cy="58"   r="4"   fill="#FF2D78" opacity="0.75"/>
-      <path d="M44 58 Q50 65 56 58 Q50 62 44 58 Z" fill="#FF2D78" stroke="#1A1A1A" stroke-width="2.5" stroke-linejoin="round"/>
-    </svg>
-    <p class="brand-name">Daffy 似顏畫</p>
-    <p class="brand-sub">TSUTAYA BOOKSTORE 信義店</p>
+  <!-- ── 活動資訊（旋轉後在左側） ── -->
+  <div class="info-panel">
+
+    <div class="brand-block">
+      <p class="brand-title">Daffy 似顏繪</p>
+      <p class="brand-store">TSUTAYA BOOKSTORE 信義店</p>
+    </div>
+
+    <div class="meta-row">
+      <span class="pill">4/19（日）限定</span>
+      <span class="pill">14:00 – 18:00</span>
+    </div>
+
+    <div class="price-table">
+      <p class="price-title">費 用</p>
+      <div class="price-row">
+        <span class="price-label">每人</span>
+        <span class="price-divider"></span>
+        <span class="price-amount">NT$500</span>
+      </div>
+      <div class="price-row">
+        <span class="price-label">兩人一起畫</span>
+        <span class="price-divider"></span>
+        <span class="price-amount">NT$1,000</span>
+      </div>
+      <div class="price-row">
+        <span class="price-label">人＋寵物</span>
+        <span class="price-divider"></span>
+        <span class="price-amount">NT$1,000</span>
+      </div>
+    </div>
+
+    <div class="format-block">
+      <p class="format-item">小木板現場繪製・約 3 分鐘・含簽名</p>
+      <p class="format-item">本人・寵物・照片皆可</p>
+      <p class="format-item">現場即畫，可立即帶走</p>
+    </div>
+
   </div>
 
-  <div class="center">
+  <!-- ── 叫號顯示（旋轉後在右側） ── -->
+  <div class="queue-panel">
     <span class="call-label">現在叫號</span>
     <div id="number" class="big-num loading" aria-live="assertive" aria-atomic="true">—</div>
     <div class="live-row">即時更新</div>
-  </div>
-
-  <div class="bottom">
-    <p class="notice">
-      聽到廣播後請至現場報到<br>
-      逾時未到將移至過號區
-    </p>
+    <div class="upcoming-wrap">
+      <span class="upcoming-label">即將叫號</span>
+      <div class="upcoming-nums">
+        <span class="upcoming-num" id="next-1">—</span>
+        <span class="upcoming-num" id="next-2">—</span>
+        <span class="upcoming-num" id="next-3">—</span>
+      </div>
+    </div>
     <p class="updated-info">最後更新 <time id="updated-at">—</time></p>
   </div>
 
@@ -223,6 +374,9 @@ body::before {
 
   const numEl     = document.getElementById("number");
   const updatedEl = document.getElementById("updated-at");
+  const next1El   = document.getElementById("next-1");
+  const next2El   = document.getElementById("next-2");
+  const next3El   = document.getElementById("next-3");
 
   const WATCHDOG_MS = 45_000;
   let unsubscribe = null, watchdog = null, retryTimer = null, db;
@@ -245,10 +399,16 @@ body::before {
     if (val == null || Number.isNaN(Number(val))) {
       numEl.textContent = "尚未開始";
       numEl.classList.add("loading");
+      next1El.textContent = "—";
+      next2El.textContent = "—";
+      next3El.textContent = "—";
     } else {
       const n = Number(val);
       numEl.textContent = String(n);
       numEl.classList.remove("loading");
+      next1El.textContent = String(n + 1);
+      next2El.textContent = String(n + 2);
+      next3El.textContent = String(n + 3);
       if (prev !== undefined && prev !== n) pop();
       prev = n;
     }
