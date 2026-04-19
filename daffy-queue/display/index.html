@@ -71,11 +71,8 @@ html, body {
 .queue-panel {
   flex: 1;
   background: var(--yellow);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5vw;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   position: relative;
   overflow: hidden;
 }
@@ -84,46 +81,81 @@ html, body {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.3) 2.5px, transparent 3px);
-  background-size: 50px 50px;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.28) 2px, transparent 2.5px);
+  background-size: 44px 44px;
   pointer-events: none;
+}
+
+/* ── Top: brand ── */
+.q-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4vh 3vw 0;
+  gap: 0.4vh;
+  position: relative;
+  z-index: 1;
+}
+
+.q-brand {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(1.4rem, 4vh, 40px);
+  color: var(--ink);
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.q-store {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.6rem, 1.6vh, 18px);
+  font-weight: 700;
+  color: var(--ink);
+  opacity: 0.45;
+  letter-spacing: 0.1em;
+}
+
+/* ── Centre: number ── */
+.q-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5vh;
+  position: relative;
+  z-index: 1;
 }
 
 .call-label {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(1.2rem, 3.8vw, 42px);
+  font-size: clamp(1rem, 3vh, 32px);
   background: var(--ink);
   color: var(--yellow);
-  padding: 0.4em 1.6em;
+  padding: 0.35em 1.8em;
   border-radius: 999px;
-  letter-spacing: 0.2em;
-  position: relative;
-  z-index: 1;
+  letter-spacing: 0.22em;
 }
 
 .big-num {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(100px, 26vw, 28vh);
-  line-height: 0.9;
+  font-size: clamp(100px, 22vh, 240px);
+  line-height: 0.85;
   color: var(--pink);
-  text-shadow: 7px 9px 0 var(--ink);
+  text-shadow: 6px 8px 0 var(--ink);
   letter-spacing: -0.02em;
   user-select: none;
-  position: relative;
-  z-index: 1;
 }
 
 .big-num.loading {
   color: var(--ink);
   opacity: 0.2;
   text-shadow: none;
-  font-size: clamp(50px, 10vw, 10vh);
+  font-size: clamp(40px, 8vh, 80px);
 }
 
 @keyframes board-pop {
   0%   { transform: scale(1); }
-  25%  { transform: scale(1.1); }
-  55%  { transform: scale(0.96); }
+  25%  { transform: scale(1.12); }
+  55%  { transform: scale(0.95); }
   80%  { transform: scale(1.04); }
   100% { transform: scale(1); }
 }
@@ -138,69 +170,68 @@ html, body {
   align-items: center;
   gap: 0.5em;
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(0.75rem, 2.2vw, 24px);
+  font-size: clamp(0.7rem, 2vh, 20px);
   color: var(--ink);
-  opacity: 0.55;
-  position: relative;
-  z-index: 1;
+  opacity: 0.5;
 }
 
-.live-row::before {
-  content: '';
-  display: block;
-  width: clamp(8px, 1.6vw, 14px);
-  height: clamp(8px, 1.6vw, 14px);
+.live-dot {
+  width: clamp(8px, 1.4vh, 12px);
+  height: clamp(8px, 1.4vh, 12px);
   border-radius: 50%;
   background: var(--pink);
   animation: pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.3; transform: scale(0.6); }
+  50%       { opacity: 0.3; transform: scale(0.55); }
 }
 
-/* Upcoming */
-.upcoming-wrap {
+/* ── Bottom: upcoming + time ── */
+.q-bottom {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6vw;
+  padding: 0 3vw 3vh;
+  gap: 1vh;
   position: relative;
   z-index: 1;
+  border-top: 2px solid rgba(26,26,26,0.1);
+  margin: 0 4vw;
 }
 
 .upcoming-label {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(0.7rem, 2vw, 22px);
+  font-size: clamp(0.65rem, 1.8vh, 18px);
   color: var(--ink);
   opacity: 0.4;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
+  padding-top: 1.2vh;
 }
 
 .upcoming-nums {
   display: flex;
-  gap: clamp(0.6rem, 2.5vw, 2rem);
+  gap: clamp(1rem, 4vh, 3rem);
+  align-items: baseline;
 }
 
 .upcoming-num {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(2rem, 8vw, 9vh);
+  font-size: clamp(2.2rem, 9vh, 100px);
   color: var(--ink);
-  opacity: 0.2;
+  opacity: 0.22;
   line-height: 1;
   min-width: 2ch;
   text-align: center;
 }
 
-/* Updated time */
 .updated-info {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(0.65rem, 1.8vw, 20px);
+  font-size: clamp(0.6rem, 1.5vh, 16px);
   color: var(--ink);
-  opacity: 0.35;
-  position: relative;
-  z-index: 1;
+  opacity: 0.3;
 }
 </style>
 </head>
@@ -210,18 +241,24 @@ html, body {
 
   <!-- ── 叫號顯示（旋轉後在左側） ── -->
   <div class="queue-panel">
-    <span class="call-label">現在叫號</span>
-    <div id="number" class="big-num loading" aria-live="assertive" aria-atomic="true">—</div>
-    <div class="live-row">即時更新</div>
-    <div class="upcoming-wrap">
+    <div class="q-top">
+      <p class="q-brand">Daffy 似顏繪</p>
+      <p class="q-store">TSUTAYA BOOKSTORE 信義店</p>
+    </div>
+    <div class="q-center">
+      <span class="call-label">現在叫號</span>
+      <div id="number" class="big-num loading" aria-live="assertive" aria-atomic="true">—</div>
+      <div class="live-row"><span class="live-dot"></span>即時更新</div>
+    </div>
+    <div class="q-bottom">
       <span class="upcoming-label">即將叫號</span>
       <div class="upcoming-nums">
         <span class="upcoming-num" id="next-1">—</span>
         <span class="upcoming-num" id="next-2">—</span>
         <span class="upcoming-num" id="next-3">—</span>
       </div>
+      <p class="updated-info">最後更新 <time id="updated-at">—</time></p>
     </div>
-    <p class="updated-info">最後更新 <time id="updated-at">—</time></p>
   </div>
 
   <!-- ── 圖片輪播（旋轉後在右側） ── -->
