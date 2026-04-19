@@ -146,6 +146,37 @@ body::before {
   50%       { opacity: 0.3; transform: scale(0.6); }
 }
 
+/* ── Upcoming ── */
+.upcoming-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+}
+
+.upcoming-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(0.9rem, 2.8vw, 32px);
+  color: var(--ink);
+  opacity: 0.55;
+  letter-spacing: 0.15em;
+}
+
+.upcoming-nums {
+  display: flex;
+  gap: clamp(0.8rem, 3vw, 2.5rem);
+}
+
+.upcoming-num {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(2.5rem, 12vw, 13vh);
+  color: var(--ink);
+  opacity: 0.25;
+  line-height: 1;
+  min-width: 2ch;
+  text-align: center;
+}
+
 /* ── Bottom ── */
 .bottom {
   display: flex;
@@ -187,6 +218,14 @@ body::before {
     <span class="call-label">現在叫號</span>
     <div id="number" class="big-num loading" aria-live="assertive" aria-atomic="true">—</div>
     <div class="live-row">即時更新</div>
+    <div class="upcoming-wrap">
+      <span class="upcoming-label">即將叫號</span>
+      <div class="upcoming-nums">
+        <span class="upcoming-num" id="next-1">—</span>
+        <span class="upcoming-num" id="next-2">—</span>
+        <span class="upcoming-num" id="next-3">—</span>
+      </div>
+    </div>
   </div>
 
   <div class="bottom">
@@ -206,6 +245,9 @@ body::before {
 
   const numEl     = document.getElementById("number");
   const updatedEl = document.getElementById("updated-at");
+  const next1El   = document.getElementById("next-1");
+  const next2El   = document.getElementById("next-2");
+  const next3El   = document.getElementById("next-3");
 
   const WATCHDOG_MS = 45_000;
   let unsubscribe = null, watchdog = null, retryTimer = null, db;
@@ -228,10 +270,16 @@ body::before {
     if (val == null || Number.isNaN(Number(val))) {
       numEl.textContent = "尚未開始";
       numEl.classList.add("loading");
+      next1El.textContent = "—";
+      next2El.textContent = "—";
+      next3El.textContent = "—";
     } else {
       const n = Number(val);
       numEl.textContent = String(n);
       numEl.classList.remove("loading");
+      next1El.textContent = String(n + 1);
+      next2El.textContent = String(n + 2);
+      next3El.textContent = String(n + 3);
       if (prev !== undefined && prev !== n) pop();
       prev = n;
     }
