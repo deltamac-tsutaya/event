@@ -106,27 +106,52 @@
     updatedEl.textContent = formatTime(new Date());
   }
 
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const queueRef = ref(db, QUEUE_PATH);
+  // Watchdog: reconnect if no Firebase event arrives within 45 s.
+  // Replaces the old hard-reload — safer on slow connections.
+  const WATCHDOG_MS = 45_000;
+  let unsubscribe = null, watchdog = null, retryTimer = null, db;
 
-    onValue(queueRef, (snap) => {
+  function resetWatchdog() {
+    clearTimeout(watchdog);
+    watchdog = setTimeout(reconnect, WATCHDOG_MS);
+  }
+
+  function connect() {
+    if (unsubscribe) return;
+    clearTimeout(retryTimer);
+    const queueRef = ref(db, QUEUE_PATH);
+    unsubscribe = onValue(queueRef, snap => {
       render(snap.val());
-    }, (err) => {
+      resetWatchdog();
+    }, err => {
       console.error(err);
       numberEl.textContent = "連線失敗";
       numberEl.classList.add("loading");
+      unsubscribe = null;
+      retryTimer = setTimeout(connect, 5_000);
+    });
+    resetWatchdog();
+  }
+
+  function disconnect() {
+    clearTimeout(watchdog); clearTimeout(retryTimer);
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  }
+
+  function reconnect() { disconnect(); connect(); }
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    connect();
+    document.addEventListener("visibilitychange", () => {
+      document.hidden ? disconnect() : connect();
     });
   } catch (err) {
     console.error(err);
     numberEl.textContent = "設定錯誤";
     numberEl.classList.add("loading");
   }
-
-  // Auto-refresh every 30 seconds as a resilience fallback, in
-  // case the realtime socket drops silently on mobile Safari.
-  setTimeout(() => window.location.reload(), 30_000);
 </script>
 
 </body>
