@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFE600">
+<title>現場叫號看板｜Daffy 似顏畫</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@900&family=Noto+Sans+TC:wght@900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --yellow: #FFE600;
+  --pink:   #FF2D78;
+  --ink:    #1A1A1A;
+  --white:  #FFFFFF;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--yellow);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Polka-dot texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.28) 2.5px, transparent 3px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Portrait 1080×1920 root grid */
+.board {
+  position: relative;
+  z-index: 1;
+  width: 100%; height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 5vh 6vw;
+  gap: 0;
+}
+
+/* ── Top: brand ── */
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2vh;
+  padding-bottom: 3vh;
+}
+
+.mascot {
+  width: clamp(80px, 18vw, 200px);
+  height: clamp(80px, 18vw, 200px);
+  filter: drop-shadow(4px 5px 0 var(--ink));
+}
+
+.brand-name {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(1.6rem, 5.5vw, 60px);
+  color: var(--ink);
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.brand-sub {
+  font-family: 'Nunito', 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.75rem, 2.5vw, 28px);
+  font-weight: 900;
+  color: var(--ink);
+  opacity: 0.6;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+/* ── Centre: big number ── */
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2vh;
+}
+
+.call-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(1.5rem, 5vw, 56px);
+  background: var(--ink);
+  color: var(--yellow);
+  padding: 0.45em 1.6em;
+  border-radius: 999px;
+  letter-spacing: 0.22em;
+}
+
+.big-num {
+  font-family: 'Fredoka One', sans-serif;
+  /* Fill ~80% of portrait width; cap at ~45% of viewport height */
+  font-size: clamp(180px, 72vw, 45vh);
+  line-height: 0.9;
+  color: var(--pink);
+  text-shadow: 10px 13px 0 var(--ink);
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+
+.big-num.loading {
+  color: var(--ink);
+  opacity: 0.2;
+  text-shadow: none;
+  font-size: clamp(80px, 20vw, 16vh);
+}
+
+@keyframes board-pop {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.1); }
+  55%  { transform: scale(0.96); }
+  80%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.big-num.pop {
+  animation: board-pop 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+/* ── Live dot ── */
+.live-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(0.9rem, 2.8vw, 30px);
+  color: var(--ink);
+  opacity: 0.65;
+}
+
+.live-row::before {
+  content: '';
+  display: block;
+  width: clamp(10px, 2vw, 18px);
+  height: clamp(10px, 2vw, 18px);
+  border-radius: 50%;
+  background: var(--pink);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.6); }
+}
+
+/* ── Bottom ── */
+.bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5vh;
+  padding-top: 3vh;
+}
+
+.notice {
+  font-family: 'Nunito', 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.9rem, 3vw, 34px);
+  font-weight: 900;
+  color: var(--ink);
+  opacity: 0.6;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.updated-info {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(0.75rem, 2.2vw, 24px);
+  color: var(--ink);
+  opacity: 0.45;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="board">
+
+  <!-- Brand header -->
+  <div class="top">
+    <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 10 C30 10, 18 25, 18 48 L18 86 C18 90, 22 92, 25 89 L32 83 C34 81, 37 81, 39 83 L44 88 C46 90, 49 90, 51 88 L56 83 C58 81, 61 81, 63 83 L70 89 C73 92, 77 90, 77 86 L77 48 C77 25, 70 10, 50 10 Z"
+            fill="#FFFFFF" stroke="#1A1A1A" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="40" cy="46" r="4.5" fill="#1A1A1A"/>
+      <circle cx="60" cy="46" r="4.5" fill="#1A1A1A"/>
+      <circle cx="41.5" cy="44.5" r="1.4" fill="#FFFFFF"/>
+      <circle cx="61.5" cy="44.5" r="1.4" fill="#FFFFFF"/>
+      <circle cx="33"   cy="58"   r="4"   fill="#FF2D78" opacity="0.75"/>
+      <circle cx="67"   cy="58"   r="4"   fill="#FF2D78" opacity="0.75"/>
+      <path d="M44 58 Q50 65 56 58 Q50 62 44 58 Z" fill="#FF2D78" stroke="#1A1A1A" stroke-width="2.5" stroke-linejoin="round"/>
+    </svg>
+    <p class="brand-name">Daffy 似顏畫</p>
+    <p class="brand-sub">TSUTAYA BOOKSTORE 信義店</p>
+  </div>
+
+  <!-- Big number -->
+  <div class="center">
+    <span class="call-label">現在叫號</span>
+    <div id="number" class="big-num loading" aria-live="assertive" aria-atomic="true">—</div>
+    <div class="live-row">即時更新</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="bottom">
+    <p class="notice">
+      聽到廣播後請至現場報到<br>
+      逾時未到將移至過號區
+    </p>
+    <p class="updated-info">最後更新 <time id="updated-at">—</time></p>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { firebaseConfig, QUEUE_PATH } from "../assets/config.js";
+
+  const numEl     = document.getElementById("number");
+  const updatedEl = document.getElementById("updated-at");
+
+  const WATCHDOG_MS = 45_000;
+  let unsubscribe = null, watchdog = null, retryTimer = null, db;
+  let prev = undefined;
+
+  function fmt(d) {
+    return [d.getHours(), d.getMinutes(), d.getSeconds()]
+      .map(n => String(n).padStart(2, "0")).join(":");
+  }
+
+  function pop() {
+    numEl.classList.remove("pop");
+    void numEl.offsetWidth;
+    numEl.classList.add("pop");
+    numEl.addEventListener("animationend", () => numEl.classList.remove("pop"), { once: true });
+  }
+
+  function render(val) {
+    updatedEl.textContent = fmt(new Date());
+    if (val == null || Number.isNaN(Number(val))) {
+      numEl.textContent = "尚未開始";
+      numEl.classList.add("loading");
+    } else {
+      const n = Number(val);
+      numEl.textContent = String(n);
+      numEl.classList.remove("loading");
+      if (prev !== undefined && prev !== n) pop();
+      prev = n;
+    }
+    resetWatchdog();
+  }
+
+  function resetWatchdog() {
+    clearTimeout(watchdog);
+    watchdog = setTimeout(reconnect, WATCHDOG_MS);
+  }
+
+  function connect() {
+    if (unsubscribe) return;
+    clearTimeout(retryTimer);
+    const queueRef = ref(db, QUEUE_PATH);
+    unsubscribe = onValue(queueRef, snap => render(snap.val()), err => {
+      console.error(err);
+      numEl.textContent = "連線失敗";
+      numEl.classList.add("loading");
+      unsubscribe = null;
+      retryTimer = setTimeout(connect, 5_000);
+    });
+    resetWatchdog();
+  }
+
+  function disconnect() {
+    clearTimeout(watchdog); clearTimeout(retryTimer);
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  }
+
+  function reconnect() { disconnect(); connect(); }
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    connect();
+    document.addEventListener("visibilitychange", () => {
+      document.hidden ? disconnect() : connect();
+    });
+  } catch (e) {
+    console.error(e);
+    numEl.textContent = "設定錯誤";
+    numEl.classList.add("loading");
+  }
+</script>
+
+</body>
+</html>
