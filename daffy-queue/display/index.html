@@ -26,22 +26,15 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Rotate board -90deg for sideways TV ── */
 .board {
   position: fixed;
-  transform-origin: center center;
-  transform: rotate(-90deg);
-  width: 100vh;
-  height: 100vw;
-  top: calc((100vh - 100vw) / 2);
-  left: calc((100vw - 100vh) / 2);
-  z-index: 1;
+  inset: 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 /* ══════════════════════════════════════
-   INFO PANEL (top in CSS = left on TV)
+   IMAGE PANEL (right side)
    ══════════════════════════════════════ */
 .info-panel {
   flex: 0 0 54%;
@@ -68,7 +61,7 @@ html, body {
 }
 
 /* ══════════════════════════════════════
-   QUEUE PANEL (bottom in CSS = right on TV)
+   QUEUE PANEL (left side)
    ══════════════════════════════════════ */
 .queue-panel {
   flex: 1;
