@@ -1,23 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, type User } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { 
-  Lock, 
-  RefreshCcw, 
-  CheckCircle, 
-  AlertCircle, 
-  QrCode, 
-  X, 
+import {
+  Lock,
+  RefreshCcw,
+  CheckCircle,
+  AlertCircle,
+  QrCode,
+  X,
   Printer,
   Users,
   Trophy,
   Ticket,
   BarChart3,
   Search,
-  Settings2
+  Settings2,
+  LogOut
 } from "lucide-react";
 
 interface StampConfig {
@@ -37,8 +40,12 @@ interface DashboardStats {
 }
 
 export default function StaffPage() {
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"configs" | "stats">("configs");
   const [configs, setConfigs] = useState<StampConfig[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -46,15 +53,29 @@ export default function StaffPage() {
   const [error, setError] = useState("");
   const [selectedQR, setSelectedQR] = useState<StampConfig | null>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      setAuthLoading(false);
+      if (firebaseUser) fetchAllData();
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === "nexus8th") {
-      setIsAuthorized(true);
-      fetchAllData();
-    } else {
-      alert("密碼錯誤");
+    setLoginError("");
+    setLoginLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch {
+      setLoginError("帳號或密碼錯誤，請再試一次");
+    } finally {
+      setLoginLoading(false);
     }
   };
+
+  const handleLogout = () => signOut(auth);
 
   const fetchAllData = async () => {
     setLoading(true);
@@ -82,7 +103,15 @@ export default function StaffPage() {
     return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(fullUrl)}`;
   };
 
-  if (!isAuthorized) {
+  if (authLoading) {
+    return (
+      <div className="flex min-h-svh items-center justify-center bg-[#0F172A]">
+        <div className="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
     return (
       <div className="flex min-h-svh items-center justify-center bg-[#0F172A] p-4">
         <Card className="w-full max-w-sm shadow-2xl border-none">
@@ -96,15 +125,31 @@ export default function StaffPage() {
           <CardContent className="pb-8">
             <form onSubmit={handleLogin} className="space-y-4">
               <Input
+                type="email"
+                placeholder="管理員 Email"
+                value={email}
+                className="h-12 bg-gray-50 border-gray-200"
+                onChange={(e) => setEmail(e.target.value)}
+                autoFocus
+                required
+              />
+              <Input
                 type="password"
-                placeholder="後台授權密碼"
+                placeholder="密碼"
                 value={password}
                 className="h-12 bg-gray-50 border-gray-200"
                 onChange={(e) => setPassword(e.target.value)}
-                autoFocus
+                required
               />
-              <Button type="submit" className="h-12 w-full bg-blue-600 hover:bg-blue-700 shadow-lg">
-                認證並登入
+              {loginError && (
+                <p className="text-sm text-red-500 text-center">{loginError}</p>
+              )}
+              <Button
+                type="submit"
+                disabled={loginLoading}
+                className="h-12 w-full bg-blue-600 hover:bg-blue-700 shadow-lg"
+              >
+                {loginLoading ? "登入中..." : "認證並登入"}
               </Button>
             </form>
           </CardContent>
@@ -142,6 +187,9 @@ export default function StaffPage() {
             <div className="w-px h-4 bg-gray-200 mx-2" />
             <Button variant="outline" size="icon" onClick={fetchAllData} disabled={loading} className="rounded-full">
               <RefreshCcw size={16} className={loading ? "animate-spin" : ""} />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleLogout} className="rounded-full text-gray-500 hover:text-red-600">
+              <LogOut size={16} />
             </Button>
           </div>
         </div>
