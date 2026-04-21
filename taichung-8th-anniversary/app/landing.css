@@ -1,0 +1,709 @@
+/*
+ * landing.css — 活動 Landing Page
+ * TSUTAYA BOOKSTORE × WIRED TOKYO｜Nexus Life 8th Anniversary
+ * 純手寫 CSS，不依賴任何 framework
+ */
+
+/* ─────────────────────────────────────────────
+   RESET
+───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+img    { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+a      { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────────────────── */
+:root {
+  /* 品牌色 */
+  --color-bg:         #F5F1EB;
+  --color-bg-alt:     #EDEBE5;
+  --color-navy:       #1A2340;
+  --color-brown:      #6B4F3A;
+  --color-nexus:      #2B5CE6;
+  --color-gold:       #C9A84C;
+  --color-gray-stamp: #B0AEAD;
+
+  /* 層級色 */
+  --tier-s: #F9D5D3;  --tier-s-text: #9B3A35;
+  --tier-a: #FDEBD0;  --tier-a-text: #8C5220;
+  --tier-b: #F0F0F0;  --tier-b-text: #6B4F3A;
+
+  /* 字體 */
+  --font-serif: "Noto Serif TC", Georgia, "Times New Roman", serif;
+  --font-sans:  "Noto Sans TC", "Helvetica Neue", Arial, sans-serif;
+
+  /* 間距 */
+  --sp-1:  8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-6: 48px;
+  --sp-8: 64px;
+
+  /* 圓角 / 格線 */
+  --radius-card: 8px;
+  --border-thin: 0.5px solid rgba(26, 35, 64, 0.12);
+}
+
+/* ─────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-navy);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─────────────────────────────────────────────
+   LAYOUT
+───────────────────────────────────────────── */
+.l-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 var(--sp-2);
+}
+
+.l-section {
+  padding: var(--sp-8) 0;
+  border-bottom: var(--border-thin);
+}
+
+.l-section__heading {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--sp-4);
+}
+
+/* ─────────────────────────────────────────────
+   1. HERO
+   <section class="landing-hero">
+     <img class="landing-hero__bg" src="…" alt="">
+     <div class="landing-hero__watermark" aria-hidden="true">8</div>
+     <div class="landing-hero__overlay"></div>
+     <div class="landing-hero__content l-wrap">
+       <p class="landing-hero__eyebrow">台中市政店 · 8th Anniversary</p>
+       <h1 class="landing-hero__title">無限日常<br>∞ 連結生活</h1>
+       <p class="landing-hero__subtitle">Nexus Life</p>
+       <a class="landing-hero__cta" href="#steps">立即參加</a>
+     </div>
+   </section>
+───────────────────────────────────────────── */
+.landing-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  background-color: var(--color-navy);
+}
+
+.landing-hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+}
+
+/* ∞ 水印：「8」旋轉 90deg */
+.landing-hero__watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: clamp(120px, 35vw, 280px);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.05);
+  transform: rotate(90deg);
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.landing-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(26, 35, 64, 0.15) 0%,
+    rgba(26, 35, 64, 0.40) 45%,
+    rgba(26, 35, 64, 0.88) 100%
+  );
+}
+
+.landing-hero__content {
+  position: relative;
+  z-index: 2;
+  padding-bottom: var(--sp-8);
+  padding-top: var(--sp-8);
+  color: white;
+}
+
+.landing-hero__eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: var(--sp-2);
+}
+
+.landing-hero__title {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 9vw, 56px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+  margin-bottom: var(--sp-2);
+}
+
+.landing-hero__subtitle {
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: var(--sp-4);
+}
+
+.landing-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 var(--sp-4);
+  border-radius: 24px;
+  background-color: white;
+  color: var(--color-navy);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.landing-hero__cta:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+/* ─────────────────────────────────────────────
+   2. STATS（數據文案區）
+   <section class="landing-stats">
+     <div class="l-wrap">
+       <div class="stats-row">
+         <div class="stats-item">
+           <span class="stats-item__num">2,922</span>
+           <span class="stats-item__label">Days</span>
+         </div>
+         <div class="stats-divider"></div>
+         <div class="stats-item">
+           <span class="stats-item__num">2018</span>
+           <span class="stats-item__label">Est.</span>
+         </div>
+         <div class="stats-divider"></div>
+         <div class="stats-item">
+           <span class="stats-item__num">8th</span>
+           <span class="stats-item__label">Anniversary</span>
+         </div>
+       </div>
+     </div>
+   </section>
+───────────────────────────────────────────── */
+.landing-stats {
+  border-top: var(--border-thin);
+  border-bottom: var(--border-thin);
+  background-color: var(--color-bg);
+}
+
+.stats-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.stats-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-3) var(--sp-1);
+  gap: 4px;
+  text-align: center;
+}
+
+.stats-item__num {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 6vw, 34px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  color: var(--color-navy);
+  line-height: 1;
+}
+
+.stats-item__label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-brown);
+}
+
+.stats-divider {
+  width: 0.5px;
+  background-color: rgba(26, 35, 64, 0.12);
+  flex-shrink: 0;
+  margin: var(--sp-2) 0;
+}
+
+/* ─────────────────────────────────────────────
+   3. STEPS（活動流程）
+   <section class="landing-steps l-section" id="steps">
+     <div class="l-wrap">
+       <h2 class="l-section__heading">如何參加</h2>
+       <ol class="steps-list">
+         <li class="step-item">
+           <div class="step-item__num">1</div>
+           <div class="step-item__body">
+             <h3 class="step-item__title">掃碼集印</h3>
+             <p class="step-item__desc">用 LINE 掃描店內 8 個點位的 QR code，每點限蓋一次。</p>
+           </div>
+         </li>
+         …
+       </ol>
+     </div>
+   </section>
+───────────────────────────────────────────── */
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-2) 0;
+  border-bottom: var(--border-thin);
+}
+
+.step-item:last-child { border-bottom: none; }
+
+.step-item__num {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-nexus);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-nexus);
+  margin-top: 2px;
+}
+
+.step-item__body { flex: 1; }
+
+.step-item__title {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-navy);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+
+.step-item__desc {
+  font-size: 13px;
+  color: var(--color-brown);
+  line-height: 1.65;
+}
+
+/* ─────────────────────────────────────────────
+   4. REWARDS（獎項總覽）
+   <section class="landing-rewards l-section">
+     <div class="l-wrap">
+       <h2 class="l-section__heading">獎項總覽</h2>
+       <div class="reward-tier reward-tier--s">
+         <p class="reward-tier__label">S 層</p>
+         <div class="reward-grid">
+           <div class="reward-card">
+             <h3 class="reward-card__name">免費飲品兌換券</h3>
+             <p class="reward-card__note">有效期 14 天</p>
+           </div>
+         </div>
+       </div>
+       …
+     </div>
+   </section>
+───────────────────────────────────────────── */
+.reward-tier {
+  margin-bottom: var(--sp-4);
+}
+
+.reward-tier:last-child { margin-bottom: 0; }
+
+.reward-tier__label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding-bottom: 8px;
+  margin-bottom: var(--sp-1);
+  border-bottom: var(--border-thin);
+}
+
+.reward-tier--s .reward-tier__label { color: var(--tier-s-text); }
+.reward-tier--a .reward-tier__label { color: var(--tier-a-text); }
+.reward-tier--b .reward-tier__label { color: var(--tier-b-text); }
+
+.reward-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-1);
+  margin-top: var(--sp-1);
+}
+
+.reward-card {
+  background-color: white;
+  border-radius: var(--radius-card);
+  border: var(--border-thin);
+  padding: var(--sp-2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 左側色條 */
+.reward-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  border-radius: var(--radius-card) 0 0 var(--radius-card);
+}
+
+.reward-tier--s .reward-card::before { background-color: var(--tier-s); }
+.reward-tier--a .reward-card::before { background-color: var(--tier-a); }
+.reward-tier--b .reward-card::before { background-color: var(--tier-b); }
+
+.reward-card__name {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-navy);
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+
+.reward-card__note {
+  font-size: 11px;
+  color: var(--color-brown);
+  letter-spacing: 0.04em;
+}
+
+/* ─────────────────────────────────────────────
+   5. MAP（集章點位地圖）
+   <section class="landing-map l-section">
+     <div class="l-wrap">
+       <h2 class="l-section__heading">集章點位</h2>
+       <div class="floor-map">
+         <img class="floor-map__img" src="…" alt="樓層平面圖">
+         <div class="floor-map__pin" style="left: 30%; top: 45%">
+           <div class="floor-map__pin-dot">01</div>
+         </div>
+       </div>
+       <ul class="point-list">
+         <li class="point-item">
+           <span class="point-item__num">01</span>
+           <span class="point-item__name">入口主題陳列區</span>
+         </li>
+       </ul>
+     </div>
+   </section>
+───────────────────────────────────────────── */
+.floor-map {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-color: var(--color-bg-alt);
+  border-radius: var(--radius-card);
+  border: var(--border-thin);
+  overflow: hidden;
+  margin-bottom: var(--sp-3);
+}
+
+.floor-map__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: var(--sp-2);
+}
+
+.floor-map__pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: default;
+}
+
+.floor-map__pin-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--color-nexus);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 6px rgba(43, 92, 230, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.floor-map__pin:hover .floor-map__pin-dot {
+  transform: scale(1.15);
+}
+
+.floor-map__pin--collected .floor-map__pin-dot {
+  background-color: var(--color-gold);
+  box-shadow: 0 2px 8px rgba(201, 168, 76, 0.45);
+}
+
+/* 點位列表 */
+.point-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.point-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: var(--border-thin);
+  background-color: white;
+}
+
+.point-item__num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--color-bg-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-navy);
+  flex-shrink: 0;
+}
+
+.point-item__name {
+  font-size: 11px;
+  color: var(--color-navy);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+/* ─────────────────────────────────────────────
+   6. FAQ（accordion，使用原生 <details>）
+   <section class="landing-faq l-section">
+     <div class="l-wrap">
+       <h2 class="l-section__heading">常見問題</h2>
+       <details class="faq-item">
+         <summary class="faq-item__summary">
+           <span>如何參加集章活動？</span>
+           <span class="faq-item__icon">+</span>
+         </summary>
+         <div class="faq-item__body">
+           <p>使用 LINE 掃描店內各點位 QR code 即可蓋印…</p>
+         </div>
+       </details>
+     </div>
+   </section>
+───────────────────────────────────────────── */
+.faq-item {
+  border-top: var(--border-thin);
+}
+
+.faq-item:last-of-type {
+  border-bottom: var(--border-thin);
+}
+
+.faq-item__summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-2) 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-navy);
+  cursor: pointer;
+  gap: var(--sp-2);
+  list-style: none;
+  letter-spacing: 0.02em;
+}
+
+/* 隱藏瀏覽器預設的 marker */
+.faq-item__summary::-webkit-details-marker { display: none; }
+.faq-item__summary::marker { display: none; }
+
+.faq-item__icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(26, 35, 64, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--color-brown);
+  transition: transform 0.25s ease;
+  line-height: 1;
+}
+
+.faq-item[open] .faq-item__icon {
+  transform: rotate(45deg);
+}
+
+.faq-item__body {
+  padding: 0 0 var(--sp-2);
+}
+
+.faq-item__body p {
+  font-size: 13px;
+  color: var(--color-brown);
+  line-height: 1.8;
+}
+
+/* ─────────────────────────────────────────────
+   7. FOOTER
+   <footer class="landing-footer">
+     <div class="landing-footer__brand">
+       TSUTAYA BOOKSTORE × WIRED TOKYO
+     </div>
+     <p class="landing-footer__tagline">∞ Connecting Life, Living in Stride.</p>
+     <nav class="landing-footer__nav">
+       <a href="/terms">活動規則</a>
+       <a href="/faq">常見問題</a>
+       <a href="/help">店員指南</a>
+     </nav>
+     <p class="landing-footer__copy">© 2026 TSUTAYA BOOKSTORE. All rights reserved.</p>
+   </footer>
+───────────────────────────────────────────── */
+.landing-footer {
+  background-color: var(--color-navy);
+  padding: var(--sp-8) var(--sp-2);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.landing-footer__brand {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.landing-footer__tagline {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.landing-footer__nav {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding-top: var(--sp-1);
+}
+
+.landing-footer__nav a {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.06em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.landing-footer__nav a:hover { color: rgba(255, 255, 255, 0.85); }
+
+.landing-footer__copy {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.2);
+  padding-top: var(--sp-1);
+}
+
+/* ─────────────────────────────────────────────
+   STAMP-GLOW（共用，與 stamp-site 一致）
+───────────────────────────────────────────── */
+@keyframes stamp-glow {
+  0%   { box-shadow: 0 0 0 0   rgba(201, 168, 76, 0.55); }
+  40%  { box-shadow: 0 0 0 12px rgba(201, 168, 76, 0.15); }
+  100% { box-shadow: 0 0 0 0   rgba(201, 168, 76, 0); }
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .l-wrap { max-width: 720px; padding: 0 var(--sp-4); }
+
+  .steps-list {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+
+  .step-item {
+    flex: 1;
+    flex-direction: column;
+    border-bottom: none;
+    border-right: var(--border-thin);
+    padding-right: var(--sp-3);
+    padding-bottom: 0;
+  }
+
+  .step-item:last-child { border-right: none; padding-right: 0; }
+
+  .reward-grid       { grid-template-columns: repeat(3, 1fr); }
+  .point-list        { grid-template-columns: repeat(4, 1fr); }
+  .landing-hero__title { font-size: 56px; }
+}
+
+@media (min-width: 1200px) {
+  .l-wrap { max-width: 960px; }
+  .reward-grid { grid-template-columns: repeat(4, 1fr); }
+}

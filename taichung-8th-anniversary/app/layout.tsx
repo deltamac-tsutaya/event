@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+import "./brand.css";
 import { Toaster } from "@/components/ui/sonner";
 import NetworkStatusBanner from "@/components/ui-state/NetworkStatusBanner";
 
