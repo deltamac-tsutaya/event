@@ -37,8 +37,11 @@ function HeroSection({
 }) {
   return (
     <section
-      onClick={onToggle}
-      className={`relative flex flex-col justify-end overflow-hidden w-full transition-[height] duration-700 ease-in-out cursor-pointer group ${
+      onClick={(e) => {
+        e.stopPropagation();
+        onToggle();
+      }}
+      className={`relative z-10 flex flex-col justify-end overflow-hidden w-full transition-[height] duration-700 ease-in-out cursor-pointer active:scale-[0.99] transition-transform ${
         compact ? "h-[42svh]" : "h-[100svh]"
       }`}
     >
@@ -200,7 +203,8 @@ function MainContent() {
     return "C";
   }, [isLoading, user, totalStamps, progress?.drawnToday, lastReward]);
 
-  const isCompact = (state !== "A") && !userHeroExpanded;
+  // 只要 userHeroExpanded 為 true，就強制不 compact
+  const isCompact = state !== "A" && !userHeroExpanded;
 
   if (state === "loading") {
     return (

@@ -57,7 +57,7 @@ export const DynamicHero: React.FC<DynamicHeroProps> = ({
 
   return (
     <div
-      className={`absolute inset-0 overflow-hidden transition-colors duration-1000 ease-in-out ${getMilestoneClass()}`}
+      className={`absolute inset-0 overflow-hidden transition-colors duration-1000 ease-in-out pointer-events-none ${getMilestoneClass()}`}
       style={{ backgroundColor: bgColor }}
     >
       {/* 1. 基底層：0.5pt 極細格線 */}
