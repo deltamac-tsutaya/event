@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   // Find user
   const { data: user, error: userError } = await supabaseAdmin
     .from("users")
-    .select("id")
+    .select("id, tickets_count")
     .eq("line_user_id", lineUserId)
     .single();
 
@@ -80,5 +80,6 @@ export async function GET(request: NextRequest) {
     totalStamps,
     canDraw,
     drawnToday,
+    ticketsCount: user.tickets_count ?? 0,
   });
 }

@@ -12,107 +12,61 @@ import { Button } from "@/components/ui/button";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import ScanResultOverlay from "@/components/ScanResultOverlay";
+import { toast } from "sonner";
+import { Sparkles, Ticket, Info, ChevronRight } from "lucide-react";
 import type { DrawHistory, Reward } from "@/lib/types";
+import { DynamicHero } from "@/components/DynamicHero";
 
 // ── 活動期間常數 ─────────────────────────────────────────────────────────
 const ACTIVITY_END = new Date("2026-05-13T23:59:59+08:00");
+const INFINITY_DAY = new Date("2026-05-13T20:00:00+08:00");
 
 function isActivityEnded(): boolean {
   return new Date() > ACTIVITY_END;
 }
 
-// ── 倒數至台北午夜 ────────────────────────────────────────────────────────
-function getMidnightMs(): number {
-  const now = new Date();
-  const offset = 8 * 3_600_000;
-  const taipeiNow = new Date(now.getTime() + offset);
-  const midnight = new Date(
-    Date.UTC(taipeiNow.getUTCFullYear(), taipeiNow.getUTCMonth(), taipeiNow.getUTCDate() + 1)
-  );
-  return midnight.getTime() - offset - now.getTime();
-}
-
-function useCountdown() {
-  const [ms, setMs] = useState(getMidnightMs());
-  useEffect(() => {
-    const id = setInterval(() => setMs(getMidnightMs()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  const h = Math.floor(ms / 3_600_000);
-  const m = Math.floor((ms % 3_600_000) / 60_000);
-  const s = Math.floor((ms % 60_000) / 1_000);
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
-
-// ── Loading skeleton ──────────────────────────────────────────────────────
-function LoadingSkeleton() {
-  return (
-    <div className="px-4 pt-6 space-y-4 animate-pulse">
-      <div className="skeleton h-5 w-1/2 rounded mx-auto" />
-      <div className="grid grid-cols-4 gap-3 pt-2">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="skeleton aspect-square rounded-full" />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Hero Section（全時顯示，登入後縮為 compact）──────────────────────────
-import { DynamicHero } from "@/components/DynamicHero";
-
+// ── Hero Section ─────────────────────────────────────────────────────────
 function HeroSection({ compact, bitmask }: { compact: boolean; bitmask: number }) {
   return (
     <section
       className={`relative flex flex-col justify-end overflow-hidden w-full transition-[height] duration-500 ease-out ${
-        compact ? "h-[44svh]" : "h-[100svh]"
+        compact ? "h-[42svh]" : "h-[100svh]"
       }`}
     >
-      {/* 動態底圖層 */}
       <DynamicHero bitmask={bitmask} compact={compact} />
 
-      {/* 內容區 */}
-      <div className="relative z-10 px-4 pb-6 flex flex-col gap-3">
-        {/* 雙品牌 logo */}
+      <div className="relative z-10 px-6 pb-8 flex flex-col gap-4">
         <div className="flex items-center gap-2">
-          <img
-            src="/tsutaya-logo.svg"
-            alt="TSUTAYA BOOKSTORE"
-            className="h-4 w-auto opacity-80"
-          />
+          <img src="/tsutaya-logo.svg" alt="TSUTAYA" className="h-4 w-auto opacity-80" />
           <span className="text-[#1A2B4A]/20 font-mono text-[10px]">×</span>
-          <img
-            src="/wired-tokyo-logo.svg"
-            alt="WIRED TOKYO"
-            className="h-5 w-auto opacity-70"
-          />
+          <img src="/wired-tokyo-logo.svg" alt="WIRED" className="h-5 w-auto opacity-70" />
         </div>
 
-        {/* 主標題 */}
         <div>
-          <p className="brand-mono-label text-[#8A6F5C] mb-2">
-            台中市政店 · 8th Anniversary
+          <p className="brand-mono-label text-[#8A6F5C] mb-1 font-bold tracking-widest text-[10px]">
+            台中市政店 8 週年
           </p>
           <h1
             className="font-heading font-semibold text-[#1A2B4A] leading-[1.1] tracking-tight"
-            style={{ fontSize: "clamp(2.2rem, 9vw, 3.8rem)" }}
+            style={{ fontSize: "clamp(2.4rem, 10vw, 4rem)" }}
           >
-            無限日常
+            Nexus Life
             <br />
-            <span className="opacity-70">∞ 連結生活</span>
+            <span className="text-[0.65em] opacity-80 font-normal">無限日常 ∞ 連結生活</span>
           </h1>
         </div>
 
-        {/* Landing 專用裝飾（非 compact） */}
         {!compact && (
-          <div className="mt-2 space-y-3">
-            <LifeGantt />
-            <div className="flex items-center gap-3 text-[10px] font-mono text-[#8A6F5C]/60 tracking-widest">
+          <div className="mt-2 space-y-4 animate-page-in">
+             <p className="text-sm text-[#1A2B4A]/70 font-medium">
+               找出店內 8 個印記，集滿抽獎，每天一次機會
+             </p>
+             <div className="flex items-center gap-3 text-[10px] font-mono text-[#8A6F5C]/60 tracking-widest">
               <span>2,922 Days</span>
               <span className="w-px h-3 bg-[#1A2B4A]/10" />
               <span>Est. 2018</span>
               <span className="w-px h-3 bg-[#1A2B4A]/10" />
-              <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 23</span>
+              <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 23 — 05 / 13</span>
             </div>
           </div>
         )}
@@ -121,311 +75,291 @@ function HeroSection({ compact, bitmask }: { compact: boolean; bitmask: number }
   );
 }
 
-// ── 底部導覽連結（共用）────────────────────────────────────────────────────
-function FooterLinks() {
-  return (
-    <div className="flex justify-center gap-6 text-xs text-gray-400 pt-2">
-      <Link href="/faq" className="hover:text-[#1A2B4A] hover:underline transition-colors">
-        常見問題
-      </Link>
-      <Link href="/terms" className="hover:text-[#1A2B4A] hover:underline transition-colors">
-        活動規則
-      </Link>
-    </div>
-  );
-}
-
-// ── State A：未登入（集章說明 + 登入 CTA）────────────────────────────────
-function LoginSection({ onLogin }: { onLogin: () => void }) {
-  return (
-    <div className="px-4 pt-6 pb-12 space-y-6">
-      <div className="text-center space-y-1">
-        <p className="text-base font-semibold text-[#1A2B4A]">
-          找出店內 8 個印記，集滿抽獎
-        </p>
-        <p className="text-xs text-[#8A6F5C]">
-          每天一次抽獎機會 · 活動期間 2026/04/23—05/13
-        </p>
-      </div>
-
-      <StepFlow />
-
-      <Button
-        onClick={onLogin}
-        className="h-12 w-full rounded-full bg-[#1A2B4A] text-base font-semibold text-white hover:bg-[#1A2B4A]/90 animate-pulse-cta"
-      >
-        用 LINE 帳號參加
-      </Button>
-
-      <FooterLinks />
-    </div>
-  );
-}
-
-// ── State B / C：集章中 / 集滿可抽獎 ─────────────────────────────────────
-function StampSection({
-  totalStamps,
-  stamps,
-  canDraw,
-}: {
-  totalStamps: number;
-  stamps: Array<{ stamp_id: string; collected_at: string }>;
-  canDraw: boolean;
-}) {
-  const router = useRouter();
-  const remaining = 8 - totalStamps;
+// ── Infinity Day Section (狀態 G) ─────────────────────────────────────────
+function InfinityDaySection({ tickets }: { tickets: number }) {
+  // 模擬全池數據 (實務上應從 API 獲取)
+  const totalPool = 1250 + tickets; 
+  const winRate = ((8 / totalPool) * 100).toFixed(3);
+  const userProb = ((tickets * (8 / totalPool)) * 100).toFixed(2);
 
   return (
-    <div className="px-4 pt-5 pb-12 space-y-5 animate-page-in">
-      {/* 進度標題 */}
-      <div className="text-center space-y-0.5">
-        <h2 className="text-xl font-bold text-[#1A2B4A] tabular-nums">
-          {totalStamps} <span className="text-base font-normal text-[#8A6F5C]">/ 8 枚</span>
-        </h2>
-        {canDraw ? (
-          <p className="text-sm font-semibold text-[#2B5CE6]">集印完成！今日抽獎已解鎖</p>
-        ) : totalStamps === 7 ? (
-          <p className="text-sm font-semibold text-orange-500">再 1 枚即可抽獎</p>
-        ) : totalStamps >= 4 ? (
-          <p className="text-sm text-[#1A2B4A]">已完成一半，繼續前進！</p>
-        ) : (
-          <p className="text-sm text-gray-500">還差 {remaining} 枚，繼續探索店內各區</p>
-        )}
-      </div>
-
-      {/* 印章卡 */}
-      <StampCard stamps={stamps} totalStamps={totalStamps} />
-
-      {/* 主要 CTA */}
-      {canDraw ? (
-        <Button
-          onClick={() => router.push("/rewards")}
-          className="w-full h-12 rounded-full bg-[#2B5CE6] text-white text-base font-semibold hover:bg-[#2B5CE6]/90 animate-pulse-cta"
-        >
-          立即抽獎
-        </Button>
-      ) : (
-        <Link href="/stamp">
-          <Button className="w-full h-12 rounded-full bg-[#1A2B4A] text-white text-base font-semibold hover:bg-[#1A2B4A]/90">
-            掃描 QR code 集章
-          </Button>
-        </Link>
-      )}
-
-      <FooterLinks />
-    </div>
-  );
-}
-
-// ── State D：抽獎結果 ──────────────────────────────────────────────────────
-function DrawResultSection({ reward, drawDate }: { reward: Reward; drawDate: string }) {
-  const router = useRouter();
-  return (
-    <div className="px-4 pt-5 pb-12 space-y-5 animate-page-in">
-      <div className="text-center space-y-1">
-        <h2 className="text-xl font-bold text-gray-900">抽獎結果</h2>
-        <p className="text-xs text-gray-500">獎券已存入 LINE 優惠券夾</p>
-      </div>
-      <div className="animate-flip-reveal">
-        <RewardCard reward={reward} drawDate={drawDate} />
-      </div>
-      <p className="text-center text-xs text-gray-400">明天可以再抽一次，記得回來</p>
-      <div className="flex flex-col gap-2">
-        <Button
-          onClick={() => router.push("/rewards")}
-          className="w-full h-11 bg-[#1A2B4A] text-white hover:bg-[#1A2B4A]/90 rounded-full"
-        >
-          查看我的獎券
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full h-11 rounded-full"
-          onClick={() =>
-            navigator.share?.({
-              title: "TSUTAYA BOOKSTORE × WIRED TOKYO 8th Anniversary",
-              text: `我抽到了「${reward.name}」！快來一起集章抽獎吧！`,
-            })
-          }
-        >
-          分享給朋友
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// ── State E：今日已抽（倒數 + 歷史紀錄）─────────────────────────────────
-function AlreadyDrawnSection({ lineUserId }: { lineUserId: string }) {
-  const countdown = useCountdown();
-  const [history, setHistory] = useState<DrawHistory[]>([]);
-
-  useEffect(() => {
-    fetch(`/api/reward/history?lineUserId=${encodeURIComponent(lineUserId)}`)
-      .then((r) => r.json())
-      .then((d) => setHistory(d.history ?? []));
-  }, [lineUserId]);
-
-  return (
-    <div className="px-4 pt-5 pb-12 space-y-5 animate-page-in">
-      <div className="rounded-2xl bg-[#F5F2ED] border border-[#8A6F5C]/15 p-5 text-center space-y-2">
-        <p className="text-sm font-semibold text-[#1A2B4A]">今日抽獎已完成</p>
-        <p className="text-xs text-[#8A6F5C]">距離下次抽獎機會</p>
-        <p className="text-3xl font-mono font-bold text-[#1A2B4A] tabular-nums animate-countdown">
-          {countdown}
-        </p>
-      </div>
-      <Link href="/rewards">
-        <Button className="w-full h-11 bg-[#1A2B4A] text-white hover:bg-[#1A2B4A]/90 rounded-full">
-          查看我的獎券
-        </Button>
-      </Link>
-      {history.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-sm font-bold text-[#1A2B4A]">抽獎紀錄</h2>
-          {history.map((h, i) => (
-            <RewardCard key={i} reward={h.rewards} drawDate={h.draw_date} />
-          ))}
+    <Card className="overflow-hidden border-none bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-xl">
+      <div className="p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
+              <Sparkles size={18} className="text-yellow-300" />
+            </div>
+            <span className="font-bold tracking-wider text-sm uppercase">Infinity Day</span>
+          </div>
+          <div className="text-[10px] bg-white/10 px-2 py-1 rounded-full backdrop-blur-sm opacity-80">
+            5/13 20:00 開獎
+          </div>
         </div>
-      )}
-    </div>
+
+        <div className="space-y-1">
+          <h3 className="text-lg font-bold">無限回饋日加碼獎</h3>
+          <p className="text-xs text-white/70">抽出 8 份 WIRED TOKYO 雙人和牛牛排套餐</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 pt-2">
+          <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+            <p className="text-[10px] text-white/50 mb-1">已累積券數</p>
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-bold font-serif">{tickets}</span>
+              <span className="text-[10px] opacity-60">張</span>
+            </div>
+          </div>
+          <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/5">
+            <p className="text-[10px] text-white/50 mb-1">預估中獎機率</p>
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-bold font-serif text-yellow-300">{userProb}</span>
+              <span className="text-[10px] opacity-60">%</span>
+            </div>
+          </div>
+        </div>
+        
+        <p className="text-[9px] text-white/40 text-center italic">
+          每完成一次每日抽獎，即可獲得一張加碼獎券。
+        </p>
+      </div>
+    </Card>
   );
 }
 
-// ── State F：活動結束 ──────────────────────────────────────────────────────
-function ActivityEndedSection() {
-  return (
-    <div className="px-4 pt-6 pb-12 flex flex-col items-center gap-6 text-center animate-page-in">
-      <div className="space-y-2">
-        <h2 className="text-xl font-bold text-[#1A2B4A]">感謝 2,922 個日子的相伴</h2>
-        <p className="text-sm text-[#8A6F5C] leading-relaxed">期待下次與你連結。</p>
-      </div>
-      <div className="w-full rounded-2xl bg-amber-50 border border-amber-200 p-4 text-left text-sm text-amber-800 space-y-1">
-        <p className="font-semibold">獎券使用提醒</p>
-        <p>已抽中的獎券有效期為發放日起 14 天，請盡速至店內使用。</p>
-      </div>
-      <Link href="/rewards" className="w-full">
-        <Button className="w-full h-11 bg-[#1A2B4A] text-white hover:bg-[#1A2B4A]/90 rounded-full">
-          查看我的獎券
-        </Button>
-      </Link>
-    </div>
-  );
-}
-
-// ── Root ──────────────────────────────────────────────────────────────────
-function HomeContent() {
+// ── Main Content ──
+function MainContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, loading: userLoading, login } = useLiffUser();
-  const { progress, loading: progressLoading, error } = useStampProgress(
-    user?.userId ?? null
-  );
+  const { user, login, isLoading: userLoading } = useLiffUser();
+  const { progress, isLoading: progressLoading, refetch } = useStampProgress(user?.userId ?? null);
 
-  const rewardParam   = searchParams.get("reward");
-  const drawDateParam = searchParams.get("drawDate");
-  const rewardFromUrl: Reward | null = rewardParam
-    ? (() => { try { return JSON.parse(decodeURIComponent(rewardParam)); } catch { return null; } })()
-    : null;
+  const [drawLoading, setDrawLoading] = useState(false);
+  const [lastReward, setLastReward] = useState<Reward | null>(null);
 
   const isLoading = userLoading || (!!user && progressLoading);
-
   const collectParam = searchParams.get("collect");
   const [showScanResult, setShowScanResult] = useState(false);
 
   useEffect(() => {
-    if (collectParam) {
-      setShowScanResult(true);
-    }
+    if (collectParam) setShowScanResult(true);
   }, [collectParam]);
 
-  type State = "loading" | "A" | "B" | "C" | "D" | "E" | "F";
-
-  function determineState(): State {
-    if (isLoading) return "loading";
-    if (isActivityEnded()) return "F";
-    if (!user) return "A";
-    if (rewardFromUrl && drawDateParam) return "D";
-    if (!progress) return "B";
-    if (progress.drawnToday) return "E";
-    if (progress.totalStamps >= 8) return "C";
-    return "B";
-  }
-
-  const state = determineState();
-
-  // 計算 Bitmask
+  const totalStamps = progress?.totalStamps ?? 0;
   const bitmask = useMemo(() => {
     if (!progress?.stamps) return 0;
     return progress.stamps.reduce((mask, s) => {
-      const idNum = parseInt(s.stamp_id, 10);
-      if (isNaN(idNum) || idNum < 1 || idNum > 8) return mask;
+      const idNum = parseInt(s.stamp_id);
+      if (isNaN(idNum)) return mask;
       return mask | (1 << (idNum - 1));
     }, 0);
   }, [progress?.stamps]);
 
-  const [compactHero, setCompactHero] = useState(false);
-  useEffect(() => {
-    const shouldCompact = state !== "A" && state !== "loading";
-    if (shouldCompact === compactHero) return;
-    const raf = requestAnimationFrame(() => setCompactHero(shouldCompact));
-    return () => cancelAnimationFrame(raf);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  const handleDraw = async () => {
+    if (!user) return;
+    setDrawLoading(true);
+    try {
+      const res = await fetch("/api/reward/draw", {
+        method: "POST",
+        body: JSON.stringify({ lineUserId: user.userId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setLastReward(data.reward);
+        toast.success("抽獎成功！今日加碼獎券 +1", { icon: <Ticket className="text-blue-500" /> });
+        refetch();
+      } else {
+        toast.error(data.error || "抽獎失敗");
+      }
+    } catch (e) {
+      toast.error("連線錯誤");
+    } finally {
+      setDrawLoading(false);
+    }
+  };
+
+  // ── 狀態判定邏輯 ──────────────────────────────────────────────────────────
+  type State = "loading" | "A" | "B" | "C" | "D" | "E" | "F";
+  const state: State = useMemo(() => {
+    if (isLoading) return "loading";
+    if (isActivityEnded()) return "F";
+    if (!user) return "A";
+    if (lastReward) return "D";
+    if (totalStamps < 8) return "B";
+    if (progress?.drawnToday) return "E";
+    return "C";
+  }, [isLoading, user, totalStamps, progress?.drawnToday, lastReward]);
+
+  if (state === "loading") {
+    return (
+      <div className="flex h-svh flex-col items-center justify-center gap-4 bg-[#F5F2ED]">
+        <div className="size-10 animate-spin rounded-full border-4 border-[#1A2B4A] border-t-transparent" />
+        <p className="text-xs font-mono tracking-widest text-[#8A6F5C]">LOADING NEXUS...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex min-h-full flex-col bg-[#F5F2ED]">
-      {/* Hero：全時可見，compact 動態切換 */}
-      <HeroSection compact={compactHero} bitmask={bitmask} />
+    <div className="flex min-h-svh flex-col bg-[#F5F2ED] pb-10">
+      <HeroSection compact={state !== "A"} bitmask={bitmask} />
 
-      {/* 錯誤提示 */}
-      {error && (
-        <div className="mx-4 mt-4 rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-xs text-red-700">
-          資料載入失敗：{error}。請重新整理頁面。
+      <main className="relative z-20 -mt-10 mx-auto w-full max-w-2xl px-5 space-y-6 animate-page-in">
+        {/* 狀態 A：未登入 */}
+        {state === "A" && (
+          <Card className="p-8 shadow-2xl border-none space-y-8 bg-white/90 backdrop-blur-md">
+            <div className="space-y-2 text-center">
+              <h2 className="text-xl font-bold text-[#1A2B4A]">歡迎參加週年慶活動</h2>
+              <p className="text-sm text-gray-500">集印完成即可享受每日抽獎驚喜</p>
+            </div>
+            
+            <StepFlow />
+
+            <Button
+              onClick={login}
+              className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold shadow-lg hover:shadow-xl transition-all"
+            >
+              用 LINE 帳號參加
+            </Button>
+          </Card>
+        )}
+
+        {/* 狀態 B：集印中 */}
+        {state === "B" && (
+          <Card className="p-6 shadow-xl border-none space-y-6">
+            <div className="space-y-1">
+              <h2 className="text-sm font-bold text-[#1A2B4A] flex items-center gap-2">
+                 <div className="w-1 h-4 bg-[#C9A84C] rounded-full" />
+                 {totalStamps === 0 ? "探索開始" : 
+                  totalStamps === 7 ? "再 1 枚即可抽獎" :
+                  totalStamps >= 4 ? "已完成一半，繼續前進" : "探索進度中"}
+              </h2>
+              <p className="text-xs text-gray-400">
+                還差 {8 - totalStamps} 枚，繼續探索店內各區
+              </p>
+            </div>
+
+            <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} />
+
+            <div className="grid grid-cols-2 gap-3">
+              <Link href="/stamp" className="block col-span-2">
+                <Button className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold shadow-lg">
+                  前往掃描 QR code
+                </Button>
+              </Link>
+            </div>
+          </Card>
+        )}
+
+        {/* 狀態 C：集滿可抽獎 */}
+        {state === "C" && (
+          <Card className="p-8 shadow-xl border-none space-y-6 bg-white text-center">
+            <div className="space-y-2">
+              <div className="mx-auto w-16 h-16 bg-[#C9A84C]/10 rounded-full flex items-center justify-center text-[#C9A84C]">
+                <Sparkles size={32} />
+              </div>
+              <h2 className="text-xl font-bold text-[#1A2B4A]">集印完成。今日抽獎已解鎖。</h2>
+              <p className="text-sm text-gray-500">每個帳號每天可抽獎 1 次，明天再來還有機會</p>
+            </div>
+            
+            <Button
+              onClick={handleDraw}
+              disabled={drawLoading}
+              className="h-14 w-full rounded-full bg-[#C9A84C] text-lg font-bold shadow-lg animate-pulse"
+            >
+              {drawLoading ? "抽獎中..." : "立即抽獎"}
+            </Button>
+          </Card>
+        )}
+
+        {/* 狀態 D：抽獎結果 */}
+        {state === "D" && lastReward && (
+          <div className="space-y-6">
+            <RewardCard reward={lastReward} />
+            <div className="flex flex-col gap-3">
+              <Button className="h-14 rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
+                查看我的獎券
+              </Button>
+              <Button variant="outline" className="h-12 rounded-full border-[#1A2B4A]/20 text-[#1A2B4A]">
+                分享給朋友
+              </Button>
+            </div>
+            <p className="text-center text-xs text-gray-400">明天可以再抽一次，記得回來</p>
+          </div>
+        )}
+
+        {/* 狀態 E：今日已抽 */}
+        {state === "E" && (
+          <Card className="p-8 text-center shadow-xl border-none space-y-6">
+             <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
+               <CheckCircle2 size={32} />
+             </div>
+             <div className="space-y-1">
+               <h2 className="text-xl font-bold text-[#1A2B4A]">今日抽獎已完成</h2>
+               <p className="text-sm text-gray-500">明天 00:00 後將再次開放抽獎</p>
+             </div>
+             <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
+                查看我的獎券
+             </Button>
+          </Card>
+        )}
+
+        {/* 狀態 F：活動結束 */}
+        {state === "F" && (
+          <Card className="p-10 text-center shadow-xl border-none space-y-6 bg-gray-50">
+             <h2 className="text-2xl font-bold text-[#1A2B4A]">感謝 21 天的相伴</h2>
+             <p className="text-sm text-gray-500 leading-relaxed">
+               期待下次與你連結。<br />
+               已抽中的獎券有效期為發放日起 14 天，請盡速至店內使用。
+             </p>
+             <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
+                查看我的獎券
+             </Button>
+          </Card>
+        )}
+
+        {/* 狀態 G：Infinity Day 專區 (僅登入後顯示) */}
+        {user && state !== "F" && (
+          <InfinityDaySection tickets={progress?.ticketsCount ?? 0} />
+        )}
+
+        {/* 底部導覽 */}
+        <div className="flex justify-center gap-6 pt-4">
+          <Link href="#rules" className="text-xs font-bold text-[#1A2B4A]/50 hover:text-[#1A2B4A] flex items-center gap-1">
+             <Info size={12} /> 活動規則
+          </Link>
+          <Link href="#faq" className="text-xs font-bold text-[#1A2B4A]/50 hover:text-[#1A2B4A] flex items-center gap-1">
+             <Info size={12} /> 常見問題
+          </Link>
         </div>
-      )}
-
-      {/* 各狀態內容 */}
-      {state === "loading" && <LoadingSkeleton />}
-      {state === "A"       && <LoginSection onLogin={login} />}
-      {(state === "B" || state === "C") && (
-        <StampSection
-          totalStamps={progress?.totalStamps ?? 0}
-          stamps={progress?.stamps ?? []}
-          canDraw={state === "C"}
-        />
-      )}
-      {state === "D" && rewardFromUrl && drawDateParam && (
-        <DrawResultSection reward={rewardFromUrl} drawDate={drawDateParam} />
-      )}
-      {state === "E" && user && <AlreadyDrawnSection lineUserId={user.userId} />}
-      {state === "F"       && <ActivityEndedSection />}
-
-      {/* DEV ONLY — 清除快取 */}
-      {(process.env.NODE_ENV === "development" || searchParams.get("dev") === "1") && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            className="rounded-full bg-red-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg opacity-70 hover:opacity-100"
-            onClick={() => {
-              localStorage.clear();
-              window.location.reload();
-            }}
-          >
-            Clear Cache
-          </button>
+        
+        <div id="rules" className="pt-10 scroll-mt-10">
+          <SectionHeader title="活動規則" />
+          <div className="mt-4 text-[13px] text-gray-600 space-y-3 leading-relaxed">
+            <p>• 至店內找到 8 個集印點 QR code，使用手機掃描完成集印。</p>
+            <p>• 每個 QR code 每人限掃描 1 次，重複掃描不累計。</p>
+            <p>• 集滿 8 枚後，每日可抽獎 1 次（每日午夜 00:00 重置）。</p>
+            <p>• 8 枚印章中的 stamp-02、05、06 為每日輪替點位，每日午夜隨機抽換變體。當日未掃到輪替點則無法當日集滿。</p>
+          </div>
         </div>
-      )}
+
+        <div id="faq" className="pt-10 scroll-mt-10">
+          <SectionHeader title="常見問題" />
+          <div className="mt-4 space-y-4">
+            <FaqItem question="掃描後沒有蓋印？" answer="請確認已透過 LINE 登入活動頁面，重新整理後再試。" />
+            <FaqItem question="今天已經抽過獎了？" answer="每個帳號每天可抽 1 次。午夜 00:00 後重新開放。" />
+            <FaqItem question="獎券在哪裡查看？" answer="抽中的獎券會自動存入 LINE 優惠券夾，可從 LINE 主頁進入查看。" />
+          </div>
+        </div>
+      </main>
 
       <Footer />
 
-      {/* 掃描結果全螢幕 Overlay */}
       {showScanResult && collectParam && (
         <ScanResultOverlay
           stampId={collectParam}
           onClose={() => {
             setShowScanResult(false);
-            // 清理 URL 參數
-            const newParams = new URLSearchParams(window.location.search);
-            newParams.delete("collect");
-            const newPath = window.location.pathname + (newParams.toString() ? `?${newParams.toString()}` : "");
+            const newPath = window.location.pathname;
             window.history.replaceState(null, "", newPath);
           }}
         />
@@ -434,16 +368,43 @@ function HomeContent() {
   );
 }
 
-export default function Home() {
+function SectionHeader({ title }: { title: string }) {
   return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-svh items-center justify-center bg-[#1A2B4A]">
-          <div className="animate-spin size-8 rounded-full border-4 border-white/30 border-t-white" />
-        </div>
-      }
-    >
-      <HomeContent />
+    <div className="flex items-center gap-3">
+      <div className="h-px flex-1 bg-gray-200" />
+      <span className="text-[10px] font-bold text-[#8A6F5C] uppercase tracking-[0.2em]">{title}</span>
+      <div className="h-px flex-1 bg-gray-200" />
+    </div>
+  );
+}
+
+function FaqItem({ question, answer }: { question: string; answer: string }) {
+  return (
+    <div className="bg-white rounded-xl p-4 shadow-sm">
+      <p className="text-sm font-bold text-[#1A2B4A] mb-1">{question}</p>
+      <p className="text-[12px] text-gray-500 leading-relaxed">{answer}</p>
+    </div>
+  );
+}
+
+function Card({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={`rounded-3xl bg-white ${className}`} {...props}>
+      {children}
+    </div>
+  );
+}
+
+function CheckCircle2(props: any) {
+  return (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense>
+      <MainContent />
     </Suspense>
   );
 }
