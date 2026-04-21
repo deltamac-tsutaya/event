@@ -1,0 +1,378 @@
+/*
+ * coupon.css — LINE 優惠券 / 獎券頁面
+ * TSUTAYA BOOKSTORE × WIRED TOKYO｜Nexus Life 8th Anniversary
+ * 純手寫 CSS，不依賴任何 framework
+ */
+
+/* ─────────────────────────────────────────────
+   RESET
+───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+img    { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+a      { color: inherit; text-decoration: none; }
+
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────────────────── */
+:root {
+  /* 品牌色 */
+  --color-bg:         #F5F1EB;
+  --color-bg-alt:     #EDEBE5;
+  --color-navy:       #1A2340;
+  --color-brown:      #6B4F3A;
+  --color-nexus:      #2B5CE6;
+  --color-gold:       #C9A84C;
+  --color-gray-stamp: #B0AEAD;
+
+  /* 層級色 */
+  --tier-s: #F9D5D3;
+  --tier-a: #FDEBD0;
+  --tier-b: #F0F0F0;
+  --tier-s-text: #9B3A35;
+  --tier-a-text: #8C5220;
+  --tier-b-text: #6B4F3A;
+
+  /* 字體 */
+  --font-serif: "Noto Serif TC", Georgia, "Times New Roman", serif;
+  --font-sans:  "Noto Sans TC", "Helvetica Neue", Arial, sans-serif;
+
+  /* 間距 */
+  --sp-1:  8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-6: 48px;
+  --sp-8: 64px;
+
+  /* 圓角 / 格線 */
+  --radius-card: 8px;
+  --border-thin: 0.5px solid rgba(26, 35, 64, 0.12);
+}
+
+/* ─────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────── */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-navy);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+}
+
+/* ─────────────────────────────────────────────
+   PAGE HEADER
+   <header class="coupon-header">
+     <a class="coupon-header__back" href="/">← 返回</a>
+     <span class="coupon-header__title">我的獎券</span>
+     <div class="coupon-header__spacer"></div>
+   </header>
+───────────────────────────────────────────── */
+.coupon-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--sp-2);
+  background-color: rgba(245, 241, 235, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: var(--border-thin);
+}
+
+.coupon-header__back {
+  font-size: 13px;
+  color: rgba(26, 35, 64, 0.45);
+  transition: color 0.15s ease;
+  min-width: 48px;
+}
+
+.coupon-header__back:hover { color: var(--color-navy); }
+
+.coupon-header__title {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.coupon-header__spacer { min-width: 48px; }
+
+/* ─────────────────────────────────────────────
+   PAGE CONTAINER
+───────────────────────────────────────────── */
+.coupon-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--sp-3) var(--sp-2) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* ─────────────────────────────────────────────
+   COUPON CARD
+   <article class="coupon-card coupon-card--s">
+     <div class="coupon-card__tier-bar"></div>
+     <div class="coupon-card__body">
+       <span class="coupon-card__tier-label">S 層</span>
+       <h2 class="coupon-card__name">週年限定免費飲品兌換券</h2>
+       <p class="coupon-card__validity">有效期限：2026/05/27</p>
+       <hr class="coupon-card__rule">
+       <div class="coupon-card__meta">
+         <span class="coupon-card__draw-date">抽獎日期：2026/05/13</span>
+         <span class="badge badge--unused">未使用</span>
+       </div>
+     </div>
+   </article>
+───────────────────────────────────────────── */
+.coupon-card {
+  display: flex;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: var(--border-thin);
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(26, 35, 64, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+.coupon-card:hover {
+  box-shadow: 0 3px 10px rgba(26, 35, 64, 0.1);
+}
+
+/* 左側層級色條 */
+.coupon-card__tier-bar {
+  width: 6px;
+  flex-shrink: 0;
+  border-radius: var(--radius-card) 0 0 var(--radius-card);
+}
+
+.coupon-card--s .coupon-card__tier-bar { background-color: var(--tier-s); }
+.coupon-card--a .coupon-card__tier-bar { background-color: var(--tier-a); }
+.coupon-card--b .coupon-card__tier-bar { background-color: var(--tier-b); }
+
+/* 右側主體 */
+.coupon-card__body {
+  flex: 1;
+  padding: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.coupon-card__tier-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.coupon-card--s .coupon-card__tier-label { color: var(--tier-s-text); }
+.coupon-card--a .coupon-card__tier-label { color: var(--tier-a-text); }
+.coupon-card--b .coupon-card__tier-label { color: var(--tier-b-text); }
+
+.coupon-card__name {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-navy);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+.coupon-card__validity {
+  font-size: 11px;
+  color: var(--color-brown);
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 虛線分隔 */
+.coupon-card__rule {
+  border: none;
+  border-top: 1.5px dashed rgba(26, 35, 64, 0.1);
+  margin: 4px 0;
+}
+
+.coupon-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-1);
+}
+
+.coupon-card__draw-date {
+  font-size: 11px;
+  color: var(--color-brown);
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────────────────────────────────────────────
+   STATUS BADGE
+   <span class="badge badge--unused">未使用</span>
+   <span class="badge badge--used">已使用</span>
+   <span class="badge badge--expired">已過期</span>
+───────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 11px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badge--unused {
+  background-color: rgba(43, 92, 230, 0.07);
+  color: var(--color-nexus);
+  border: 1px solid rgba(43, 92, 230, 0.22);
+}
+
+.badge--used {
+  background-color: var(--color-bg-alt);
+  color: var(--color-gray-stamp);
+  border: 1px solid rgba(176, 174, 173, 0.3);
+}
+
+.badge--expired {
+  background-color: transparent;
+  color: var(--color-gray-stamp);
+  border: 1px solid rgba(176, 174, 173, 0.3);
+  text-decoration: line-through;
+  text-decoration-color: rgba(176, 174, 173, 0.6);
+}
+
+/* ─────────────────────────────────────────────
+   COUPON TERMS
+   <section class="coupon-terms">
+     <p class="coupon-terms__title">使用說明</p>
+     <ul>
+       <li>獎券限本人使用，不可轉讓</li>
+       <li>請出示 LINE 優惠券，由店員協助核銷</li>
+       <li>每張獎券限使用一次，核銷後失效</li>
+     </ul>
+   </section>
+───────────────────────────────────────────── */
+.coupon-terms {
+  background-color: var(--color-bg-alt);
+  border-radius: var(--radius-card);
+  border: var(--border-thin);
+  padding: var(--sp-2) var(--sp-2);
+}
+
+.coupon-terms__title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-brown);
+  margin-bottom: var(--sp-1);
+}
+
+.coupon-terms ul {
+  list-style: none;
+  padding: 0;
+}
+
+.coupon-terms li {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.8;
+  padding-left: 1em;
+  position: relative;
+}
+
+.coupon-terms li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: var(--color-brown);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────
+   REDEEM BUTTON
+   <div class="coupon-redeem">
+     <button class="btn-redeem">出示核銷</button>
+   </div>
+───────────────────────────────────────────── */
+.coupon-redeem {
+  padding-top: var(--sp-2);
+}
+
+.btn-redeem {
+  width: 100%;
+  height: 52px;
+  border-radius: 26px;
+  background-color: var(--color-navy);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  transition: opacity 0.18s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-redeem:hover  { opacity: 0.85; }
+.btn-redeem:active { opacity: 1; }
+
+.btn-redeem:disabled {
+  background-color: var(--color-bg-alt);
+  color: var(--color-gray-stamp);
+  cursor: not-allowed;
+}
+
+/* ─────────────────────────────────────────────
+   EMPTY STATE
+   <div class="coupon-empty">
+     <p class="coupon-empty__icon">∞</p>
+     <p class="coupon-empty__text">尚無獎券記錄</p>
+   </div>
+───────────────────────────────────────────── */
+.coupon-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  gap: var(--sp-2);
+  color: var(--color-brown);
+  opacity: 0.55;
+}
+
+.coupon-empty__icon {
+  font-size: 48px;
+  font-family: var(--font-serif);
+  line-height: 1;
+}
+
+.coupon-empty__text {
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .coupon-container { max-width: 560px; padding: var(--sp-4); }
+  .coupon-card__name { font-size: 18px; }
+}
+
+@media (min-width: 1200px) {
+  .coupon-container { max-width: 640px; }
+}
