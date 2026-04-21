@@ -28,11 +28,13 @@ function isActivityEnded(): boolean {
 function HeroSection({ 
   compact, 
   bitmask, 
-  onToggle 
+  onToggle,
+  user
 }: { 
   compact: boolean; 
   bitmask: number; 
   onToggle: () => void; 
+  user: any;
 }) {
   return (
     <section
@@ -45,6 +47,22 @@ function HeroSection({
       }`}
     >
       <DynamicHero bitmask={bitmask} compact={compact} />
+
+      {/* User Profile Pill at Top Right */}
+      {user && (
+        <div className="absolute top-6 right-6 z-20 flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 shadow-sm">
+          {user.pictureUrl ? (
+            <img src={user.pictureUrl} alt={user.displayName} className="w-6 h-6 rounded-full object-cover border border-white/40" />
+          ) : (
+            <div className="w-6 h-6 rounded-full bg-[#1A2B4A]/40 flex items-center justify-center text-[10px] text-white font-bold border border-white/40">
+              {user.displayName?.charAt(0) || "U"}
+            </div>
+          )}
+          <span className="text-[10px] font-bold text-[#1A2B4A] tracking-wider truncate max-w-[80px]">
+            {user.displayName}
+          </span>
+        </div>
+      )}
 
       <div className="relative z-10 px-6 pb-8 flex flex-col gap-4">
         <div className="flex items-center gap-2">
@@ -212,6 +230,7 @@ function MainContent() {
         compact={isCompact} 
         bitmask={bitmask} 
         onToggle={() => setUserHeroExpanded(!userHeroExpanded)} 
+        user={user}
       />
 
       <main className={`relative z-20 -mt-10 mx-auto w-full max-w-2xl px-5 space-y-6 transition-all duration-700 ${
