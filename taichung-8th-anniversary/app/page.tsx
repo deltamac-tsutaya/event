@@ -77,28 +77,28 @@ function HeroSection({ compact, bitmask }: { compact: boolean; bitmask: number }
           <img
             src="/tsutaya-logo.svg"
             alt="TSUTAYA BOOKSTORE"
-            className="h-4 w-auto brightness-0 invert opacity-65"
+            className="h-4 w-auto opacity-80"
           />
-          <span className="text-white/35 font-mono text-[10px]">×</span>
+          <span className="text-[#1A2B4A]/20 font-mono text-[10px]">×</span>
           <img
             src="/wired-tokyo-logo.svg"
             alt="WIRED TOKYO"
-            className="h-5 w-auto brightness-0 invert opacity-45"
+            className="h-5 w-auto opacity-70"
           />
         </div>
 
         {/* 主標題 */}
         <div>
-          <p className="brand-mono-label text-white/40 mb-2">
+          <p className="brand-mono-label text-[#8A6F5C] mb-2">
             台中市政店 · 8th Anniversary
           </p>
           <h1
-            className="font-heading font-semibold text-white leading-[1.1] tracking-tight"
+            className="font-heading font-semibold text-[#1A2B4A] leading-[1.1] tracking-tight"
             style={{ fontSize: "clamp(2.2rem, 9vw, 3.8rem)" }}
           >
             無限日常
             <br />
-            <span className="opacity-85">∞ 連結生活</span>
+            <span className="opacity-70">∞ 連結生活</span>
           </h1>
         </div>
 
@@ -106,12 +106,12 @@ function HeroSection({ compact, bitmask }: { compact: boolean; bitmask: number }
         {!compact && (
           <div className="mt-2 space-y-3">
             <LifeGantt />
-            <div className="flex items-center gap-3 text-[10px] font-mono text-white/40 tracking-widest">
+            <div className="flex items-center gap-3 text-[10px] font-mono text-[#8A6F5C]/60 tracking-widest">
               <span>2,922 Days</span>
-              <span className="w-px h-3 bg-white/20" />
+              <span className="w-px h-3 bg-[#1A2B4A]/10" />
               <span>Est. 2018</span>
-              <span className="w-px h-3 bg-white/20" />
-              <span className="text-[#3B82C4]/80">2026 / 04 / 23</span>
+              <span className="w-px h-3 bg-[#1A2B4A]/10" />
+              <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 23</span>
             </div>
           </div>
         )}
