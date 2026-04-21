@@ -22,7 +22,7 @@ export default function Header({ pictureUrl, displayName }: HeaderProps) {
           <img
             src="/wired-tokyo-logo.svg"
             alt="WIRED TOKYO"
-            className="h-3 w-auto opacity-75"
+            className="h-5 w-auto opacity-75"
           />
         </div>
 

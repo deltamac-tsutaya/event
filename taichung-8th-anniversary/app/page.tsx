@@ -100,7 +100,7 @@ function HeroSection({ compact }: { compact: boolean }) {
           <img
             src="/wired-tokyo-logo.svg"
             alt="WIRED TOKYO"
-            className="h-3 w-auto brightness-0 invert opacity-45"
+            className="h-5 w-auto brightness-0 invert opacity-45"
           />
         </div>
 
