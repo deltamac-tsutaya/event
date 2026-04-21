@@ -392,6 +392,21 @@ function HomeContent() {
       {state === "E" && user && <AlreadyDrawnSection lineUserId={user.userId} />}
       {state === "F"       && <ActivityEndedSection />}
 
+      {/* DEV ONLY — 清除快取 */}
+      {process.env.NODE_ENV === "development" && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            className="rounded-full bg-red-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg opacity-70 hover:opacity-100"
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+          >
+            Clear Cache
+          </button>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
