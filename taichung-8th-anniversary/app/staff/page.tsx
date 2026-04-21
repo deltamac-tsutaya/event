@@ -4,7 +4,16 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Lock, RefreshCcw, CheckCircle, AlertCircle } from "lucide-react";
+import { 
+  Lock, 
+  RefreshCcw, 
+  CheckCircle, 
+  AlertCircle, 
+  QrCode, 
+  X, 
+  Printer,
+  ChevronRight
+} from "lucide-react";
 
 interface StampConfig {
   uuid: string;
@@ -20,10 +29,10 @@ export default function StaffPage() {
   const [configs, setConfigs] = useState<StampConfig[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedQR, setSelectedQR] = useState<StampConfig | null>(null);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // 簡單密碼驗證 (實務上建議透過 API 驗證)
     if (password === "nexus8th") {
       setIsAuthorized(true);
       fetchConfigs();
@@ -47,6 +56,12 @@ export default function StaffPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getQRUrl = (uuid: string) => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const fullUrl = `${baseUrl}/stamp?id=${uuid}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(fullUrl)}`;
   };
 
   if (!isAuthorized) {
@@ -90,7 +105,7 @@ export default function StaffPage() {
           </div>
           <Button variant="outline" onClick={fetchConfigs} disabled={loading}>
             <RefreshCcw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-            刷新
+            刷新數據
           </Button>
         </header>
 
@@ -111,9 +126,12 @@ export default function StaffPage() {
             {configs
               .filter((c) => ["02", "05", "06"].includes(c.stamp_id))
               .map((config) => (
-                <Card key={config.uuid} className="border-l-4 border-l-orange-500">
-                  <CardContent className="pt-6">
-                    <div className="flex items-start justify-between">
+                <Card key={config.uuid} className="border-l-4 border-l-orange-500 overflow-hidden group">
+                  <CardContent className="p-0">
+                    <button 
+                      onClick={() => setSelectedQR(config)}
+                      className="w-full text-left p-6 hover:bg-orange-50 transition-colors flex items-start justify-between"
+                    >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <span className="text-2xl font-bold text-[#1A2B4A]">{config.stamp_id}</span>
@@ -121,15 +139,13 @@ export default function StaffPage() {
                             變體 {config.variant_id}
                           </span>
                         </div>
-                        <p className="text-sm font-medium text-gray-600">
-                          {config.stamp_id === "02" ? "職人雜貨區" : config.stamp_id === "05" ? "樓梯書牆" : "吧檯區"}
-                        </p>
-                        <code className="block rounded bg-gray-100 p-1.5 text-[10px] text-gray-400 break-all">
-                          UUID: {config.uuid}
-                        </code>
+                        <p className="text-sm font-medium text-gray-600">{config.area_name}</p>
                       </div>
-                      <CheckCircle className="text-green-500" size={24} />
-                    </div>
+                      <div className="flex flex-col items-end gap-2">
+                         <QrCode className="text-orange-400 group-hover:text-orange-600 transition-colors" />
+                         <span className="text-[10px] text-orange-600 font-bold">點擊顯示 QR</span>
+                      </div>
+                    </button>
                   </CardContent>
                 </Card>
               ))}
@@ -146,30 +162,65 @@ export default function StaffPage() {
                 .filter((c) => !["02", "05", "06"].includes(c.stamp_id))
                 .sort((a, b) => a.stamp_id.localeCompare(b.stamp_id))
                 .map((config) => (
-                  <Card key={config.uuid} className="bg-white">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-gray-900">{config.stamp_id}</span>
-                        <span className="text-[10px] text-gray-400">Active</span>
-                      </div>
-                      <p className="mt-1 text-[10px] text-gray-500 truncate font-mono">
-                        {config.uuid.slice(0, 8)}...
-                      </p>
-                    </CardContent>
-                  </Card>
+                  <button 
+                    key={config.uuid} 
+                    onClick={() => setSelectedQR(config)}
+                    className="text-left"
+                  >
+                    <Card className="bg-white hover:border-[#1A2B4A] transition-all group">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-bold text-gray-900">{config.stamp_id}</span>
+                          <QrCode size={16} className="text-gray-300 group-hover:text-[#1A2B4A]" />
+                        </div>
+                        <p className="mt-1 text-[9px] text-gray-400 truncate uppercase tracking-tighter">
+                          {config.area_name || '固定點位'}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </button>
                 ))}
             </div>
           </section>
         </div>
 
-        <footer className="rounded-xl bg-blue-50 p-4 text-xs text-blue-700 leading-relaxed">
-          <p className="font-bold mb-1">注意事項：</p>
-          <ul className="list-disc pl-4 space-y-1">
-            <li>系統已於今日午夜隨機選出 active QR code。</li>
-            <li>請確認實體卡片上的編號與上方「變體 ID」一致。</li>
-            <li>非 active 的 QR code 會被後端拒絕掃描。</li>
-          </ul>
-        </footer>
+        {/* QR Code 預覽彈窗 */}
+        {selectedQR && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <Card className="w-full max-w-sm animate-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between border-b p-4">
+                <h3 className="font-bold text-[#1A2B4A]">
+                  點位 {selectedQR.stamp_id} {selectedQR.variant_id > 1 && `(變體 ${selectedQR.variant_id})`}
+                </h3>
+                <button onClick={() => setSelectedQR(null)} className="text-gray-400 hover:text-gray-600">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-8 flex flex-col items-center gap-6">
+                <div className="bg-white p-4 rounded-2xl shadow-inner border">
+                  <img 
+                    src={getQRUrl(selectedQR.uuid)} 
+                    alt="QR Code" 
+                    className="w-48 h-48 sm:w-64 sm:h-64"
+                  />
+                </div>
+                <div className="text-center space-y-2">
+                   <p className="text-sm font-bold text-gray-700">{selectedQR.area_name}</p>
+                   <code className="text-[10px] text-gray-400 break-all bg-gray-50 p-2 rounded block">
+                     {selectedQR.uuid}
+                   </code>
+                </div>
+                <Button 
+                  onClick={() => window.print()}
+                  className="w-full bg-[#1A2B4A] gap-2"
+                >
+                  <Printer size={18} />
+                  列印此 QR Code
+                </Button>
+              </div>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
