@@ -13,7 +13,7 @@ import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import ScanResultOverlay from "@/components/ScanResultOverlay";
 import { toast } from "sonner";
-import { Sparkles, Ticket, Info, ChevronRight } from "lucide-react";
+import { Sparkles, Ticket, Info, ChevronRight, CheckCircle } from "lucide-react";
 import type { DrawHistory, Reward } from "@/lib/types";
 import { DynamicHero } from "@/components/DynamicHero";
 
@@ -224,7 +224,7 @@ function MainContent() {
       }`}>
         {/* 狀態 A：未登入 */}
         {state === "A" && (
-          <Card className="p-8 shadow-2xl border-none space-y-8 bg-white/90 backdrop-blur-md">
+          <PageCard className="p-8 shadow-2xl border-none space-y-8 bg-white/90 backdrop-blur-md">
             <div className="space-y-2 text-center">
               <h2 className="text-xl font-bold text-[#1A2B4A]">歡迎參加週年慶活動</h2>
               <p className="text-sm text-gray-500">集印完成即可享受每日抽獎驚喜</p>
@@ -243,7 +243,7 @@ function MainContent() {
 
         {/* 狀態 B：集印中 */}
         {state === "B" && (
-          <Card className="p-6 shadow-xl border-none space-y-6">
+          <PageCard className="p-6 shadow-xl border-none space-y-6">
             <div className="space-y-1">
               <h2 className="text-sm font-bold text-[#1A2B4A] flex items-center gap-2">
                  <div className="w-1 h-4 bg-[#C9A84C] rounded-full" />
@@ -270,7 +270,7 @@ function MainContent() {
 
         {/* 狀態 C：集滿可抽獎 */}
         {state === "C" && (
-          <Card className="p-8 shadow-xl border-none space-y-6 bg-white text-center">
+          <PageCard className="p-8 shadow-xl border-none space-y-6 bg-white text-center">
             <div className="space-y-2">
               <div className="mx-auto w-16 h-16 bg-[#C9A84C]/10 rounded-full flex items-center justify-center text-[#C9A84C]">
                 <Sparkles size={32} />
@@ -307,7 +307,7 @@ function MainContent() {
 
         {/* 狀態 E：今日已抽 */}
         {state === "E" && (
-          <Card className="p-8 text-center shadow-xl border-none space-y-6">
+          <PageCard className="p-8 text-center shadow-xl border-none space-y-6">
              <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
                <CheckCircle2 size={32} />
              </div>
@@ -323,7 +323,7 @@ function MainContent() {
 
         {/* 狀態 F：活動結束 */}
         {state === "F" && (
-          <Card className="p-10 text-center shadow-xl border-none space-y-6 bg-gray-50">
+          <PageCard className="p-10 text-center shadow-xl border-none space-y-6 bg-gray-50">
              <h2 className="text-2xl font-bold text-[#1A2B4A]">感謝 21 天的相伴</h2>
              <p className="text-sm text-gray-500 leading-relaxed">
                期待下次與你連結。<br />
@@ -405,7 +405,7 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
   );
 }
 
-function Card({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+function PageCard({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={`rounded-3xl bg-white ${className}`} {...props}>
       {children}
@@ -415,7 +415,7 @@ function Card({ children, className, ...props }: React.HTMLAttributes<HTMLDivEle
 
 function CheckCircle2(props: any) {
   return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+    <CheckCircle {...props} />
   );
 }
 

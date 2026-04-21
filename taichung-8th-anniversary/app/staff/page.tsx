@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Lock, RefreshCcw, CheckCircle2, AlertCircle } from "lucide-react";
+import { Lock, RefreshCcw, CheckCircle, AlertCircle } from "lucide-react";
 
 interface StampConfig {
   uuid: string;
@@ -128,7 +128,7 @@ export default function StaffPage() {
                           UUID: {config.uuid}
                         </code>
                       </div>
-                      <CheckCircle2 className="text-green-500" size={24} />
+                      <CheckCircle className="text-green-500" size={24} />
                     </div>
                   </CardContent>
                 </Card>
@@ -138,7 +138,7 @@ export default function StaffPage() {
           {/* 固定與隱藏點位區塊 */}
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-700 flex items-center gap-2">
-              <CheckCircle2 size={18} />
+              <CheckCircle size={18} />
               固定與隱藏點位
             </h2>
             <div className="grid grid-cols-2 gap-3">
