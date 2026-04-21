@@ -6,7 +6,7 @@ export default function Footer() {
           <img
             src="/tsutaya-logo.svg"
             alt="TSUTAYA BOOKSTORE"
-            className="h-4 w-auto brightness-0 invert opacity-80"
+            className="h-3 w-auto brightness-0 invert opacity-80"
           />
           <span className="text-[10px] font-mono text-white/40 shrink-0">×</span>
           <img

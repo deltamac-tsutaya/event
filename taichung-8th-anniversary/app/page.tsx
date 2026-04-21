@@ -93,7 +93,7 @@ function HeroSection({ compact }: { compact: boolean }) {
           <img
             src="/tsutaya-logo.svg"
             alt="TSUTAYA BOOKSTORE"
-            className="h-5 w-auto brightness-0 invert opacity-65"
+            className="h-4 w-auto brightness-0 invert opacity-65"
           />
           <span className="text-white/35 font-mono text-[10px]">×</span>
           <img
