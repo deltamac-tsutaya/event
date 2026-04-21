@@ -13,19 +13,18 @@ import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import ScanResultOverlay from "@/components/ScanResultOverlay";
 import { toast } from "sonner";
-import { Sparkles, Ticket, Info, ChevronRight, CheckCircle } from "lucide-react";
-import type { DrawHistory, Reward } from "@/lib/types";
+import { Info, Ticket, Sparkles } from "lucide-react";
+import type { Reward } from "@/lib/types";
 import { DynamicHero } from "@/components/DynamicHero";
 
 // ── 活動期間常數 ─────────────────────────────────────────────────────────
 const ACTIVITY_END = new Date("2026-05-13T23:59:59+08:00");
-const INFINITY_DAY = new Date("2026-05-13T20:00:00+08:00");
 
 function isActivityEnded(): boolean {
   return new Date() > ACTIVITY_END;
 }
 
-// ── Hero Section（全時顯示，支援點擊切換展開/收合）──────────────────────────
+// ── Hero Section ─────────────────────────────────────────────────────────
 function HeroSection({ 
   compact, 
   bitmask, 
@@ -69,7 +68,7 @@ function HeroSection({
         </div>
 
         {!compact && (
-          <div className="mt-2 space-y-4 animate-page-in">
+          <div className="mt-2 space-y-4">
              <p className="text-sm text-[#1A2B4A]/70 font-medium">
                找出店內 8 個印記，集滿抽獎，每天一次機會
              </p>
@@ -87,15 +86,13 @@ function HeroSection({
   );
 }
 
-// ── Infinity Day Section (狀態 G) ─────────────────────────────────────────
+// ── Infinity Day Section ─────────────────────────────────────────────────
 function InfinityDaySection({ tickets }: { tickets: number }) {
-  // 模擬全池數據 (實務上應從 API 獲取)
   const totalPool = 1250 + tickets; 
-  const winRate = ((8 / totalPool) * 100).toFixed(3);
   const userProb = ((tickets * (8 / totalPool)) * 100).toFixed(2);
 
   return (
-    <Card className="overflow-hidden border-none bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-xl">
+    <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-xl">
       <div className="p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -130,12 +127,8 @@ function InfinityDaySection({ tickets }: { tickets: number }) {
             </div>
           </div>
         </div>
-        
-        <p className="text-[9px] text-white/40 text-center italic">
-          每完成一次每日抽獎，即可獲得一張加碼獎券。
-        </p>
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -179,7 +172,7 @@ function MainContent() {
       const data = await res.json();
       if (data.success) {
         setLastReward(data.reward);
-        toast.success("抽獎成功！今日加碼獎券 +1", { icon: <Ticket className="text-blue-500" /> });
+        toast.success("抽獎成功！今日加碼獎券 +1", { icon: "🎫" });
         refetch();
       } else {
         toast.error(data.error || "抽獎失敗");
@@ -191,7 +184,6 @@ function MainContent() {
     }
   };
 
-  // ── 狀態判定邏輯 ──────────────────────────────────────────────────────────
   type State = "loading" | "A" | "B" | "C" | "D" | "E" | "F";
   const state: State = useMemo(() => {
     if (isLoading) return "loading";
@@ -203,14 +195,13 @@ function MainContent() {
     return "C";
   }, [isLoading, user, totalStamps, progress?.drawnToday, lastReward]);
 
-  // 只要 userHeroExpanded 為 true，就強制不 compact
   const isCompact = state !== "A" && !userHeroExpanded;
 
   if (state === "loading") {
     return (
       <div className="flex h-svh flex-col items-center justify-center gap-4 bg-[#F5F2ED]">
         <div className="size-10 animate-spin rounded-full border-4 border-[#1A2B4A] border-t-transparent" />
-        <p className="text-xs font-mono tracking-widest text-[#8A6F5C]">LOADING NEXUS...</p>
+        <p className="text-xs font-mono tracking-widest text-[#8A6F5C]">LOADING...</p>
       </div>
     );
   }
@@ -226,185 +217,104 @@ function MainContent() {
       <main className={`relative z-20 -mt-10 mx-auto w-full max-w-2xl px-5 space-y-6 transition-all duration-700 ${
         userHeroExpanded ? "opacity-0 pointer-events-none translate-y-10" : "opacity-100 translate-y-0"
       }`}>
-        {/* 狀態 A：未登入 */}
+        {/* 狀態 A */}
         {state === "A" && (
           <PageCard className="p-8 shadow-2xl border-none space-y-8 bg-white/90 backdrop-blur-md">
             <div className="space-y-2 text-center">
               <h2 className="text-xl font-bold text-[#1A2B4A]">歡迎參加週年慶活動</h2>
               <p className="text-sm text-gray-500">集印完成即可享受每日抽獎驚喜</p>
             </div>
-            
             <StepFlow />
-
-            <Button
-              onClick={login}
-              className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold shadow-lg hover:shadow-xl transition-all"
-            >
+            <Button onClick={login} className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold">
               用 LINE 帳號參加
             </Button>
-          </Card>
+          </PageCard>
         )}
 
-        {/* 狀態 B：集印中 */}
+        {/* 狀態 B */}
         {state === "B" && (
           <PageCard className="p-6 shadow-xl border-none space-y-6">
             <div className="space-y-1">
-              <h2 className="text-sm font-bold text-[#1A2B4A] flex items-center gap-2">
-                 <div className="w-1 h-4 bg-[#C9A84C] rounded-full" />
-                 {totalStamps === 0 ? "探索開始" : 
-                  totalStamps === 7 ? "再 1 枚即可抽獎" :
-                  totalStamps >= 4 ? "已完成一半，繼續前進" : "探索進度中"}
+              <h2 className="text-sm font-bold text-[#1A2B4A]">
+                 {totalStamps === 0 ? "探索開始" : totalStamps >= 4 ? "已完成一半，繼續前進" : "探索進度中"}
               </h2>
-              <p className="text-xs text-gray-400">
-                還差 {8 - totalStamps} 枚，繼續探索店內各區
-              </p>
+              <p className="text-xs text-gray-400">還差 {8 - totalStamps} 枚，繼續探索店內各區</p>
             </div>
-
             <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} />
-
-            <div className="grid grid-cols-2 gap-3">
-              <Link href="/stamp" className="block col-span-2">
-                <Button className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold shadow-lg">
-                  前往掃描 QR code
-                </Button>
-              </Link>
-            </div>
-          </Card>
+            <Link href="/stamp" className="block">
+              <Button className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold shadow-lg">
+                前往掃描 QR code
+              </Button>
+            </Link>
+          </PageCard>
         )}
 
-        {/* 狀態 C：集滿可抽獎 */}
+        {/* 狀態 C */}
         {state === "C" && (
           <PageCard className="p-8 shadow-xl border-none space-y-6 bg-white text-center">
-            <div className="space-y-2">
-              <div className="mx-auto w-16 h-16 bg-[#C9A84C]/10 rounded-full flex items-center justify-center text-[#C9A84C]">
-                <Sparkles size={32} />
-              </div>
-              <h2 className="text-xl font-bold text-[#1A2B4A]">集印完成。今日抽獎已解鎖。</h2>
-              <p className="text-sm text-gray-500">每個帳號每天可抽獎 1 次，明天再來還有機會</p>
-            </div>
-            
-            <Button
-              onClick={handleDraw}
-              disabled={drawLoading}
-              className="h-14 w-full rounded-full bg-[#C9A84C] text-lg font-bold shadow-lg animate-pulse"
-            >
+            <h2 className="text-xl font-bold text-[#1A2B4A]">集印完成。今日抽獎已解鎖。</h2>
+            <p className="text-sm text-gray-500">每個帳號每天可抽獎 1 次</p>
+            <Button onClick={handleDraw} disabled={drawLoading} className="h-14 w-full rounded-full bg-[#C9A84C] text-lg font-bold animate-pulse">
               {drawLoading ? "抽獎中..." : "立即抽獎"}
             </Button>
-          </Card>
+          </PageCard>
         )}
 
-        {/* 狀態 D：抽獎結果 */}
+        {/* 狀態 D */}
         {state === "D" && lastReward && (
           <div className="space-y-6">
             <RewardCard reward={lastReward} />
-            <div className="flex flex-col gap-3">
-              <Button className="h-14 rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
-                查看我的獎券
-              </Button>
-              <Button variant="outline" className="h-12 rounded-full border-[#1A2B4A]/20 text-[#1A2B4A]">
-                分享給朋友
-              </Button>
-            </div>
-            <p className="text-center text-xs text-gray-400">明天可以再抽一次，記得回來</p>
+            <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
+              查看我的獎券
+            </Button>
           </div>
         )}
 
-        {/* 狀態 E：今日已抽 */}
+        {/* 狀態 E */}
         {state === "E" && (
           <PageCard className="p-8 text-center shadow-xl border-none space-y-6">
-             <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
-               <CheckCircle2 size={32} />
-             </div>
-             <div className="space-y-1">
-               <h2 className="text-xl font-bold text-[#1A2B4A]">今日抽獎已完成</h2>
-               <p className="text-sm text-gray-500">明天 00:00 後將再次開放抽獎</p>
-             </div>
+             <h2 className="text-xl font-bold text-[#1A2B4A]">今日抽獎已完成</h2>
+             <p className="text-sm text-gray-500">明天 00:00 後將再次開放</p>
              <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
                 查看我的獎券
              </Button>
-          </Card>
+          </PageCard>
         )}
 
-        {/* 狀態 F：活動結束 */}
+        {/* 狀態 F */}
         {state === "F" && (
           <PageCard className="p-10 text-center shadow-xl border-none space-y-6 bg-gray-50">
              <h2 className="text-2xl font-bold text-[#1A2B4A]">感謝 21 天的相伴</h2>
-             <p className="text-sm text-gray-500 leading-relaxed">
-               期待下次與你連結。<br />
-               已抽中的獎券有效期為發放日起 14 天，請盡速至店內使用。
-             </p>
              <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
                 查看我的獎券
              </Button>
-          </Card>
+          </PageCard>
         )}
 
-        {/* 狀態 G：Infinity Day 專區 (僅登入後顯示) */}
         {user && state !== "F" && (
           <InfinityDaySection tickets={progress?.ticketsCount ?? 0} />
         )}
 
         {/* 底部導覽 */}
         <div className="flex justify-center gap-6 pt-4">
-          <Link href="#rules" className="text-xs font-bold text-[#1A2B4A]/50 hover:text-[#1A2B4A] flex items-center gap-1">
+          <Link href="#rules" className="text-xs font-bold text-[#1A2B4A]/50 flex items-center gap-1">
              <Info size={12} /> 活動規則
           </Link>
-          <Link href="#faq" className="text-xs font-bold text-[#1A2B4A]/50 hover:text-[#1A2B4A] flex items-center gap-1">
+          <Link href="#faq" className="text-xs font-bold text-[#1A2B4A]/50 flex items-center gap-1">
              <Info size={12} /> 常見問題
           </Link>
         </div>
-        
-        <div id="rules" className="pt-10 scroll-mt-10">
-          <SectionHeader title="活動規則" />
-          <div className="mt-4 text-[13px] text-gray-600 space-y-3 leading-relaxed">
-            <p>• 至店內找到 8 個集印點 QR code，使用手機掃描完成集印。</p>
-            <p>• 每個 QR code 每人限掃描 1 次，重複掃描不累計。</p>
-            <p>• 集滿 8 枚後，每日可抽獎 1 次（每日午夜 00:00 重置）。</p>
-            <p>• 8 枚印章中的 stamp-02、05、06 為每日輪替點位，每日午夜隨機抽換變體。當日未掃到輪替點則無法當日集滿。</p>
-          </div>
-        </div>
-
-        <div id="faq" className="pt-10 scroll-mt-10">
-          <SectionHeader title="常見問題" />
-          <div className="mt-4 space-y-4">
-            <FaqItem question="掃描後沒有蓋印？" answer="請確認已透過 LINE 登入活動頁面，重新整理後再試。" />
-            <FaqItem question="今天已經抽過獎了？" answer="每個帳號每天可抽 1 次。午夜 00:00 後重新開放。" />
-            <FaqItem question="獎券在哪裡查看？" answer="抽中的獎券會自動存入 LINE 優惠券夾，可從 LINE 主頁進入查看。" />
-          </div>
-        </div>
       </main>
-
       <Footer />
-
       {showScanResult && collectParam && (
         <ScanResultOverlay
           stampId={collectParam}
           onClose={() => {
             setShowScanResult(false);
-            const newPath = window.location.pathname;
-            window.history.replaceState(null, "", newPath);
+            window.history.replaceState(null, "", window.location.pathname);
           }}
         />
       )}
-    </div>
-  );
-}
-
-function SectionHeader({ title }: { title: string }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="h-px flex-1 bg-gray-200" />
-      <span className="text-[10px] font-bold text-[#8A6F5C] uppercase tracking-[0.2em]">{title}</span>
-      <div className="h-px flex-1 bg-gray-200" />
-    </div>
-  );
-}
-
-function FaqItem({ question, answer }: { question: string; answer: string }) {
-  return (
-    <div className="bg-white rounded-xl p-4 shadow-sm">
-      <p className="text-sm font-bold text-[#1A2B4A] mb-1">{question}</p>
-      <p className="text-[12px] text-gray-500 leading-relaxed">{answer}</p>
     </div>
   );
 }
@@ -414,12 +324,6 @@ function PageCard({ children, className, ...props }: React.HTMLAttributes<HTMLDi
     <div className={`rounded-3xl bg-white ${className}`} {...props}>
       {children}
     </div>
-  );
-}
-
-function CheckCircle2(props: any) {
-  return (
-    <CheckCircle {...props} />
   );
 }
 
