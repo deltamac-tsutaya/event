@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Header from "@/components/Header";
 import RewardCard from "@/components/RewardCard";
 import StaffRedeemNotice from "@/components/StaffRedeemNotice";
 import EmptyState from "@/components/ui-state/EmptyState";
@@ -104,7 +103,6 @@ export default function RewardsPage() {
   if (!progressLoading && progress && progress.totalStamps < 8) {
     return (
       <div className="flex min-h-full flex-col bg-[#F5F2ED]">
-        <Header pictureUrl={user?.pictureUrl} displayName={user?.displayName} />
         <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
           <span className="font-mono text-5xl font-bold text-[#1A2B4A]/20">∞</span>
           <div className="space-y-1">
@@ -132,7 +130,6 @@ export default function RewardsPage() {
   if (progressError) {
     return (
       <div className="flex min-h-full flex-col bg-[#F5F2ED]">
-        <Header pictureUrl={user?.pictureUrl} displayName={user?.displayName} />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
           <ErrorState message={progressError} onRetry={refetch} />
         </main>
@@ -144,8 +141,6 @@ export default function RewardsPage() {
 
   return (
     <div className="flex min-h-full flex-col bg-[#F5F2ED]">
-      <Header pictureUrl={user?.pictureUrl} displayName={user?.displayName} />
-
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-6">
         {/* Back link */}
         <div className="flex items-center justify-between">

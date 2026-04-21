@@ -3,7 +3,6 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import StampCard from "@/components/StampCard";
 import RewardCard from "@/components/RewardCard";
@@ -364,8 +363,6 @@ function HomeContent() {
 
   return (
     <div className="flex min-h-full flex-col bg-[#F5F2ED]">
-      <Header pictureUrl={user?.pictureUrl} displayName={user?.displayName} />
-
       {/* Hero：全時可見，compact 動態切換 */}
       <HeroSection compact={compactHero} />
 

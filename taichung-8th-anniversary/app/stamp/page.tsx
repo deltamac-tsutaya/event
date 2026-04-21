@@ -3,7 +3,6 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Header from "@/components/Header";
 import QrScanner from "@/components/QrScanner";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
@@ -76,10 +75,6 @@ export default function StampPage() {
 
   return (
     <div className="flex min-h-full flex-col bg-[#F5F2ED]">
-      <Header
-        pictureUrl={user?.pictureUrl}
-        displayName={user?.displayName}
-      />
 
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-6 gap-5">
         {/* Progress indicator */}

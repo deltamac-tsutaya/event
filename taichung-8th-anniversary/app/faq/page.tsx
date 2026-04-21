@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FaqAccordion from "@/components/FaqAccordion";
 import { useLiffUser } from "@/hooks/useLiffUser";
@@ -11,8 +10,6 @@ export default function FaqPage() {
 
   return (
     <div className="flex min-h-full flex-col bg-gray-50">
-      <Header pictureUrl={user?.pictureUrl} displayName={user?.displayName} />
-
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 px-4 py-6">
         <div className="flex items-center gap-3">
           <Link
