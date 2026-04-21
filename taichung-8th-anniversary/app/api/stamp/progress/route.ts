@@ -54,7 +54,11 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const totalStamps = stamps?.length ?? 0;
+  // ── 過濾進度計數 ────────────────────────────────────────────────────────
+  // 排除 A, B, C 這類不計入主進度的成就點
+  const achievementIds = ["A", "B", "C"];
+  const mainStampsCount = stamps?.filter(s => !achievementIds.includes(s.stamp_id)).length ?? 0;
+  
   const today = getTaipeiDateString();
 
   // Check if already drawn today
@@ -73,11 +77,11 @@ export async function GET(request: NextRequest) {
   }
 
   const drawnToday = !!drawToday;
-  const canDraw = totalStamps >= 8 && !drawnToday;
+  const canDraw = mainStampsCount >= 8 && !drawnToday;
 
   return NextResponse.json({
     stamps: stamps ?? [],
-    totalStamps,
+    totalStamps: mainStampsCount, // 回傳過濾後的數量
     canDraw,
     drawnToday,
     ticketsCount: user.tickets_count ?? 0,

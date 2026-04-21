@@ -73,9 +73,17 @@ export default function StampPage() {
     setLastStampId("");
   };
 
+  const getAchievementMeta = (id: string) => {
+    const meta: Record<string, { icon: string; title: string; copy: string }> = {
+      "A": { icon: "🐿️", title: "你找到了松鼠", copy: "牠觀察你的時間比你想像的還久。" },
+      "B": { icon: "🐦", title: "你讓自己慢下來", copy: "小鳥才現身。" },
+      "C": { icon: "🦌", title: "這不是告示牌", copy: "是小鹿留給觀察者的訊息。" },
+    };
+    return meta[id];
+  };
+
   return (
     <div className="flex min-h-full flex-col bg-[#F5F2ED]">
-
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-6 gap-5">
         {/* Progress indicator */}
         <div className="flex items-center justify-between">
@@ -107,18 +115,41 @@ export default function StampPage() {
         )}
 
         {status === "success" && (
-          <div className="flex flex-col items-center gap-4 py-8 text-center">
-            <div className="animate-stamp-drop rounded-full bg-[#EEE9E2] p-6">
-              <span className="font-mono text-3xl font-bold text-[#1A2B4A] leading-none">
-                {lastStampId}
-              </span>
-            </div>
-            <div className="space-y-1">
-              <p className="text-lg font-bold text-[#1A2B4A]">蓋章成功</p>
-              <p className="text-sm text-gray-500">
-                印章 {lastStampId} 已收集
-              </p>
-              <p className="text-xs text-gray-400">3 秒後返回首頁…</p>
+          <div className="flex flex-col items-center gap-6 py-12 text-center animate-in fade-in zoom-in duration-500">
+            {['A', 'B', 'C'].includes(lastStampId) ? (
+              // 隱藏成就點特別視覺
+              <>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-yellow-400/20 blur-3xl rounded-full animate-pulse" />
+                  <div className="relative size-32 bg-white rounded-full flex items-center justify-center text-6xl shadow-xl border-4 border-[#C9A84C] animate-bounce">
+                    {getAchievementMeta(lastStampId)?.icon}
+                  </div>
+                </div>
+                <div className="space-y-3 px-6">
+                  <p className="text-xs font-bold tracking-widest text-[#C9A84C] uppercase">Achievement Unlocked</p>
+                  <h2 className="text-2xl font-bold text-[#1A2B4A]">{getAchievementMeta(lastStampId)?.title}</h2>
+                  <p className="text-sm text-[#8A6F5C] italic leading-relaxed">「{getAchievementMeta(lastStampId)?.copy}」</p>
+                </div>
+              </>
+            ) : (
+              // 標準點位視覺
+              <>
+                <div className="animate-stamp-drop rounded-full bg-[#EEE9E2] p-8 shadow-inner">
+                  <span className="font-mono text-5xl font-bold text-[#1A2B4A] leading-none tracking-tighter">
+                    {lastStampId}
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xl font-bold text-[#1A2B4A]">蓋章成功</p>
+                  <p className="text-sm text-gray-500 italic">
+                    探索 Nexus Life 的第 {totalStamps} 個印記
+                  </p>
+                </div>
+              </>
+            )}
+            
+            <div className="pt-4">
+               <p className="text-[10px] text-gray-400 animate-pulse">正在為您重新對焦生活，請稍後…</p>
             </div>
           </div>
         )}
