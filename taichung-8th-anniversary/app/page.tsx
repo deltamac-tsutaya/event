@@ -58,33 +58,17 @@ function LoadingSkeleton() {
 }
 
 // ── Hero Section（全時顯示，登入後縮為 compact）──────────────────────────
-function HeroSection({ compact }: { compact: boolean }) {
+import { DynamicHero } from "@/components/DynamicHero";
+
+function HeroSection({ compact, bitmask }: { compact: boolean; bitmask: number }) {
   return (
     <section
-      className={`relative flex flex-col justify-end overflow-hidden bg-[#1A2B4A] w-full transition-[height] duration-500 ease-out ${
+      className={`relative flex flex-col justify-end overflow-hidden w-full transition-[height] duration-500 ease-out ${
         compact ? "h-[44svh]" : "h-[100svh]"
       }`}
     >
-      {/* ∞ 水印：8 旋轉 90deg */}
-      <div
-        aria-hidden
-        className="pointer-events-none select-none absolute inset-0 flex items-center justify-center"
-      >
-        <span
-          className="font-heading font-semibold"
-          style={{
-            fontSize: "clamp(11rem, 52vw, 22rem)",
-            color: "rgba(255,255,255,0.05)",
-            transform: "rotate(90deg)",
-            lineHeight: 1,
-          }}
-        >
-          8
-        </span>
-      </div>
-
-      {/* 漸層疊層 */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#1A2B4A]/30 to-[#1A2B4A]/92" />
+      {/* 動態底圖層 */}
+      <DynamicHero bitmask={bitmask} compact={compact} />
 
       {/* 內容區 */}
       <div className="relative z-10 px-4 pb-6 flex flex-col gap-3">
@@ -358,6 +342,16 @@ function HomeContent() {
 
   const state = determineState();
 
+  // 計算 Bitmask
+  const bitmask = useMemo(() => {
+    if (!progress?.stamps) return 0;
+    return progress.stamps.reduce((mask, s) => {
+      const idNum = parseInt(s.stamp_id, 10);
+      if (isNaN(idNum) || idNum < 1 || idNum > 8) return mask;
+      return mask | (1 << (idNum - 1));
+    }, 0);
+  }, [progress?.stamps]);
+
   const [compactHero, setCompactHero] = useState(false);
   useEffect(() => {
     const shouldCompact = state !== "A" && state !== "loading";
@@ -370,7 +364,7 @@ function HomeContent() {
   return (
     <div className="flex min-h-full flex-col bg-[#F5F2ED]">
       {/* Hero：全時可見，compact 動態切換 */}
-      <HeroSection compact={compactHero} />
+      <HeroSection compact={compactHero} bitmask={bitmask} />
 
       {/* 錯誤提示 */}
       {error && (
