@@ -29,10 +29,28 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // ── UUID 查表驗證 ────────────────────────────────────────────────────────
+  // 透過前端傳入的 UUID (此處變數仍命名為 stampId) 尋找對應且生效中的點位編號
+  const { data: config, error: configError } = await supabaseAdmin
+    .from("stamp_configs")
+    .select("stamp_id")
+    .eq("uuid", stampId)
+    .eq("is_active", true)
+    .single();
+
+  if (configError || !config) {
+    return NextResponse.json(
+      { success: false, reason: "invalid_qr", detail: "此 QR code 已失效或無效" },
+      { status: 403 }
+    );
+  }
+
+  const realStampId = config.stamp_id;
+
   // Insert stamp (UNIQUE(user_id, stamp_id) 防重複)
   const { error: stampError } = await supabaseAdmin.from("stamps").insert({
     user_id: user.id,
-    stamp_id: stampId,
+    stamp_id: realStampId,
   });
 
   if (stampError) {
