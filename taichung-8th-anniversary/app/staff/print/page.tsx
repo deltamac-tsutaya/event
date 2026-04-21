@@ -19,7 +19,7 @@ export default function PrintPage() {
   useEffect(() => {
     async function fetchConfigs() {
       try {
-        const res = await fetch("/api/staff/configs");
+        const res = await fetch("/api/staff/configs?all=true");
         const data = await res.json();
         if (data.success) {
           // 排序：01, 02-v1, 02-v2... A, B, C
