@@ -144,8 +144,8 @@ function InfinityDaySection({ tickets }: { tickets: number }) {
 function MainContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, login, isLoading: userLoading } = useLiffUser();
-  const { progress, isLoading: progressLoading, refetch } = useStampProgress(user?.userId ?? null);
+  const { user, login, loading: userLoading } = useLiffUser();
+  const { progress, loading: progressLoading, refetch } = useStampProgress(user?.userId ?? null);
 
   const [drawLoading, setDrawLoading] = useState(false);
   const [lastReward, setLastReward] = useState<Reward | null>(null);
