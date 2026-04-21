@@ -62,7 +62,7 @@ function HeroSection({ compact }: { compact: boolean }) {
   return (
     <section
       className={`relative flex flex-col justify-end overflow-hidden bg-[#1A2B4A] w-full transition-[height] duration-500 ease-out ${
-        compact ? "h-[44svh]" : "min-h-[100svh]"
+        compact ? "h-[44svh]" : "h-[100svh]"
       }`}
     >
       {/* ∞ 水印：8 旋轉 90deg */}
@@ -358,8 +358,14 @@ function HomeContent() {
 
   const state = determineState();
 
-  // Hero 在未登入（State A）時全高，其餘 compact
-  const compactHero = state !== "A" && state !== "loading";
+  const [compactHero, setCompactHero] = useState(false);
+  useEffect(() => {
+    const shouldCompact = state !== "A" && state !== "loading";
+    if (shouldCompact === compactHero) return;
+    const raf = requestAnimationFrame(() => setCompactHero(shouldCompact));
+    return () => cancelAnimationFrame(raf);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   return (
     <div className="flex min-h-full flex-col bg-[#F5F2ED]">
