@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Card } from "@/components/ui/card";
 
 export interface StampItem {
   stamp_id: string;
@@ -12,35 +13,82 @@ interface StampCardProps {
   totalStamps: number;
 }
 
-const STAMP_META: Record<string, { area: string }> = {
-  "01": { area: "入口主題陳列區" },
-  "02": { area: "生活雜貨區" },
-  "03": { area: "文具選品牆" },
-  "04": { area: "兒童繪本區" },
-  "05": { area: "後方深處書櫃" },
-  "06": { area: "WIRED TOKYO 吧檯" },
-  "07": { area: "WIRED TOKYO 座位" },
-  "08": { area: "結帳櫃檯旁" },
+/**
+ * 集章點位元數據
+ * 1-8 為主進度點位
+ * A, B, C 為隱藏成就點位
+ */
+export const STAMP_META: Record<
+  string,
+  { area: string; element: string; hint: string; isHidden?: boolean }
+> = {
+  "01": {
+    area: "入口主題陳列區",
+    element: "♾️無限",
+    hint: "這裡是起點，也是 ∞ 的第一筆。",
+  },
+  "02": {
+    area: "生活雜貨區",
+    element: "陶杯",
+    hint: "手握一只杯，日常便有了份量。",
+  },
+  "03": {
+    area: "露台區",
+    element: "風",
+    hint: "露台的風，記住了每一個停留的午後。",
+  },
+  "04": {
+    area: "兒童繪本區",
+    element: "橡實",
+    hint: "一顆橡實，藏著一整片森林的故事。",
+  },
+  "05": {
+    area: "後方深處書櫃",
+    element: "書",
+    hint: "每一格書牆，都是一個未讀的世界。",
+  },
+  "06": {
+    area: "WIRED TOKYO 吧檯",
+    element: "咖啡",
+    hint: "一杯咖啡的時間，夠讓生活重新對焦。",
+  },
+  "07": {
+    area: "WIRED TOKYO 座位",
+    element: "光點",
+    hint: "光從天井落下，這一刻你也在其中。",
+  },
+  "08": {
+    area: "結帳櫃檯旁",
+    element: "花朵",
+    hint: "八年，每天都有一朵花悄悄開。",
+  },
+  A: {
+    area: "牆角角落",
+    element: "墨鏡-松鼠",
+    hint: "你找到了松鼠。牠觀察你的時間比你想像的還久。",
+    isHidden: true,
+  },
+  B: {
+    area: "窗邊位置",
+    element: "墨鏡-小鳥",
+    hint: "你讓自己慢下來，小鳥才現身。",
+    isHidden: true,
+  },
+  C: {
+    area: "告示牌後",
+    element: "墨鏡-小鹿",
+    hint: "這不是告示牌，是小鹿留給觀察者的訊息。",
+    isHidden: true,
+  },
 };
-
-function formatCollectedAt(iso: string): string {
-  const d = new Date(iso);
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  const hh = String(d.getHours()).padStart(2, "0");
-  const min = String(d.getMinutes()).padStart(2, "0");
-  return `${mm}/${dd} ${hh}:${min}`;
-}
 
 export default function StampCard({ stamps, totalStamps }: StampCardProps) {
   const collectedIds = new Set(stamps.map((s) => s.stamp_id));
-  const collectedMap = Object.fromEntries(
-    stamps.map((s) => [s.stamp_id, s.collected_at])
-  );
+  
+  // 分離主進度印章與隱藏印章
+  const mainStamps = Object.keys(STAMP_META).filter(id => !STAMP_META[id].isHidden);
+  const hiddenStamps = Object.keys(STAMP_META).filter(id => STAMP_META[id].isHidden);
 
-  const isComplete = totalStamps >= 8;
-
-  // Track which stamp_ids are newly animated
   const [animating, setAnimating] = useState<Set<string>>(new Set());
   const prevIds = useRef<Set<string>>(new Set(collectedIds));
 
@@ -61,73 +109,98 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
       return () => clearTimeout(timer);
     }
     prevIds.current = new Set(collectedIds);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stamps]);
+  }, [stamps, collectedIds]);
 
   return (
-    <div className="space-y-3">
-      {/* Progress bar */}
-      <div className="flex items-center justify-between text-xs text-gray-500">
-        <span>集印進度</span>
-        <span className="font-semibold text-[#1A2B4A]">{totalStamps} / 8</span>
-      </div>
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#EDEBE5]">
-        <div
-          className="h-full rounded-full bg-[#C9A84C] transition-all duration-700"
-          style={{ width: `${(totalStamps / 8) * 100}%` }}
-        />
-      </div>
+    <div className="space-y-6">
+      {/* ── 主進度區 ── */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between text-xs text-gray-500">
+          <span className="font-medium">探索進度</span>
+          <span className="font-bold text-[#1A2B4A] tabular-nums">{totalStamps} / 8</span>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-[#EDEBE5]">
+          <div
+            className="h-full rounded-full bg-[#C9A84C] transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(201,168,76,0.4)]"
+            style={{ width: `${(Math.min(totalStamps, 8) / 8) * 100}%` }}
+          />
+        </div>
 
-      {/* Grid */}
-      <div
-        className={`grid grid-cols-4 gap-3 ${
-          isComplete ? "animate-all-complete" : ""
-        }`}
-      >
-        {Object.entries(STAMP_META).map(([id, { area }]) => {
-          const collected = collectedIds.has(id);
-          const isNew = animating.has(id);
+        <div className="grid grid-cols-4 gap-3 pt-2">
+          {mainStamps.map((id) => {
+            const collected = collectedIds.has(id);
+            const isNew = animating.has(id);
+            const meta = STAMP_META[id];
 
-          return (
-            <div key={id} className="flex flex-col items-center gap-1.5">
-              {/* 圓形印章 */}
-              <div
-                className={`
-                  relative w-full aspect-square rounded-full flex items-center justify-center
-                  transition-all duration-300
-                  ${collected
-                    ? "bg-[rgba(201,168,76,0.08)] border border-[rgba(201,168,76,0.4)] shadow-[0_2px_10px_rgba(201,168,76,0.35)]"
-                    : "bg-[#EDEBE5] border border-dashed border-[#B0AEAD] opacity-45"
-                  }
-                  ${isNew ? "animate-stamp-drop" : ""}
-                  ${isComplete && collected ? "ring-2 ring-[#C9A84C]/30" : ""}
-                `}
-              >
+            return (
+              <div key={id} className="flex flex-col items-center gap-1.5 group">
+                <div
+                  className={`
+                    relative w-full aspect-square rounded-full flex items-center justify-center
+                    transition-all duration-500 border
+                    ${collected
+                      ? "bg-white border-[#C9A84C]/40 shadow-sm"
+                      : "bg-[#EDEBE5]/50 border-dashed border-[#B0AEAD]/40 opacity-60"
+                    }
+                    ${isNew ? "animate-stamp-drop" : ""}
+                  `}
+                >
+                  <span
+                    className={`font-serif text-lg font-bold tabular-nums ${
+                      collected ? "text-[#C9A84C]" : "text-[#B0AEAD]"
+                    }`}
+                  >
+                    {collected ? meta.element.slice(0, 2) : id}
+                  </span>
+                  
+                  {/* 收集後的裝飾小點 */}
+                  {collected && (
+                    <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#2B5CE6] rounded-full border-2 border-white shadow-sm" />
+                  )}
+                </div>
                 <span
-                  className={`font-serif text-base font-bold leading-none tabular-nums ${
-                    collected ? "text-[#C9A84C]" : "text-[#B0AEAD]"
+                  className={`text-[9px] text-center leading-tight transition-colors ${
+                    collected ? "text-[#1A2B4A] font-semibold" : "text-[#B0AEAD]"
                   }`}
                 >
-                  {id}
+                  {meta.element}
                 </span>
               </div>
-              {/* 區域名稱 */}
-              <span
-                className={`text-[9px] text-center leading-snug ${
-                  collected ? "text-[#1A2B4A] font-medium" : "text-[#B0AEAD]"
-                }`}
-              >
-                {area}
-              </span>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      {isComplete && (
-        <p className="text-center text-sm font-semibold text-[#1A2B4A]">
-          集章完成！可以抽獎了
-        </p>
+      {/* ── 隱藏成就區 (僅在有收集到時顯示或以特殊樣式呈現) ── */}
+      {hiddenStamps.some(id => collectedIds.has(id)) && (
+        <div className="pt-2 animate-page-in">
+          <p className="text-[10px] font-bold text-[#8A6F5C] uppercase tracking-widest mb-3 text-center opacity-70">
+            ✧ 額外發現的驚喜 ✧
+          </p>
+          <div className="flex justify-center gap-4">
+            {hiddenStamps.map(id => {
+              const collected = collectedIds.has(id);
+              if (!collected) return null;
+              const meta = STAMP_META[id];
+              const isNew = animating.has(id);
+
+              return (
+                <div key={id} className={`flex flex-col items-center gap-1 ${isNew ? "animate-bounce" : ""}`}>
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1A2B4A] to-[#3B82C4] flex items-center justify-center text-xl shadow-lg border border-white/20">
+                    🕶️
+                  </div>
+                  <span className="text-[9px] font-bold text-[#1A2B4A]">{meta.element.split('-')[1]}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {totalStamps === 8 && (
+        <div className="rounded-xl bg-[#FDF8F0] border border-[#C9A84C]/20 p-3 text-center animate-shine">
+          <p className="text-xs font-bold text-[#C9A84C]">∞ 連結生活・集章完成 ∞</p>
+        </div>
       )}
     </div>
   );

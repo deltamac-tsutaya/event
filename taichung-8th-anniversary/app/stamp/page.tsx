@@ -51,8 +51,8 @@ export default function StampPage() {
           setStatus("success");
           showStampSuccess(stampId);
           await refetch();
-          // Return to home after 3 s
-          setTimeout(() => router.push("/"), 3000);
+          // Return to home after 1.5s with collection param
+          setTimeout(() => router.push(`/?collect=${stampId}`), 1500);
         } else if (data.reason === "already_stamped") {
           setStatus("already_stamped");
         } else {

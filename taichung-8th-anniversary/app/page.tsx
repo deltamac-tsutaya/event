@@ -11,6 +11,7 @@ import LifeGantt from "@/components/LifeGantt";
 import { Button } from "@/components/ui/button";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
+import ScanResultOverlay from "@/components/ScanResultOverlay";
 import type { DrawHistory, Reward } from "@/lib/types";
 
 // ── 活動期間常數 ─────────────────────────────────────────────────────────
@@ -327,6 +328,15 @@ function HomeContent() {
 
   const isLoading = userLoading || (!!user && progressLoading);
 
+  const collectParam = searchParams.get("collect");
+  const [showScanResult, setShowScanResult] = useState(false);
+
+  useEffect(() => {
+    if (collectParam) {
+      setShowScanResult(true);
+    }
+  }, [collectParam]);
+
   type State = "loading" | "A" | "B" | "C" | "D" | "E" | "F";
 
   function determineState(): State {
@@ -405,6 +415,21 @@ function HomeContent() {
       )}
 
       <Footer />
+
+      {/* 掃描結果全螢幕 Overlay */}
+      {showScanResult && collectParam && (
+        <ScanResultOverlay
+          stampId={collectParam}
+          onClose={() => {
+            setShowScanResult(false);
+            // 清理 URL 參數
+            const newParams = new URLSearchParams(window.location.search);
+            newParams.delete("collect");
+            const newPath = window.location.pathname + (newParams.toString() ? `?${newParams.toString()}` : "");
+            window.history.replaceState(null, "", newPath);
+          }}
+        />
+      )}
     </div>
   );
 }
