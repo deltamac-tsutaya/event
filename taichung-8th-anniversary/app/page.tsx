@@ -25,11 +25,20 @@ function isActivityEnded(): boolean {
   return new Date() > ACTIVITY_END;
 }
 
-// ── Hero Section ─────────────────────────────────────────────────────────
-function HeroSection({ compact, bitmask }: { compact: boolean; bitmask: number }) {
+// ── Hero Section（全時顯示，支援點擊切換展開/收合）──────────────────────────
+function HeroSection({ 
+  compact, 
+  bitmask, 
+  onToggle 
+}: { 
+  compact: boolean; 
+  bitmask: number; 
+  onToggle: () => void; 
+}) {
   return (
     <section
-      className={`relative flex flex-col justify-end overflow-hidden w-full transition-[height] duration-500 ease-out ${
+      onClick={onToggle}
+      className={`relative flex flex-col justify-end overflow-hidden w-full transition-[height] duration-700 ease-in-out cursor-pointer group ${
         compact ? "h-[42svh]" : "h-[100svh]"
       }`}
     >
@@ -136,6 +145,7 @@ function MainContent() {
 
   const [drawLoading, setDrawLoading] = useState(false);
   const [lastReward, setLastReward] = useState<Reward | null>(null);
+  const [userHeroExpanded, setUserHeroExpanded] = useState(false);
 
   const isLoading = userLoading || (!!user && progressLoading);
   const collectParam = searchParams.get("collect");
@@ -190,6 +200,8 @@ function MainContent() {
     return "C";
   }, [isLoading, user, totalStamps, progress?.drawnToday, lastReward]);
 
+  const isCompact = (state !== "A") && !userHeroExpanded;
+
   if (state === "loading") {
     return (
       <div className="flex h-svh flex-col items-center justify-center gap-4 bg-[#F5F2ED]">
@@ -201,9 +213,15 @@ function MainContent() {
 
   return (
     <div className="flex min-h-svh flex-col bg-[#F5F2ED] pb-10">
-      <HeroSection compact={state !== "A"} bitmask={bitmask} />
+      <HeroSection 
+        compact={isCompact} 
+        bitmask={bitmask} 
+        onToggle={() => setUserHeroExpanded(!userHeroExpanded)} 
+      />
 
-      <main className="relative z-20 -mt-10 mx-auto w-full max-w-2xl px-5 space-y-6 animate-page-in">
+      <main className={`relative z-20 -mt-10 mx-auto w-full max-w-2xl px-5 space-y-6 transition-all duration-700 ${
+        userHeroExpanded ? "opacity-0 pointer-events-none translate-y-10" : "opacity-100 translate-y-0"
+      }`}>
         {/* 狀態 A：未登入 */}
         {state === "A" && (
           <Card className="p-8 shadow-2xl border-none space-y-8 bg-white/90 backdrop-blur-md">
