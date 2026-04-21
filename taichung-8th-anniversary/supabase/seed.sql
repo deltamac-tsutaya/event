@@ -1,9 +1,8 @@
--- Seed data for Taichung 8th Anniversary Event
+-- Clear existing data before seeding to avoid duplicate key errors
+TRUNCATE public.rewards CASCADE;
+TRUNCATE public.stamp_configs CASCADE;
 
--- Clear existing configs (Optional, use with caution)
--- TRUNCATE public.stamp_configs CASCADE;
-
--- Insert Master Configs
+-- 1. Insert Master Configs
 INSERT INTO public.stamp_configs (stamp_id, variant_id, area_name, is_active)
 VALUES 
     ('01', 1, '入口主題陳列區', true),

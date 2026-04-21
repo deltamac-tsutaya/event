@@ -23,7 +23,10 @@ export async function GET(request: NextRequest) {
     }
     
     let { data: configs, error: fetchError } = await query;
-    if (fetchError) throw fetchError;
+    if (fetchError) {
+      console.error("Supabase Fetch Error:", fetchError);
+      throw fetchError;
+    }
 
     // 2. 如果非全選模式且資料不足，執行每日輪替邏輯
     if (!showAll) {
@@ -31,6 +34,7 @@ export async function GET(request: NextRequest) {
       const activeRotating = configs?.filter(c => rotatingIds.includes(c.stamp_id)) || [];
 
       if (activeRotating.length < 3) {
+        console.log("Rotating logic triggered. Active count:", activeRotating.length);
         // 先重設
         await supabaseAdmin.from("stamp_configs").update({ is_active: false }).in("stamp_id", rotatingIds);
 
@@ -43,7 +47,8 @@ export async function GET(request: NextRequest) {
         }
 
         // 重新取得
-        const { data: updatedConfigs } = await supabaseAdmin.from("stamp_configs").select("*").eq("is_active", true);
+        const { data: updatedConfigs, error: retryError } = await supabaseAdmin.from("stamp_configs").select("*").eq("is_active", true);
+        if (retryError) throw retryError;
         configs = updatedConfigs;
       }
     }
@@ -51,11 +56,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       date: today,
+      count: configs?.length || 0,
       configs: configs || [],
     });
   } catch (error) {
+    console.error("API Route Error:", error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : "Unknown error" },
+      { 
+        success: false, 
+        error: error instanceof Error ? error.message : "Unknown error",
+        debug: error
+      },
       { status: 500 }
     );
   }
