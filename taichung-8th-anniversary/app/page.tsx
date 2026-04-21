@@ -53,8 +53,16 @@ function HeroSection({
           <img src="/wired-tokyo-logo.svg" alt="WIRED" className="h-5 w-auto opacity-70" />
         </div>
 
-        <div>
-          <p className="brand-mono-label text-[#8A6F5C] mb-1 font-bold tracking-widest text-[10px]">
+        <div onClick={(e) => { e.stopPropagation(); onToggle(); }}>
+          <p 
+            onClick={(e) => {
+              e.stopPropagation();
+              // 這裡我們需要一個 callback 來觸發開發選單
+              // 但因為 HeroSection 是獨立組件，我們改用最簡單的 window 派發事件
+              window.dispatchEvent(new CustomEvent('dev-click'));
+            }}
+            className="brand-mono-label text-[#8A6F5C] mb-1 font-bold tracking-widest text-[10px] cursor-help"
+          >
             台中市政店 8 週年
           </p>
           <h1
@@ -142,10 +150,57 @@ function MainContent() {
   const [drawLoading, setDrawLoading] = useState(false);
   const [lastReward, setLastReward] = useState<Reward | null>(null);
   const [userHeroExpanded, setUserHeroExpanded] = useState(false);
+  const [devClickCount, setDevClickCount] = useState(0);
+  const [showDevMenu, setShowDevMenu] = useState(false);
 
   const isLoading = userLoading || (!!user && progressLoading);
   const collectParam = searchParams.get("collect");
   const [showScanResult, setShowScanResult] = useState(false);
+
+  const handleDevClick = () => {
+    const next = devClickCount + 1;
+    if (next >= 5) {
+      setShowDevMenu(true);
+      setDevClickCount(0);
+    } else {
+      setDevClickCount(next);
+    }
+  };
+
+  const devFillStamps = async () => {
+    if (!user) return;
+    try {
+      // 呼叫一個內部 API 或直接在 Supabase 寫入 (此處我們簡單透過現有的集章 API 模擬)
+      // 為了測試方便，我們直接模擬集滿狀態
+      toast.info("模擬集滿中...");
+      for (let i = 1; i <= 8; i++) {
+        await fetch(`/api/stamp?id=TEST_STAMP_${i}&lineUserId=${user.userId}`);
+      }
+      toast.success("集滿完成！");
+      refetch();
+      setShowDevMenu(false);
+    } catch (e) {
+      toast.error("測試填充失敗");
+    }
+  };
+
+  const devResetStamps = async () => {
+    if (!user) return;
+    // 重設邏輯 (簡單清空資料庫中該用戶的集印紀錄)
+    toast.info("重設進度中...");
+    // 實務上需要一個 API，這裡我們假設有一個重設 API
+    await fetch(`/api/test/reset?lineUserId=${user.userId}`, { method: 'POST' });
+    toast.success("進度已重設");
+    refetch();
+    setLastReward(null);
+    setShowDevMenu(false);
+  };
+
+  useEffect(() => {
+    const handleDev = () => handleDevClick();
+    window.addEventListener('dev-click', handleDev);
+    return () => window.removeEventListener('dev-click', handleDev);
+  }, [devClickCount]);
 
   useEffect(() => {
     if (collectParam) setShowScanResult(true);
@@ -314,6 +369,21 @@ function MainContent() {
             window.history.replaceState(null, "", window.location.pathname);
           }}
         />
+      )}
+
+      {/* 開發者測試選單 */}
+      {showDevMenu && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-6 backdrop-blur-sm">
+          <PageCard className="w-full max-w-xs p-6 space-y-4">
+            <h3 className="text-lg font-bold text-center">開發者測試工具</h3>
+            <p className="text-xs text-gray-500 text-center">此選單僅供開發測試使用</p>
+            <div className="grid gap-2">
+              <Button onClick={devFillStamps} className="bg-blue-600">一鍵集滿 8 枚</Button>
+              <Button onClick={devResetStamps} variant="outline">清空印章紀錄</Button>
+              <Button onClick={() => setShowDevMenu(false)} variant="ghost">取消</Button>
+            </div>
+          </PageCard>
+        </div>
       )}
     </div>
   );
