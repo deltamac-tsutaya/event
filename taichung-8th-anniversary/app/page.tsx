@@ -131,7 +131,6 @@ function InfinityDaySection({ tickets }: { tickets: number }) {
         </div>
 
         <div className="space-y-1">
-          <h3 className="text-lg font-bold">無限回饋日加碼獎</h3>
           <p className="text-xs text-white/70">抽出 8 份 WIRED TOKYO 雙人和牛牛排套餐</p>
         </div>
 
@@ -316,7 +315,7 @@ function MainContent() {
           </PageCard>
         )}
 
-        {user && state !== "F" && (
+        {user && state !== "F" && progress?.canDraw && (
           <InfinityDaySection tickets={progress?.ticketsCount ?? 0} />
         )}
 
