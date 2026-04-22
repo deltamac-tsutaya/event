@@ -67,8 +67,8 @@
 **Q: 在 Vercel 上打開網頁，畫面一片白或報錯？**
 A: 請檢查 Vercel 的環境變數是否設定正確。特別是 `SUPABASE_SERVICE_ROLE_KEY` 如果缺漏，API 將直接回傳 500 錯誤。
 
-**Q: 列印頁面 (`/staff/print`) 看不到 QR Code？**
-A: 請確認已在 Supabase 執行過 `seed.sql` 灌入設定資料。若已經灌入，請檢查您的瀏覽器 Network 工具，是否 `/api/staff/configs` 請求失敗。
+**Q: 列印頁面 (`/admin/print`) 看不到 QR Code？**
+A: 請確認已在 Supabase 執行過 `seed.sql` 灌入設定資料。若已經灌入，請檢查您的瀏覽器 Network 工具，是否 `/api/admin/configs` 請求失敗。
 
 **Q: 想要清除測試資料重新開始？**
 A: 在 Supabase SQL Editor 中執行以下指令：

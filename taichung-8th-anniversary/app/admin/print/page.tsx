@@ -19,7 +19,7 @@ export default function PrintPage() {
   useEffect(() => {
     async function fetchConfigs() {
       try {
-        const res = await fetch("/api/staff/configs?all=true");
+        const res = await fetch("/api/admin/configs?all=true");
         const data = await res.json();
         if (data.success) {
           // 排序：01, 02-v1, 02-v2... A, B, C
@@ -51,7 +51,7 @@ export default function PrintPage() {
       {/* 僅在螢幕上顯示的控制列 */}
       <div className="print:hidden max-w-5xl mx-auto mb-8 flex items-center justify-between bg-blue-50 p-6 rounded-2xl border border-blue-100">
         <div className="flex items-center gap-4">
-          <Link href="/staff">
+          <Link href="/admin">
             <Button variant="ghost" size="icon" className="rounded-full">
               <ChevronLeft />
             </Button>

@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Lock, LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
-  BarChart3, ShieldCheck, Search, RotateCcw, Plus, Minus,
-  ChevronDown, ChevronUp, Zap, Settings2, CheckCircle, AlertCircle
+  BarChart3, ShieldCheck, Search, RotateCcw, Plus,
+  ChevronDown, ChevronUp, Zap, Settings2, CheckCircle, AlertCircle,
+  X, Printer
 } from "lucide-react";
 
 // ── 型別 ──────────────────────────────────────────────────────────────────
@@ -24,17 +25,24 @@ interface AdminUser {
 }
 
 interface StampConfig {
-  uuid: string; stamp_id: string; variant_id: number; is_active: boolean; area_name?: string;
+  uuid: string; 
+  stamp_id: string; 
+  variant_id: number; 
+  is_active: boolean; 
+  area_name?: string;
 }
 
 interface DashboardStats {
-  totalUsers: number; todayStamps: number; todayDraws: number; totalTickets: number;
+  totalUsers: number; 
+  todayStamps: number; 
+  todayDraws: number; 
+  totalTickets: number;
   distribution: Record<string, number>;
 }
 
 const STAMP_IDS = ["01","02","03","04","05","06","07","08","A","B","C"];
 
-// ── 使用者行動列 ──────────────────────────────────────────────────────────
+// ── 子元件：使用者列 ───────────────────────────────────────────────────────
 function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }) {
   const [expanded, setExpanded]   = useState(false);
   const [busy, setBusy]           = useState<string | null>(null);
@@ -107,7 +115,6 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
 
   return (
     <div className="border border-gray-100 rounded-2xl overflow-hidden hover:shadow-sm transition-shadow">
-      {/* 摘要列 */}
       <div
         className="flex items-center gap-3 p-4 cursor-pointer select-none hover:bg-gray-50 transition-colors"
         onClick={() => setExpanded(v => !v)}
@@ -136,7 +143,6 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
         {expanded ? <ChevronUp size={14} className="text-gray-400 shrink-0" /> : <ChevronDown size={14} className="text-gray-400 shrink-0" />}
       </div>
 
-      {/* 展開操作區 */}
       {expanded && (
         <div className="border-t border-gray-100 bg-gray-50 p-4 space-y-4">
           {message && (
@@ -146,35 +152,30 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
             </div>
           )}
 
-          {/* 集章進度格子 */}
           <div>
             <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">印章操作 ({stampProgress}/8)</p>
             <div className="flex flex-wrap gap-1.5">
-              {STAMP_IDS.map(id => {
-                const isHidden = ["A","B","C"].includes(id);
-                return (
-                  <div key={id} className="flex flex-col items-center gap-0.5">
-                    <button
-                      onClick={() => addStamp(id)}
-                      disabled={!!busy}
-                      className="w-9 h-9 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center text-xs font-bold text-gray-600 transition-all disabled:opacity-50"
-                    >
-                      {busy === `add-${id}` ? <RefreshCcw size={10} className="animate-spin" /> : `+${id}`}
-                    </button>
-                    <button
-                      onClick={() => removeStamp(id)}
-                      disabled={!!busy}
-                      className="w-9 h-5 rounded border border-red-100 bg-white hover:bg-red-50 text-red-400 flex items-center justify-center text-[9px] transition-all disabled:opacity-50"
-                    >
-                      {busy === `del-${id}` ? "…" : "−"}
-                    </button>
-                  </div>
-                );
-              })}
+              {STAMP_IDS.map(id => (
+                <div key={id} className="flex flex-col items-center gap-0.5">
+                  <button
+                    onClick={() => addStamp(id)}
+                    disabled={!!busy}
+                    className="w-9 h-9 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center text-xs font-bold text-gray-600 transition-all disabled:opacity-50"
+                  >
+                    {busy === `add-${id}` ? <RefreshCcw size={10} className="animate-spin" /> : `+${id}`}
+                  </button>
+                  <button
+                    onClick={() => removeStamp(id)}
+                    disabled={!!busy}
+                    className="w-9 h-5 rounded border border-red-100 bg-white hover:bg-red-50 text-red-400 flex items-center justify-center text-[9px] transition-all disabled:opacity-50"
+                  >
+                    {busy === `del-${id}` ? "…" : "−"}
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* 快捷操作 */}
           <div className="flex flex-wrap gap-2">
             <Button
               size="sm" variant="outline"
@@ -222,6 +223,7 @@ export default function AdminPage() {
   const [stats, setStats]           = useState<DashboardStats | null>(null);
   const [loading, setLoading]       = useState(false);
   const [search, setSearch]         = useState("");
+  const [selectedQR, setSelectedQR] = useState<StampConfig | null>(null);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -234,16 +236,21 @@ export default function AdminPage() {
 
   const fetchAllData = useCallback(async () => {
     setLoading(true);
-    const [uRes, cRes, sRes] = await Promise.all([
-      fetch("/api/admin/users"),
-      fetch("/api/staff/configs"),
-      fetch("/api/staff/stats"),
-    ]);
-    const [uData, cData, sData] = await Promise.all([uRes.json(), cRes.json(), sRes.json()]);
-    if (uData.success) setUsers(uData.users);
-    if (cData.success) setConfigs(cData.configs);
-    if (sData.success) setStats(sData.stats);
-    setLoading(false);
+    try {
+      const [uRes, cRes, sRes] = await Promise.all([
+        fetch("/api/admin/users"),
+        fetch("/api/admin/configs"),
+        fetch("/api/admin/stats"),
+      ]);
+      const [uData, cData, sData] = await Promise.all([uRes.json(), cRes.json(), sRes.json()]);
+      if (uData.success) setUsers(uData.users);
+      if (cData.success) setConfigs(cData.configs);
+      if (sData.success) setStats(sData.stats);
+    } catch (e) {
+      console.error("Fetch failed", e);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -254,12 +261,17 @@ export default function AdminPage() {
     finally { setLoginLoading(false); }
   };
 
+  const getQRUrl = (uuid: string) => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const fullUrl = `${baseUrl}/stamp?id=${uuid}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(fullUrl)}`;
+  };
+
   const filteredUsers = users.filter(u =>
     u.display_name.toLowerCase().includes(search.toLowerCase()) ||
     u.line_user_id.toLowerCase().includes(search.toLowerCase())
   );
 
-  // ── 登入畫面 ──
   if (authLoading) return (
     <div className="flex min-h-svh items-center justify-center bg-[#0F172A]">
       <div className="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
@@ -292,7 +304,6 @@ export default function AdminPage() {
     </div>
   );
 
-  // ── 主介面 ──
   return (
     <div className="min-h-svh bg-[#F8FAFC] pb-20">
       <nav className="sticky top-0 z-40 bg-white border-b shadow-sm">
@@ -325,7 +336,6 @@ export default function AdminPage() {
       </nav>
 
       <main className="mx-auto max-w-6xl px-4 py-8 space-y-6 animate-in fade-in duration-500">
-        {/* 統計卡 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { icon: <Users className="text-blue-600"/>,   label: "總人數",   value: stats?.totalUsers ?? 0 },
@@ -343,7 +353,6 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* ── 使用者管理 ── */}
         {activeTab === "users" && (
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -355,82 +364,95 @@ export default function AdminPage() {
               </div>
               <p className="text-xs text-gray-400">{filteredUsers.length} / {users.length} 位</p>
             </div>
-
             {filteredUsers.length === 0 && !loading && (
               <div className="py-16 text-center text-gray-400 text-sm">尚無使用者資料</div>
             )}
-
             <div className="space-y-2">
-              {filteredUsers.map(u => (
-                <UserRow key={u.id} user={u} onRefresh={fetchAllData} />
-              ))}
+              {filteredUsers.map(u => <UserRow key={u.id} user={u} onRefresh={fetchAllData} />)}
             </div>
           </div>
         )}
 
-        {/* ── QR 點位（沿用 Staff） ── */}
         {activeTab === "configs" && (
           <div className="space-y-4">
             <Card className="border-none shadow-sm overflow-hidden">
-              <div className="bg-orange-50 px-6 py-4 border-b border-orange-100">
-                <h2 className="text-orange-800 font-bold flex items-center gap-2">
-                  <RefreshCcw size={16}/> 輪替點位
-                </h2>
+              <div className="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center justify-between">
+                <h2 className="text-orange-800 font-bold flex items-center gap-2"><RefreshCcw size={16}/> 輪替點位</h2>
+                <span className="text-[10px] bg-orange-200 text-orange-700 px-2 py-0.5 rounded-full font-bold">每日自動更換</span>
               </div>
               <div className="p-6 grid gap-3">
                 {configs.filter(c => ["02","05","06"].includes(c.stamp_id)).map(c => (
-                  <div key={c.uuid} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl">
-                    <div>
-                      <p className="font-bold text-sm">{c.area_name}</p>
-                      <p className="text-[10px] text-gray-400 font-mono">{c.uuid}</p>
+                  <div key={c.uuid} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:bg-orange-50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-orange-100 text-orange-700 rounded-lg flex items-center justify-center font-black">{c.stamp_id}</div>
+                      <div>
+                        <p className="font-bold text-sm">{c.area_name}</p>
+                        <p className="text-[10px] text-gray-400 font-mono">{c.uuid}</p>
+                      </div>
                     </div>
-                    <span className="text-[10px] font-bold bg-orange-100 text-orange-700 px-2 py-0.5 rounded">
-                      v{c.variant_id}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold bg-orange-100 text-orange-700 px-2 py-0.5 rounded">v{c.variant_id}</span>
+                      <Button size="sm" variant="ghost" onClick={() => setSelectedQR(c)} className="rounded-full h-8 w-8 p-0"><QrCode size={14}/></Button>
+                    </div>
                   </div>
                 ))}
               </div>
             </Card>
             <Card className="border-none shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b bg-gray-50">
-                <h2 className="text-gray-700 font-bold flex items-center gap-2"><CheckCircle size={16}/> 固定點位</h2>
-              </div>
+              <div className="px-6 py-4 border-b bg-gray-50"><h2 className="text-gray-700 font-bold flex items-center gap-2"><CheckCircle size={16}/> 固定點位</h2></div>
               <div className="p-6 grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {configs.filter(c => !["02","05","06"].includes(c.stamp_id)).map(c => (
-                  <div key={c.uuid} className="border border-gray-100 rounded-xl p-3 text-center">
+                  <button key={c.uuid} onClick={() => setSelectedQR(c)} className="border border-gray-100 rounded-xl p-3 text-center hover:border-purple-400 hover:bg-purple-50 transition-all">
                     <p className="font-black text-lg text-[#1A2B4A]">{c.stamp_id}</p>
                     <p className="text-[9px] text-gray-400 truncate">{c.area_name}</p>
-                  </div>
+                  </button>
                 ))}
               </div>
             </Card>
           </div>
         )}
 
-        {/* ── 統計 ── */}
         {activeTab === "stats" && (
           <Card className="border-none shadow-sm">
             <CardHeader><CardTitle className="text-sm">今日獎項發放分布</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               {Object.entries(stats?.distribution ?? {}).map(([id, count]) => (
                 <div key={id} className="space-y-1">
-                  <div className="flex justify-between text-xs font-medium">
-                    <span>獎項 {id}</span>
-                    <span className="font-bold text-purple-600">{count} 份</span>
-                  </div>
+                  <div className="flex justify-between text-xs font-medium"><span>獎項 {id}</span><span className="font-bold text-purple-600">{count} 份</span></div>
                   <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-purple-400 rounded-full transition-all duration-700"
-                      style={{ width: `${Math.min(100, (count / 10) * 100)}%` }} />
+                    <div className="h-full bg-purple-400 rounded-full transition-all duration-700" style={{ width: `${Math.min(100, (count / 10) * 100)}%` }} />
                   </div>
                 </div>
               ))}
-              {Object.keys(stats?.distribution ?? {}).length === 0 && (
-                <p className="py-8 text-center text-gray-400 text-sm italic">今日尚無發放紀錄</p>
-              )}
+              {Object.keys(stats?.distribution ?? {}).length === 0 && <p className="py-8 text-center text-gray-400 text-sm italic">今日尚無發放紀錄</p>}
             </CardContent>
           </Card>
         )}
       </main>
+
+      {selectedQR && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80 backdrop-blur-md p-4">
+          <Card className="w-full max-w-md animate-in zoom-in-95 duration-200 border-none shadow-2xl overflow-hidden">
+            <div className="bg-[#1A2B4A] text-white p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 p-2 rounded-lg"><QrCode size={20} /></div>
+                <div><h3 className="font-bold leading-none">QR Code 列印預覽</h3><p className="text-[10px] opacity-70 mt-1">點位 {selectedQR.stamp_id} · {selectedQR.area_name}</p></div>
+              </div>
+              <button onClick={() => setSelectedQR(null)} className="text-white/60 hover:text-white"><X size={24} /></button>
+            </div>
+            <div className="p-8 flex flex-col items-center gap-8 bg-white">
+              <div className="bg-white p-6 rounded-3xl shadow-xl border border-gray-50 flex flex-col items-center gap-4">
+                <img src={getQRUrl(selectedQR.uuid)} alt="QR" className="w-64 h-64" />
+                <div className="text-center"><p className="text-2xl font-black text-gray-900 tracking-widest">{selectedQR.stamp_id}</p><p className="text-[10px] text-gray-400 font-mono mt-1 uppercase">Variant {selectedQR.variant_id}</p></div>
+              </div>
+              <div className="w-full space-y-3">
+                <Button onClick={() => window.print()} className="w-full h-12 bg-[#1A2B4A] gap-2 rounded-xl text-lg font-bold"><Printer size={20} /> 立即列印</Button>
+                <Button variant="ghost" onClick={() => setSelectedQR(null)} className="w-full h-12 rounded-xl text-gray-500">返回列表</Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
