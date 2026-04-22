@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Info, Ticket, Sparkles } from "lucide-react";
 import type { Reward } from "@/lib/types";
 import { DynamicHero } from "@/components/DynamicHero";
+import SideDrawer from "@/components/SideDrawer";
 
 // ── 活動期間常數 ─────────────────────────────────────────────────────────
 const ACTIVITY_END = new Date("2026-05-13T23:59:59+08:00");
@@ -47,6 +48,11 @@ function HeroSection({
       }`}
     >
       <DynamicHero bitmask={bitmask} compact={compact} />
+
+      {/* Side Drawer trigger at Top Left */}
+      <div className="absolute top-6 left-6 z-20">
+        <SideDrawer />
+      </div>
 
       {/* User Profile Pill at Top Right */}
       {user && (
