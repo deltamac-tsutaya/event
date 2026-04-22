@@ -47,8 +47,8 @@ export function useLiffUser(): UseLiffUserResult {
           if (!cancelled) setUser(null);
         }
       } catch {
-        // Not in LIFF environment → use mock
-        if (!cancelled) setUser(MOCK_USER);
+        // liffId 已設定但初始化失敗 → 非 LINE 環境，設 null 而非 mock
+        if (!cancelled) setUser(null);
       } finally {
         if (!cancelled) setLoading(false);
       }
