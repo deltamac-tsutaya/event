@@ -1,13 +1,15 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import QrScanner from "@/components/QrScanner";
+import StampCard from "@/components/StampCard";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import { showStampSuccess } from "@/components/ui-state/SuccessToast";
 import { Button } from "@/components/ui/button";
+import { Sparkles, CheckCircle2, Ticket } from "lucide-react";
 
 type ScanStatus =
   | "idle"
@@ -25,8 +27,57 @@ function extractStampUuid(raw: string): string {
   return raw;
 }
 
+// ── Draw status cards ────────────────────────────────────────────────────────
+
+function DrawReadyCard() {
+  return (
+    <div className="rounded-2xl bg-[#1A2B4A] px-5 py-5 shadow-xl space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 flex-shrink-0 w-9 h-9 rounded-full bg-[#C9A84C]/20 flex items-center justify-center">
+          <Sparkles className="text-[#C9A84C]" size={18} />
+        </div>
+        <div className="space-y-0.5">
+          <p className="font-bold text-white text-sm leading-snug">集印完成・今日抽獎已解鎖</p>
+          <p className="text-xs text-white/50 leading-relaxed">每日一次機會，前往首頁即可參加抽獎</p>
+        </div>
+      </div>
+      <Link href="/">
+        <Button className="w-full h-11 rounded-full bg-[#C9A84C] hover:bg-[#C9A84C]/90 text-[#1A2B4A] font-bold text-sm shadow-md">
+          前往首頁抽獎 →
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
+function DrawnTodayCard() {
+  return (
+    <div className="rounded-2xl bg-white border border-[#E8E4DE] px-5 py-5 shadow-sm space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 flex-shrink-0 w-9 h-9 rounded-full bg-green-50 flex items-center justify-center">
+          <CheckCircle2 className="text-green-500" size={18} />
+        </div>
+        <div className="space-y-0.5">
+          <p className="font-bold text-[#1A2B4A] text-sm leading-snug">今日抽獎已完成</p>
+          <p className="text-xs text-gray-400 leading-relaxed">明天 00:00 後將再次開放，抽獎紀錄保存於優惠券匣</p>
+        </div>
+      </div>
+      <Link href="/coupons">
+        <Button
+          variant="outline"
+          className="w-full h-11 rounded-full font-bold text-sm border-[#1A2B4A]/30 text-[#1A2B4A] hover:bg-[#1A2B4A]/5 flex items-center gap-2"
+        >
+          <Ticket size={15} />
+          查看優惠券匣
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
+// ── Main stamp page ───────────────────────────────────────────────────────────
+
 function StampPageContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const urlStampId = searchParams.get("id");
   const { user, loading, login } = useLiffUser();
@@ -65,8 +116,8 @@ function StampPageContent() {
           setStatus("success");
           showStampSuccess(stampId);
           await refetch();
-          // Return to home after 1.5s with collection param
-          setTimeout(() => router.push(`/?collect=${stampId}`), 1500);
+          // 不轉頁，2 秒後回到 idle 供繼續掃描
+          setTimeout(() => setStatus("idle"), 2000);
         } else if (data.reason === "already_stamped") {
           setStatus("already_stamped");
         } else {
@@ -78,7 +129,7 @@ function StampPageContent() {
         setErrorMsg(e instanceof Error ? e.message : "網路錯誤");
       }
     },
-    [user, status, refetch, router]
+    [user, status, refetch]
   );
 
   // 從 URL ?id= 自動觸發集章（手機相機掃碼後直接開啟此頁）
@@ -136,7 +187,8 @@ function StampPageContent() {
   return (
     <div className="flex min-h-full flex-col bg-[#F5F2ED]">
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-6 gap-5">
-        {/* Progress indicator */}
+
+        {/* Header */}
         <div className="flex items-center justify-between">
           <Link href="/" className="text-sm text-gray-400 hover:text-[#1A2B4A]">
             ← 返回
@@ -147,15 +199,36 @@ function StampPageContent() {
         </div>
 
         <div className="text-center space-y-1">
-          <h1 className="text-lg font-bold text-gray-900">掃描 QR code 集章</h1>
-          <p className="text-xs text-gray-400">
-            對準店內各區的 QR code 即可蓋章
-          </p>
+          <h1 className="text-lg font-bold text-gray-900">集章進度</h1>
+          <p className="text-xs text-gray-400">找出店內 8 個印記，集滿解鎖每日抽獎</p>
         </div>
 
-        {/* Scanner or result */}
+        {/* 1. 集章格 — 永遠顯示 */}
+        <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} />
+
+        {/* 2. 抽獎狀態卡片 — 在集章格正下方 */}
+        {progress?.canDraw && <DrawReadyCard />}
+        {progress?.drawnToday && <DrawnTodayCard />}
+
+        {/* 3. 分隔線 */}
+        <div className="relative flex items-center">
+          <div className="flex-1 h-px bg-[#E0DDD6]" />
+          <span className="px-3 text-[10px] text-gray-400 font-mono tracking-widest shrink-0">
+            {totalStamps >= 8 ? "BONUS SCAN" : "SCAN QR"}
+          </span>
+          <div className="flex-1 h-px bg-[#E0DDD6]" />
+        </div>
+
+        {/* 4. 掃描器 / 狀態區 */}
         {status === "idle" && (
-          <QrScanner onScan={handleScan} />
+          <div className="space-y-3">
+            <p className="text-center text-xs text-gray-400">
+              {totalStamps >= 8
+                ? "已集齊 8 枚！仍可掃描隱藏點位"
+                : "對準店內各區的 QR code 即可蓋章"}
+            </p>
+            <QrScanner onScan={handleScan} />
+          </div>
         )}
 
         {status === "submitting" && (
@@ -166,42 +239,34 @@ function StampPageContent() {
         )}
 
         {status === "success" && (
-          <div className="flex flex-col items-center gap-6 py-12 text-center animate-in fade-in zoom-in duration-500">
-            {['A', 'B', 'C'].includes(lastStampId) ? (
-              // 隱藏成就點特別視覺
+          <div className="flex flex-col items-center gap-6 py-10 text-center animate-in fade-in zoom-in duration-500">
+            {["A", "B", "C"].includes(lastStampId) ? (
               <>
                 <div className="relative">
                   <div className="absolute inset-0 bg-yellow-400/20 blur-3xl rounded-full animate-pulse" />
-                  <div className="relative size-32 bg-white rounded-full flex items-center justify-center text-6xl shadow-xl border-4 border-[#C9A84C] animate-bounce">
+                  <div className="relative size-28 bg-white rounded-full flex items-center justify-center text-5xl shadow-xl border-4 border-[#C9A84C]">
                     {getAchievementMeta(lastStampId)?.icon}
                   </div>
                 </div>
-                <div className="space-y-3 px-6">
-                  <p className="text-xs font-bold tracking-widest text-[#C9A84C] uppercase">Achievement Unlocked</p>
-                  <h2 className="text-2xl font-bold text-[#1A2B4A]">{getAchievementMeta(lastStampId)?.title}</h2>
+                <div className="space-y-2 px-6">
+                  <p className="text-[10px] font-bold tracking-widest text-[#C9A84C] uppercase">Achievement Unlocked</p>
+                  <h2 className="text-xl font-bold text-[#1A2B4A]">{getAchievementMeta(lastStampId)?.title}</h2>
                   <p className="text-sm text-[#8A6F5C] italic leading-relaxed">「{getAchievementMeta(lastStampId)?.copy}」</p>
                 </div>
               </>
             ) : (
-              // 標準點位視覺
               <>
-                <div className="animate-stamp-drop rounded-full bg-[#EEE9E2] p-8 shadow-inner">
+                <div className="rounded-full bg-[#EEE9E2] p-8 shadow-inner">
                   <span className="font-mono text-5xl font-bold text-[#1A2B4A] leading-none tracking-tighter">
                     {lastStampId}
                   </span>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xl font-bold text-[#1A2B4A]">蓋章成功</p>
-                  <p className="text-sm text-gray-500 italic">
-                    探索 Nexus Life 的第 {totalStamps} 個印記
-                  </p>
+                  <p className="text-sm text-gray-500 italic">探索 Nexus Life 的第 {totalStamps} 個印記</p>
                 </div>
               </>
             )}
-            
-            <div className="pt-4">
-               <p className="text-[10px] text-gray-400 animate-pulse">正在為您重新對焦生活，請稍後…</p>
-            </div>
           </div>
         )}
 
@@ -211,17 +276,10 @@ function StampPageContent() {
               <span className="font-mono text-sm font-semibold text-[#8A6F5C]">已收集</span>
             </div>
             <div className="space-y-1">
-              <p className="text-base font-semibold text-gray-700">
-                此印記已收集過
-              </p>
-              <p className="text-xs text-gray-400">
-                每個集印點每人限蓋 1 次
-              </p>
+              <p className="text-base font-semibold text-gray-700">此印記已收集過</p>
+              <p className="text-xs text-gray-400">每個集印點每人限蓋 1 次</p>
             </div>
-            <button
-              onClick={reset}
-              className="text-sm text-[#1A2B4A] underline underline-offset-2"
-            >
+            <button onClick={reset} className="text-sm text-[#1A2B4A] underline underline-offset-2">
               掃描其他 QR code
             </button>
           </div>
@@ -239,6 +297,7 @@ function StampPageContent() {
             </button>
           </div>
         )}
+
       </main>
     </div>
   );
