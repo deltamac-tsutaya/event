@@ -225,22 +225,6 @@ export default function AdminPage() {
   const [search, setSearch]         = useState("");
   const [selectedQR, setSelectedQR] = useState<StampConfig | null>(null);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setFirebaseUser(session?.user ?? null);
-      setAuthLoading(false);
-      if (session?.user) fetchAllData();
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setFirebaseUser(session?.user ?? null);
-      if (session?.user) fetchAllData();
-      else setUsers([]);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [fetchAllData]);
-
   const fetchAllData = useCallback(async () => {
     setLoading(true);
     try {
@@ -259,6 +243,22 @@ export default function AdminPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setFirebaseUser(session?.user ?? null);
+      setAuthLoading(false);
+      if (session?.user) fetchAllData();
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setFirebaseUser(session?.user ?? null);
+      if (session?.user) fetchAllData();
+      else setUsers([]);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [fetchAllData]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
