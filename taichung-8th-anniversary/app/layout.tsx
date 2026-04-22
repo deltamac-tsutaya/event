@@ -25,6 +25,10 @@ export const metadata: Metadata = {
   title: "TSUTAYA BOOKSTORE × WIRED TOKYO 8th Anniversary｜無限日常 ∞ 連結生活",
   description:
     "TSUTAYA BOOKSTORE × WIRED TOKYO 台中市政店 8 週年。無限日常 ∞ 連結生活。集印抽獎活動期間：2026/04/23 — 2026/05/13",
+  icons: {
+    icon: "/icon",
+    apple: "/icon",
+  },
 };
 
 export default function RootLayout({
