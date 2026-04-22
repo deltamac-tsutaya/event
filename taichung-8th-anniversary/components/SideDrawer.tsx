@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X, Home, BookOpen, HelpCircle, FileText, Shield } from "lucide-react";
+import { Menu, X, Home, BookOpen, HelpCircle, FileText, Shield, Wallet } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/",        label: "主畫面",          icon: Home,       desc: "回到活動首頁" },
+  { href: "/coupons", label: "優惠券匣",          icon: Wallet,     desc: "查看所有抽獎優惠券" },
   { href: "/help",    label: "活動規則",          icon: BookOpen,   desc: "集章與抽獎流程說明" },
   { href: "/faq",     label: "常見問題",          icon: HelpCircle, desc: "掃描、抽獎常見疑問" },
   { href: "/terms",   label: "活動參與條款",       icon: FileText,   desc: "完整活動條款說明" },

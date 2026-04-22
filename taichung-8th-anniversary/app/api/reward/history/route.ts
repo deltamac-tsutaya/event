@@ -28,10 +28,14 @@ export async function GET(request: NextRequest) {
     .from("draws")
     .select(
       `
+      id,
       draw_date,
       created_at,
+      reward_id,
       rewards (
         id,
+        tier,
+        provider,
         name,
         conditions,
         validity_days,
