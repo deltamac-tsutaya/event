@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import { toast } from "sonner";
-import { Info, Ticket, Sparkles } from "lucide-react";
+import { Ticket, Sparkles } from "lucide-react";
 import type { Reward } from "@/lib/types";
 import { DynamicHero } from "@/components/DynamicHero";
 import SideDrawer from "@/components/SideDrawer";
@@ -339,17 +339,21 @@ function MainContent() {
         )}
 
         {/* 底部導覽 */}
-        <div className="flex justify-center gap-6 pt-4">
-          <Link href="/terms" className="text-xs font-bold text-[#1A2B4A]/50 flex items-center gap-1">
-             <Info size={12} /> 活動規則
+        <div className="flex justify-center gap-6 pt-4 pb-2">
+          <Link href="/terms" className="text-xs text-[#1A2B4A]/40 hover:text-[#1A2B4A]/70 transition-colors">
+            活動規則
           </Link>
-          <Link href="/faq" className="text-xs font-bold text-[#1A2B4A]/50 flex items-center gap-1">
-             <Info size={12} /> 常見問題
+          <span className="text-[#1A2B4A]/20">·</span>
+          <Link href="/faq" className="text-xs text-[#1A2B4A]/40 hover:text-[#1A2B4A]/70 transition-colors">
+            常見問題
+          </Link>
+          <span className="text-[#1A2B4A]/20">·</span>
+          <Link href="/privacy" className="text-xs text-[#1A2B4A]/40 hover:text-[#1A2B4A]/70 transition-colors">
+            隱私聲明
           </Link>
         </div>
       </main>
       <Footer />
-      {/* Removed ScanResultOverlay mapping */}
     </div>
   );
 }
