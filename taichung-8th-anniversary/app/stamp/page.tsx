@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import QrScanner from "@/components/QrScanner";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import { showStampSuccess } from "@/components/ui-state/SuccessToast";
+import { Button } from "@/components/ui/button";
 
 type ScanStatus =
   | "idle"
@@ -15,9 +16,20 @@ type ScanStatus =
   | "already_stamped"
   | "error";
 
+function extractStampUuid(raw: string): string {
+  try {
+    const url = new URL(raw);
+    const id = url.searchParams.get("id");
+    if (id) return id;
+  } catch {}
+  return raw;
+}
+
 export default function StampPage() {
   const router = useRouter();
-  const { user } = useLiffUser();
+  const searchParams = useSearchParams();
+  const urlStampId = searchParams.get("id");
+  const { user, loading, login } = useLiffUser();
   const { progress, refetch } = useStampProgress(user?.userId ?? null);
 
   const [status, setStatus] = useState<ScanStatus>("idle");
@@ -27,9 +39,11 @@ export default function StampPage() {
   const totalStamps = progress?.totalStamps ?? 0;
 
   const handleScan = useCallback(
-    async (stampId: string) => {
+    async (rawValue: string) => {
       if (!user) return;
       if (status === "submitting") return;
+
+      const stampId = extractStampUuid(rawValue);
 
       setStatus("submitting");
       setLastStampId(stampId);
@@ -67,6 +81,13 @@ export default function StampPage() {
     [user, status, refetch, router]
   );
 
+  // 從 URL ?id= 自動觸發集章（手機相機掃碼後直接開啟此頁）
+  useEffect(() => {
+    if (urlStampId && user && status === "idle") {
+      handleScan(urlStampId);
+    }
+  }, [urlStampId, user, status, handleScan]);
+
   const reset = () => {
     setStatus("idle");
     setErrorMsg("");
@@ -81,6 +102,36 @@ export default function StampPage() {
     };
     return meta[id];
   };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-svh items-center justify-center bg-[#F5F2ED]">
+        <div className="size-8 animate-spin rounded-full border-4 border-[#1A2B4A] border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-[#F5F2ED] px-8 text-center">
+        <div className="space-y-2">
+          <p className="text-lg font-bold text-[#1A2B4A]">請透過 LINE 開啟此頁面</p>
+          <p className="text-sm text-gray-500 leading-relaxed">
+            集章需要 LINE 帳號來記錄您的進度<br />請在 LINE 中點開活動連結
+          </p>
+        </div>
+        <Button
+          onClick={login}
+          className="h-12 px-8 bg-[#06C755] hover:bg-[#06C755]/90 text-white font-bold rounded-full"
+        >
+          使用 LINE 登入
+        </Button>
+        <Link href="/" className="text-xs text-gray-400 underline underline-offset-2">
+          返回首頁
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-full flex-col bg-[#F5F2ED]">
