@@ -15,36 +15,12 @@ export default function Footer() {
             className="h-4 w-auto brightness-0 invert opacity-50"
           />
         </div>
-        <p className="font-semibold text-white/70 text-xs">
-          台中市政店
-        </p>
-        <p className="text-white/50 italic text-[11px]">
-          ∞ Connecting Life, Living in Stride.
-        </p>
+        <p className="font-semibold text-white/70 text-xs">台中市政店</p>
+        <p className="text-white/50 italic text-[11px]">∞ Connecting Life, Living in Stride.</p>
         <p className="font-mono text-[10px] text-white/40 tracking-wide">
           2,922 Days&nbsp;&nbsp;Est. 2018
         </p>
-        <p>
-          活動期間：
-          <span className="font-medium text-[#3B82C4]">
-            2026/04/23 — 2026/05/13
-          </span>
-        </p>
-        <nav className="flex justify-center gap-6 pt-1">
-          <a
-            href="#rules"
-            className="underline-offset-2 hover:underline hover:text-white transition-colors"
-          >
-            活動規則
-          </a>
-          <a
-            href="#faq"
-            className="underline-offset-2 hover:underline hover:text-white transition-colors"
-          >
-            常見問題
-          </a>
-        </nav>
-        <p className="pt-2 text-[10px] text-white/20">
+        <p className="text-[10px] text-white/20 pt-2">
           © 2026 TSUTAYA BOOKSTORE. All rights reserved.
         </p>
       </div>

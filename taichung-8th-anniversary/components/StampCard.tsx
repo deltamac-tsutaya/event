@@ -152,18 +152,13 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
                   >
                     {collected ? meta.element.slice(0, 2) : id}
                   </span>
-                  
-                  {/* 收集後的裝飾小點 */}
-                  {collected && (
-                    <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-gradient-to-br from-[#2B5CE6] to-[#1A2B4A] rounded-full border-[2px] border-white shadow-md animate-in zoom-in duration-300" />
-                  )}
                 </div>
                 <span
                   className={`text-[9px] text-center leading-tight transition-colors ${
-                    collected ? "text-[#1A2B4A] font-semibold" : "text-[#B0AEAD]"
+                    collected ? "text-[#1A2B4A] font-semibold" : "text-transparent select-none"
                   }`}
                 >
-                  {meta.element}
+                  {collected ? meta.element : "·"}
                 </span>
               </div>
             );
