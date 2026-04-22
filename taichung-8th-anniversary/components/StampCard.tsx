@@ -137,17 +137,17 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
                 <div
                   className={`
                     relative w-full aspect-square rounded-full flex items-center justify-center
-                    transition-all duration-500 border
+                    transition-all duration-500 border-2
                     ${collected
-                      ? "bg-white border-[#C9A84C]/40 shadow-sm"
-                      : "bg-[#EDEBE5]/50 border-dashed border-[#B0AEAD]/40 opacity-60"
+                      ? "bg-gradient-to-br from-white to-[#FDF8F0] border-[#C9A84C]/50 shadow-[0_4px_12px_rgba(201,168,76,0.25)] scale-[1.05]"
+                      : "bg-[#EDEBE5]/30 border-dashed border-[#B0AEAD]/30 opacity-50 grayscale"
                     }
                     ${isNew ? "animate-stamp-drop" : ""}
                   `}
                 >
                   <span
                     className={`font-serif text-lg font-bold tabular-nums ${
-                      collected ? "text-[#C9A84C]" : "text-[#B0AEAD]"
+                      collected ? "text-transparent bg-clip-text bg-gradient-to-br from-[#C9A84C] to-[#E5C97D]" : "text-[#B0AEAD]"
                     }`}
                   >
                     {collected ? meta.element.slice(0, 2) : id}
@@ -155,7 +155,7 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
                   
                   {/* 收集後的裝飾小點 */}
                   {collected && (
-                    <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#2B5CE6] rounded-full border-2 border-white shadow-sm" />
+                    <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-gradient-to-br from-[#2B5CE6] to-[#1A2B4A] rounded-full border-[2px] border-white shadow-md animate-in zoom-in duration-300" />
                   )}
                 </div>
                 <span
