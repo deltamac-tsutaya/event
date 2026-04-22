@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import QrScanner from "@/components/QrScanner";
@@ -25,7 +25,7 @@ function extractStampUuid(raw: string): string {
   return raw;
 }
 
-export default function StampPage() {
+function StampPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlStampId = searchParams.get("id");
@@ -241,5 +241,17 @@ export default function StampPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function StampPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-svh items-center justify-center bg-[#F5F2ED]">
+        <div className="size-8 animate-spin rounded-full border-4 border-[#1A2B4A] border-t-transparent" />
+      </div>
+    }>
+      <StampPageContent />
+    </Suspense>
   );
 }
