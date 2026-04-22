@@ -173,10 +173,14 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
 
       {/* ── 隱藏成就區 (僅在有收集到時顯示或以特殊樣式呈現) ── */}
       {hiddenStamps.some(id => collectedIds.has(id)) && (
-        <div className="pt-2 animate-page-in">
-          <p className="text-[10px] font-bold text-[#8A6F5C] uppercase tracking-widest mb-3 text-center opacity-70">
-            ✧ 額外發現的驚喜 ✧
-          </p>
+        <div className="pt-4 animate-page-in">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px flex-1 bg-[#C9A84C]/30" />
+            <p className="text-[10px] font-bold text-[#C9A84C] uppercase tracking-widest opacity-80">
+              BONUS SCAN
+            </p>
+            <div className="h-px flex-1 bg-[#C9A84C]/30" />
+          </div>
           <div className="flex justify-center gap-4">
             {hiddenStamps.map(id => {
               const collected = collectedIds.has(id);
@@ -198,7 +202,7 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
       )}
 
       {totalStamps === 8 && (
-        <div className="rounded-xl bg-[#FDF8F0] border border-[#C9A84C]/20 p-3 text-center animate-shine">
+        <div className="rounded-xl bg-[#FDF8F0] border border-[#C9A84C]/20 p-3 text-center animate-shine mt-4">
           <p className="text-xs font-bold text-[#C9A84C]">∞ 連結生活・集章完成 ∞</p>
         </div>
       )}

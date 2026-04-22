@@ -255,36 +255,40 @@ function MainContent() {
           </PageCard>
         )}
 
-        {/* 狀態 B */}
-        {state === "B" && (
+        {/* 集章格 — 永遠顯示於頁面頂部 */}
+        {user && state !== "F" && (
           <PageCard className="p-6 shadow-xl border-none space-y-6">
-            <div className="space-y-1">
-              <h2 className="text-sm font-bold text-[#1A2B4A]">
-                 {totalStamps === 0 ? "探索開始" : totalStamps >= 4 ? "已完成一半，繼續前進" : "探索進度中"}
-              </h2>
-              <p className="text-xs text-gray-400">還差 {8 - totalStamps} 枚，繼續探索店內各區</p>
-            </div>
             <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} />
+            
             <Link href="/stamp" className="block">
               <Button className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold shadow-lg">
-                前往掃描 QR code
+                {totalStamps >= 8 ? "繼續尋找隱藏點位" : "前往掃描 QR code"}
               </Button>
             </Link>
           </PageCard>
         )}
 
-        {/* 狀態 C */}
+
+
+        {/* 狀態 C: 今日抽獎已解鎖 */}
         {state === "C" && (
-          <PageCard className="p-8 shadow-xl border-none space-y-6 bg-white text-center">
-            <h2 className="text-xl font-bold text-[#1A2B4A]">集印完成。今日抽獎已解鎖。</h2>
-            <p className="text-sm text-gray-500">每個帳號每天可抽獎 1 次</p>
-            <Button onClick={handleDraw} disabled={drawLoading} className="h-14 w-full rounded-full bg-[#C9A84C] text-lg font-bold animate-pulse">
+          <div className="rounded-2xl bg-[#1A2B4A] px-6 py-6 shadow-xl space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div className="flex items-start gap-4">
+              <div className="mt-0.5 flex-shrink-0 w-10 h-10 rounded-full bg-[#C9A84C]/20 flex items-center justify-center">
+                <Sparkles className="text-[#C9A84C]" size={20} />
+              </div>
+              <div className="space-y-1">
+                <p className="font-bold text-white text-base leading-snug">集印完成・今日抽獎已解鎖</p>
+                <p className="text-xs text-white/50 leading-relaxed">每個帳號每天可抽獎 1 次</p>
+              </div>
+            </div>
+            <Button onClick={handleDraw} disabled={drawLoading} className="h-14 w-full rounded-full bg-[#C9A84C] hover:bg-[#C9A84C]/90 text-[#1A2B4A] text-lg font-bold animate-pulse shadow-md">
               {drawLoading ? "抽獎中..." : "立即抽獎"}
             </Button>
-          </PageCard>
+          </div>
         )}
 
-        {/* 狀態 D */}
+        {/* 狀態 D: 剛抽完獎 */}
         {state === "D" && lastReward && (
           <div className="space-y-6">
             <RewardCard reward={lastReward} />
@@ -294,15 +298,26 @@ function MainContent() {
           </div>
         )}
 
-        {/* 狀態 E */}
+        {/* 狀態 E: 今日已抽完 */}
         {state === "E" && (
-          <PageCard className="p-8 text-center shadow-xl border-none space-y-6">
-             <h2 className="text-xl font-bold text-[#1A2B4A]">今日抽獎已完成</h2>
-             <p className="text-sm text-gray-500">明天 00:00 後將再次開放</p>
-             <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
-                查看我的獎券
-             </Button>
-          </PageCard>
+          <div className="rounded-2xl bg-white border border-[#E8E4DE] px-6 py-6 shadow-sm space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div className="flex items-start gap-4">
+              <div className="mt-0.5 flex-shrink-0 w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">✓</div>
+              </div>
+              <div className="space-y-1">
+                <p className="font-bold text-[#1A2B4A] text-base leading-snug">今日抽獎已完成</p>
+                <p className="text-xs text-gray-400 leading-relaxed">明天 00:00 後將再次開放，抽獎紀錄保存於優惠券匣</p>
+              </div>
+            </div>
+            <Button
+              className="h-14 w-full rounded-full font-bold border border-[#1A2B4A]/30 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 flex items-center justify-center gap-2"
+              onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}
+            >
+              <Ticket size={18} />
+              查看優惠券匣
+            </Button>
+          </div>
         )}
 
         {/* 狀態 F */}
