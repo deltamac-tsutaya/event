@@ -11,7 +11,6 @@ import LifeGantt from "@/components/LifeGantt";
 import { Button } from "@/components/ui/button";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
-import ScanResultOverlay from "@/components/ScanResultOverlay";
 import { toast } from "sonner";
 import { Info, Ticket, Sparkles } from "lucide-react";
 import type { Reward } from "@/lib/types";
@@ -116,37 +115,39 @@ function InfinityDaySection({ tickets }: { tickets: number }) {
   const userProb = ((tickets * (8 / totalPool)) * 100).toFixed(2);
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-xl">
-      <div className="p-5 space-y-4">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-[0_20px_40px_-15px_rgba(43,92,230,0.5)] transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(43,92,230,0.6)] hover:-translate-y-1">
+      <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 blur-3xl rounded-full" />
+      <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-400/20 blur-2xl rounded-full" />
+      <div className="relative p-6 space-y-5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
-              <Sparkles size={18} className="text-yellow-300" />
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 p-2 rounded-xl backdrop-blur-md shadow-inner border border-white/10">
+              <Sparkles size={18} className="text-yellow-300 animate-pulse" />
             </div>
-            <span className="font-bold tracking-wider text-sm uppercase">Infinity Day</span>
+            <span className="font-black tracking-widest text-sm uppercase">Infinity Day</span>
           </div>
-          <div className="text-[10px] bg-white/10 px-2 py-1 rounded-full backdrop-blur-sm opacity-80">
+          <div className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 font-bold tracking-wider">
             5/13 20:00 開獎
           </div>
         </div>
 
         <div className="space-y-1">
-          <p className="text-xs text-white/70">抽出 8 份 WIRED TOKYO 雙人和牛牛排套餐</p>
+          <p className="text-xs text-white/80 font-medium tracking-wide">抽出 8 份 WIRED TOKYO 雙人和牛牛排套餐</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3 pt-2">
-          <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
-            <p className="text-[10px] text-white/50 mb-1">已累積券數</p>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold font-serif">{tickets}</span>
-              <span className="text-[10px] opacity-60">張</span>
+          <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10 shadow-sm transition-transform hover:scale-[1.02]">
+            <p className="text-[10px] text-white/60 mb-1 font-bold tracking-wider">已累積券數</p>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-black font-serif tracking-tighter">{tickets}</span>
+              <span className="text-[10px] font-bold opacity-60">張</span>
             </div>
           </div>
-          <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/5">
-            <p className="text-[10px] text-white/50 mb-1">預估中獎機率</p>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold font-serif text-yellow-300">{userProb}</span>
-              <span className="text-[10px] opacity-60">%</span>
+          <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10 shadow-sm transition-transform hover:scale-[1.02]">
+            <p className="text-[10px] text-white/60 mb-1 font-bold tracking-wider">預估中獎機率</p>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-black font-serif tracking-tighter text-yellow-300 drop-shadow-sm">{userProb}</span>
+              <span className="text-[10px] font-bold text-yellow-300/60">%</span>
             </div>
           </div>
         </div>
@@ -167,12 +168,6 @@ function MainContent() {
   const [userHeroExpanded, setUserHeroExpanded] = useState(false);
 
   const isLoading = userLoading || (!!user && progressLoading);
-  const collectParam = searchParams.get("collect");
-  const [showScanResult, setShowScanResult] = useState(false);
-
-  useEffect(() => {
-    if (collectParam) setShowScanResult(true);
-  }, [collectParam]);
 
   const totalStamps = progress?.totalStamps ?? 0;
   const bitmask = useMemo(() => {
@@ -243,13 +238,13 @@ function MainContent() {
       }`}>
         {/* 狀態 A */}
         {state === "A" && (
-          <PageCard className="p-8 shadow-2xl border-none space-y-8 bg-white/90 backdrop-blur-md">
-            <div className="space-y-2 text-center">
-              <h2 className="text-xl font-bold text-[#1A2B4A]">歡迎參加週年慶活動</h2>
-              <p className="text-sm text-gray-500">集印完成即可享受每日抽獎驚喜</p>
+          <PageCard className="p-8 shadow-[0_20px_50px_-12px_rgba(26,43,74,0.1)] border border-white/50 space-y-8 bg-white/80 backdrop-blur-xl transition-all hover:shadow-[0_20px_50px_-12px_rgba(26,43,74,0.15)]">
+            <div className="space-y-3 text-center">
+              <h2 className="text-2xl font-black tracking-tight text-[#1A2B4A]">歡迎參加週年慶活動</h2>
+              <p className="text-sm text-[#8A6F5C] font-medium">集印完成即可享受每日抽獎驚喜</p>
             </div>
             <StepFlow />
-            <Button onClick={login} className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold">
+            <Button onClick={login} className="h-14 w-full rounded-full bg-gradient-to-r from-[#1A2B4A] to-[#2B5CE6] text-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
               用 LINE 帳號參加
             </Button>
           </PageCard>
@@ -257,11 +252,18 @@ function MainContent() {
 
         {/* 集章格 — 永遠顯示於頁面頂部 */}
         {user && state !== "F" && (
-          <PageCard className="p-6 shadow-xl border-none space-y-6">
+          <PageCard className="p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white space-y-6 bg-white/90 backdrop-blur-xl">
             <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} />
             
-            <Link href="/stamp" className="block">
-              <Button className="h-14 w-full rounded-full bg-[#1A2B4A] text-lg font-bold shadow-lg">
+            <Link href="/stamp" className="block mt-4">
+              <Button 
+                variant={totalStamps >= 8 ? "outline" : "default"}
+                className={`h-14 w-full rounded-full text-lg font-bold shadow-sm transition-all duration-300 ${
+                  totalStamps >= 8 
+                    ? "border-2 border-[#1A2B4A]/20 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 hover:border-[#1A2B4A]/40" 
+                    : "bg-[#1A2B4A] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                }`}
+              >
                 {totalStamps >= 8 ? "繼續尋找隱藏點位" : "前往掃描 QR code"}
               </Button>
             </Link>
@@ -272,27 +274,29 @@ function MainContent() {
 
         {/* 狀態 C: 今日抽獎已解鎖 */}
         {state === "C" && (
-          <div className="rounded-2xl bg-[#1A2B4A] px-6 py-6 shadow-xl space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="flex items-start gap-4">
-              <div className="mt-0.5 flex-shrink-0 w-10 h-10 rounded-full bg-[#C9A84C]/20 flex items-center justify-center">
-                <Sparkles className="text-[#C9A84C]" size={20} />
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#111C33] px-7 py-8 shadow-[0_20px_40px_-15px_rgba(26,43,74,0.5)] space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#C9A84C]/10 blur-3xl rounded-full" />
+            <div className="relative flex items-start gap-4">
+              <div className="mt-0.5 flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#C9A84C] to-[#E5C97D] flex items-center justify-center shadow-inner">
+                <Sparkles className="text-[#1A2B4A]" size={22} />
               </div>
-              <div className="space-y-1">
-                <p className="font-bold text-white text-base leading-snug">集印完成・今日抽獎已解鎖</p>
-                <p className="text-xs text-white/50 leading-relaxed">每個帳號每天可抽獎 1 次</p>
+              <div className="space-y-1.5 pt-1">
+                <p className="font-black text-white text-lg tracking-wide leading-snug">今日抽獎已解鎖</p>
+                <p className="text-xs text-white/60 font-medium">每個帳號每天可抽獎 1 次</p>
               </div>
             </div>
-            <Button onClick={handleDraw} disabled={drawLoading} className="h-14 w-full rounded-full bg-[#C9A84C] hover:bg-[#C9A84C]/90 text-[#1A2B4A] text-lg font-bold animate-pulse shadow-md">
-              {drawLoading ? "抽獎中..." : "立即抽獎"}
+            <Button onClick={handleDraw} disabled={drawLoading} className="relative overflow-hidden group h-14 w-full rounded-full bg-gradient-to-r from-[#C9A84C] to-[#E5C97D] text-[#1A2B4A] text-lg font-black shadow-[0_0_20px_rgba(201,168,76,0.3)] transition-all hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(201,168,76,0.5)]">
+              <span className="relative z-10">{drawLoading ? "抽獎中..." : "立即抽獎"}</span>
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
             </Button>
           </div>
         )}
 
         {/* 狀態 D: 剛抽完獎 */}
         {state === "D" && lastReward && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-in zoom-in-95 duration-500 ease-out">
             <RewardCard reward={lastReward} />
-            <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
+            <Button className="h-14 w-full rounded-full bg-gradient-to-r from-[#1A2B4A] to-[#2B5CE6] font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
               查看我的獎券
             </Button>
           </div>
@@ -300,21 +304,21 @@ function MainContent() {
 
         {/* 狀態 E: 今日已抽完 */}
         {state === "E" && (
-          <div className="rounded-2xl bg-white border border-[#E8E4DE] px-6 py-6 shadow-sm space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <div className="rounded-3xl bg-white/80 backdrop-blur-xl border border-white px-7 py-8 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
             <div className="flex items-start gap-4">
-              <div className="mt-0.5 flex-shrink-0 w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
-                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">✓</div>
+              <div className="mt-0.5 flex-shrink-0 w-12 h-12 rounded-full bg-green-50 flex items-center justify-center border border-green-100">
+                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold shadow-sm">✓</div>
               </div>
-              <div className="space-y-1">
-                <p className="font-bold text-[#1A2B4A] text-base leading-snug">今日抽獎已完成</p>
-                <p className="text-xs text-gray-400 leading-relaxed">明天 00:00 後將再次開放，抽獎紀錄保存於優惠券匣</p>
+              <div className="space-y-1.5 pt-1">
+                <p className="font-black text-[#1A2B4A] text-lg tracking-wide leading-snug">今日抽獎已完成</p>
+                <p className="text-xs text-[#8A6F5C] leading-relaxed font-medium">明天 00:00 後將再次開放<br/>抽獎紀錄保存於優惠券匣</p>
               </div>
             </div>
             <Button
-              className="h-14 w-full rounded-full font-bold border border-[#1A2B4A]/30 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 flex items-center justify-center gap-2"
+              className="h-14 w-full rounded-full font-bold border-2 border-[#1A2B4A]/10 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 hover:border-[#1A2B4A]/30 transition-all flex items-center justify-center gap-2 group"
               onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}
             >
-              <Ticket size={18} />
+              <Ticket size={18} className="group-hover:-rotate-12 transition-transform" />
               查看優惠券匣
             </Button>
           </div>
@@ -345,15 +349,7 @@ function MainContent() {
         </div>
       </main>
       <Footer />
-      {showScanResult && collectParam && (
-        <ScanResultOverlay
-          stampId={collectParam}
-          onClose={() => {
-            setShowScanResult(false);
-            window.history.replaceState(null, "", window.location.pathname);
-          }}
-        />
-      )}
+      {/* Removed ScanResultOverlay mapping */}
     </div>
   );
 }

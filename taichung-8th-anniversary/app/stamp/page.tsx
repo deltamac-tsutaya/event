@@ -31,19 +31,21 @@ function extractStampUuid(raw: string): string {
 
 function DrawReadyCard() {
   return (
-    <div className="rounded-2xl bg-[#1A2B4A] px-5 py-5 shadow-xl space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex items-start gap-3">
-        <div className="mt-0.5 flex-shrink-0 w-9 h-9 rounded-full bg-[#C9A84C]/20 flex items-center justify-center">
-          <Sparkles className="text-[#C9A84C]" size={18} />
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#111C33] px-7 py-8 shadow-[0_20px_40px_-15px_rgba(26,43,74,0.5)] space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-[#C9A84C]/10 blur-3xl rounded-full" />
+      <div className="relative flex items-start gap-4">
+        <div className="mt-0.5 flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#C9A84C] to-[#E5C97D] flex items-center justify-center shadow-inner">
+          <Sparkles className="text-[#1A2B4A]" size={22} />
         </div>
-        <div className="space-y-0.5">
-          <p className="font-bold text-white text-sm leading-snug">集印完成・今日抽獎已解鎖</p>
-          <p className="text-xs text-white/50 leading-relaxed">每日一次機會，前往首頁即可參加抽獎</p>
+        <div className="space-y-1.5 pt-1">
+          <p className="font-black text-white text-lg tracking-wide leading-snug">今日抽獎已解鎖</p>
+          <p className="text-xs text-white/60 font-medium">每日一次機會，前往首頁即可參加抽獎</p>
         </div>
       </div>
       <Link href="/">
-        <Button className="w-full h-11 rounded-full bg-[#C9A84C] hover:bg-[#C9A84C]/90 text-[#1A2B4A] font-bold text-sm shadow-md">
-          前往首頁抽獎 →
+        <Button className="relative overflow-hidden group h-14 w-full rounded-full bg-gradient-to-r from-[#C9A84C] to-[#E5C97D] text-[#1A2B4A] text-lg font-black shadow-[0_0_20px_rgba(201,168,76,0.3)] transition-all hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(201,168,76,0.5)]">
+          <span className="relative z-10">前往首頁抽獎 →</span>
+          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
         </Button>
       </Link>
     </div>
@@ -52,22 +54,21 @@ function DrawReadyCard() {
 
 function DrawnTodayCard() {
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E4DE] px-5 py-5 shadow-sm space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex items-start gap-3">
-        <div className="mt-0.5 flex-shrink-0 w-9 h-9 rounded-full bg-green-50 flex items-center justify-center">
-          <CheckCircle2 className="text-green-500" size={18} />
+    <div className="rounded-3xl bg-white/80 backdrop-blur-xl border border-white px-7 py-8 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+      <div className="flex items-start gap-4">
+        <div className="mt-0.5 flex-shrink-0 w-12 h-12 rounded-full bg-green-50 flex items-center justify-center border border-green-100">
+          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold shadow-sm">✓</div>
         </div>
-        <div className="space-y-0.5">
-          <p className="font-bold text-[#1A2B4A] text-sm leading-snug">今日抽獎已完成</p>
-          <p className="text-xs text-gray-400 leading-relaxed">明天 00:00 後將再次開放，抽獎紀錄保存於優惠券匣</p>
+        <div className="space-y-1.5 pt-1">
+          <p className="font-black text-[#1A2B4A] text-lg tracking-wide leading-snug">今日抽獎已完成</p>
+          <p className="text-xs text-[#8A6F5C] leading-relaxed font-medium">明天 00:00 後將再次開放<br/>抽獎紀錄保存於優惠券匣</p>
         </div>
       </div>
       <Button
-        variant="outline"
+        className="h-14 w-full rounded-full font-bold border-2 border-[#1A2B4A]/10 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 hover:border-[#1A2B4A]/30 transition-all flex items-center justify-center gap-2 group"
         onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}
-        className="w-full h-11 rounded-full font-bold text-sm border-[#1A2B4A]/30 text-[#1A2B4A] hover:bg-[#1A2B4A]/5 flex items-center justify-center gap-2"
       >
-        <Ticket size={15} />
+        <Ticket size={18} className="group-hover:-rotate-12 transition-transform" />
         查看優惠券匣
       </Button>
     </div>
@@ -197,13 +198,15 @@ function StampPageContent() {
           </span>
         </div>
 
-        <div className="text-center space-y-1">
-          <h1 className="text-lg font-bold text-gray-900">集章進度</h1>
-          <p className="text-xs text-gray-400">找出店內 8 個印記，集滿解鎖每日抽獎</p>
+        <div className="text-center space-y-1.5 mt-2 mb-6">
+          <h1 className="text-2xl font-black tracking-tight text-[#1A2B4A]">集章進度</h1>
+          <p className="text-xs text-[#8A6F5C] font-medium">找出店內 8 個印記，集滿解鎖每日抽獎</p>
         </div>
 
         {/* 1. 集章格 — 永遠顯示 */}
-        <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} />
+        <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white">
+          <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} />
+        </div>
 
         {/* 2. 抽獎狀態卡片 — 在集章格正下方 */}
         {progress?.canDraw && <DrawReadyCard />}
