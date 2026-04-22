@@ -1,0 +1,446 @@
+/*
+ * stamp-site.css — LINE 數位集印頁面
+ * TSUTAYA BOOKSTORE × WIRED TOKYO｜Nexus Life 8th Anniversary
+ * 純手寫 CSS，不依賴任何 framework
+ */
+
+/* ─────────────────────────────────────────────
+   RESET
+───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+img  { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+a    { color: inherit; text-decoration: none; }
+
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────────────────── */
+:root {
+  /* 色票 */
+  --color-bg:         #F5F1EB;
+  --color-bg-alt:     #EDEBE5;
+  --color-navy:       #1A2340;
+  --color-brown:      #6B4F3A;
+  --color-nexus:      #2B5CE6;
+  --color-gold:       #C9A84C;
+  --color-gray-stamp: #B0AEAD;
+
+  /* 字體 */
+  --font-serif: "Noto Serif TC", Georgia, "Times New Roman", serif;
+  --font-sans:  "Noto Sans TC", "Helvetica Neue", Arial, sans-serif;
+
+  /* 間距（base 8px） */
+  --sp-1:  8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-6: 48px;
+  --sp-8: 64px;
+
+  /* 圓角 */
+  --radius-stamp: 50%;
+  --radius-card:  8px;
+
+  /* 格線 */
+  --border-thin: 0.5px solid rgba(26, 35, 64, 0.12);
+}
+
+/* ─────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────── */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-navy);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+}
+
+/* ─────────────────────────────────────────────
+   LAYOUT CONTAINER
+───────────────────────────────────────────── */
+.stamp-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 var(--sp-2);
+}
+
+/* ─────────────────────────────────────────────
+   HEADER
+   <header class="stamp-header">
+     <span class="stamp-header__title">TSUTAYA × WIRED TOKYO</span>
+     <span class="stamp-header__badge">8th Anniversary</span>
+   </header>
+───────────────────────────────────────────── */
+.stamp-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--sp-2);
+  background-color: rgba(245, 241, 235, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: var(--border-thin);
+}
+
+.stamp-header__title {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-navy);
+}
+
+.stamp-header__badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  background-color: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.28);
+  border-radius: 20px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────
+   HERO
+   <section class="stamp-hero">
+     <img class="stamp-hero__base" src="…" alt="">
+     <div class="stamp-hero__watermark" aria-hidden="true">8</div>
+     <div class="stamp-hero__overlay"></div>
+     <div class="stamp-hero__tagline">
+       <h1>無限日常 ∞ 連結生活</h1>
+       <p>Nexus Life · 台中市政店</p>
+     </div>
+   </section>
+───────────────────────────────────────────── */
+.stamp-hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background-color: var(--color-navy);
+}
+
+.stamp-hero__base {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+}
+
+.stamp-hero__watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: clamp(100px, 28vw, 200px);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.06);
+  transform: rotate(90deg);
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.stamp-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,
+    rgba(26, 35, 64, 0.65) 100%
+  );
+}
+
+.stamp-hero__tagline {
+  position: absolute;
+  bottom: var(--sp-3);
+  left: var(--sp-2);
+  right: var(--sp-2);
+  color: white;
+}
+
+.stamp-hero__tagline h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(16px, 4.5vw, 24px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+}
+
+.stamp-hero__tagline p {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-top: 6px;
+}
+
+/* ─────────────────────────────────────────────
+   PROGRESS BAR
+   <section class="stamp-progress stamp-container">
+     <div class="stamp-progress__header">
+       <span class="stamp-progress__label">集印進度</span>
+       <span class="stamp-progress__count">3 <span>/ 8</span></span>
+     </div>
+     <div class="stamp-progress__track">
+       <div class="stamp-progress__fill" style="--progress: 37.5"></div>
+     </div>
+     <p class="stamp-progress__hint">再 5 枚即可抽獎</p>
+   </section>
+───────────────────────────────────────────── */
+.stamp-progress {
+  padding: var(--sp-3) 0 var(--sp-2);
+  border-bottom: var(--border-thin);
+}
+
+.stamp-progress__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--sp-1);
+}
+
+.stamp-progress__label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--color-brown);
+}
+
+.stamp-progress__count {
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  color: var(--color-navy);
+  line-height: 1;
+}
+
+.stamp-progress__count span {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-brown);
+}
+
+.stamp-progress__track {
+  height: 4px;
+  background-color: var(--color-bg-alt);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.stamp-progress__fill {
+  height: 100%;
+  width: calc(var(--progress, 0) * 1%);
+  background-color: var(--color-nexus);
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+/* 集滿 8 枚後進度條改金色 */
+.stamp-progress__fill--complete {
+  background-color: var(--color-gold);
+}
+
+.stamp-progress__hint {
+  font-size: 11px;
+  color: var(--color-brown);
+  letter-spacing: 0.06em;
+}
+
+/* ─────────────────────────────────────────────
+   STAMP GRID  (4 col × 2 row)
+   <section class="stamp-grid stamp-container">
+     <div class="stamp-item stamp-item--collected">
+       <div class="stamp-item__circle">
+         <span class="stamp-item__number">01</span>
+       </div>
+       <span class="stamp-item__name">入口主題陳列區</span>
+     </div>
+     <div class="stamp-item stamp-item--uncollected"> … </div>
+   </section>
+───────────────────────────────────────────── */
+.stamp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-2);
+  padding: var(--sp-3) 0;
+}
+
+.stamp-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.4s ease;
+}
+
+.stamp-item__circle {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-stamp);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+
+.stamp-item__number {
+  font-family: var(--font-serif);
+  font-size: clamp(16px, 4vw, 22px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.stamp-item__name {
+  font-size: 9px;
+  text-align: center;
+  line-height: 1.35;
+  letter-spacing: 0.03em;
+}
+
+/* 未收集 */
+.stamp-item--uncollected .stamp-item__circle {
+  background-color: var(--color-bg-alt);
+  border: 1.5px dashed var(--color-gray-stamp);
+  filter: grayscale(100%);
+  opacity: 0.45;
+}
+
+.stamp-item--uncollected .stamp-item__number {
+  color: var(--color-gray-stamp);
+}
+
+.stamp-item--uncollected .stamp-item__name {
+  color: var(--color-gray-stamp);
+}
+
+/* 已收集 */
+.stamp-item--collected .stamp-item__circle {
+  background-color: rgba(201, 168, 76, 0.08);
+  border: 1.5px solid rgba(201, 168, 76, 0.35);
+  filter: drop-shadow(0 2px 8px rgba(201, 168, 76, 0.4));
+}
+
+.stamp-item--collected .stamp-item__number {
+  color: var(--color-gold);
+}
+
+.stamp-item--collected .stamp-item__name {
+  color: var(--color-navy);
+}
+
+/* stamp-glow：4 枚 / 7 枚 / 8 枚集滿觸發 */
+@keyframes stamp-glow {
+  0%   { box-shadow: 0 0 0 0   rgba(201, 168, 76, 0.55); }
+  40%  { box-shadow: 0 0 0 12px rgba(201, 168, 76, 0.15); }
+  100% { box-shadow: 0 0 0 0   rgba(201, 168, 76, 0); }
+}
+
+.stamp-item--glow .stamp-item__circle {
+  animation: stamp-glow 1.4s ease-out forwards;
+}
+
+/* ─────────────────────────────────────────────
+   CTA
+   <section class="stamp-cta stamp-container">
+     <button class="btn-draw">前往抽獎</button>
+     <p class="stamp-cta__hint">集滿 8 枚後每日可抽一次</p>
+   </section>
+───────────────────────────────────────────── */
+.stamp-cta {
+  padding: var(--sp-4) 0 var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.btn-draw {
+  width: 100%;
+  max-width: 320px;
+  height: 52px;
+  border-radius: 26px;
+  background-color: var(--color-nexus);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-draw:hover  { opacity: 0.88; transform: translateY(-1px); }
+.btn-draw:active { opacity: 1; transform: translateY(0); }
+
+.btn-draw:disabled {
+  background-color: var(--color-bg-alt);
+  color: var(--color-gray-stamp);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.stamp-cta__hint {
+  font-size: 11px;
+  color: var(--color-brown);
+  letter-spacing: 0.06em;
+}
+
+/* ─────────────────────────────────────────────
+   FOOTER
+   <footer class="stamp-footer">
+     <a href="/terms">活動條款</a>
+     <a href="/faq">常見問題</a>
+   </footer>
+───────────────────────────────────────────── */
+.stamp-footer {
+  border-top: var(--border-thin);
+  padding: var(--sp-3) var(--sp-2);
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-4);
+}
+
+.stamp-footer a {
+  font-size: 12px;
+  color: var(--color-brown);
+  letter-spacing: 0.06em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.stamp-footer a:hover { opacity: 1; }
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .stamp-container { max-width: 560px; padding: 0 var(--sp-4); }
+  .stamp-grid { gap: var(--sp-3); }
+  .stamp-item__number { font-size: 22px; }
+  .stamp-item__name   { font-size: 10px; }
+}
+
+@media (min-width: 1200px) {
+  .stamp-container { max-width: 640px; }
+}

@@ -12,16 +12,7 @@ function getTaipeiDateString(): string {
   return formatter.format(now);
 }
 
-interface Reward {
-  id: string;
-  name: string;
-  probability: number;
-  daily_limit: number | null;
-  validity_days: number;
-  conditions: string;
-}
-
-function weightedRandom(rewards: Reward[]): Reward {
+function weightedRandom(rewards: any[]) {
   const total = rewards.reduce((sum, r) => sum + r.probability, 0);
   let rand = Math.random() * total;
   for (const reward of rewards) {
@@ -32,135 +23,61 @@ function weightedRandom(rewards: Reward[]): Reward {
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const { lineUserId } = body;
-
-  if (!lineUserId) {
-    return NextResponse.json(
-      { success: false, error: "lineUserId is required" },
-      { status: 400 }
-    );
-  }
-
-  // Find user
-  const { data: user, error: userError } = await supabaseAdmin
-    .from("users")
-    .select("id")
-    .eq("line_user_id", lineUserId)
-    .single();
-
-  if (userError || !user) {
-    return NextResponse.json(
-      { success: false, error: "User not found" },
-      { status: 404 }
-    );
-  }
-
-  // Check total stamps >= 8
-  const { count: stampCount, error: stampError } = await supabaseAdmin
-    .from("stamps")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", user.id);
-
-  if (stampError) {
-    return NextResponse.json(
-      { success: false, error: "Failed to count stamps" },
-      { status: 500 }
-    );
-  }
-
-  if ((stampCount ?? 0) < 8) {
-    return NextResponse.json(
-      { success: false, error: "Not enough stamps" },
-      { status: 403 }
-    );
-  }
+  const { lineUserId } = await request.json();
+  if (!lineUserId) return NextResponse.json({ success: false, error: "lineUserId is required" }, { status: 400 });
 
   const today = getTaipeiDateString();
 
-  // Check if already drawn today
-  const { data: existingDraw } = await supabaseAdmin
+  // 1. 查找用戶並確認抽獎資格
+  const { data: user } = await supabaseAdmin.from("users").select("id, tickets_count").eq("line_user_id", lineUserId).single();
+  if (!user) return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+
+  // 2. 檢查今日是否已抽過
+  const { data: existingDraw } = await supabaseAdmin.from("draws").select("id").eq("user_id", user.id).eq("draw_date", today).maybeSingle();
+  if (existingDraw) return NextResponse.json({ success: false, error: "Already drawn today" }, { status: 409 });
+
+  // 3. 獲取動態獎項池與今日發放統計
+  const { data: rewardsPool, error: rewardsError } = await supabaseAdmin.from("rewards").select("*");
+  if (rewardsError || !rewardsPool) throw new Error("Failed to fetch rewards pool");
+
+  const { data: todayDraws, error: statsError } = await supabaseAdmin
     .from("draws")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("draw_date", today)
-    .maybeSingle();
+    .select("reward_id")
+    .eq("draw_date", today);
+  
+  if (statsError) throw new Error("Failed to fetch today's stats");
 
-  if (existingDraw) {
-    return NextResponse.json(
-      { success: false, error: "Already drawn today" },
-      { status: 409 }
-    );
-  }
+  // 計算今日各獎項已發放數量
+  const counts: Record<string, number> = {};
+  todayDraws?.forEach(d => {
+    counts[d.reward_id] = (counts[d.reward_id] || 0) + 1;
+  });
 
-  // Fetch all rewards
-  const { data: allRewards, error: rewardsError } = await supabaseAdmin
-    .from("rewards")
-    .select("id, name, probability, daily_limit, validity_days, conditions");
+  // 過濾掉超過上限的獎項
+  const availableRewards = rewardsPool.filter(reward => {
+    if (reward.daily_limit === null) return true;
+    return (counts[reward.id] || 0) < reward.daily_limit;
+  });
 
-  if (rewardsError || !allRewards || allRewards.length === 0) {
-    return NextResponse.json(
-      { success: false, error: "No rewards available" },
-      { status: 500 }
-    );
-  }
+  // 4. 執行權重抽獎 (若無可用獎項，保底最後一個)
+  const selected = weightedRandom(availableRewards.length > 0 ? availableRewards : [rewardsPool[rewardsPool.length - 1]]);
 
-  // Filter rewards that have reached their daily limit
-  const availableRewards: Reward[] = [];
-  for (const reward of allRewards as Reward[]) {
-    if (reward.daily_limit === null) {
-      availableRewards.push(reward);
-      continue;
-    }
-    const { count: todayDrawCount } = await supabaseAdmin
-      .from("draws")
-      .select("*", { count: "exact", head: true })
-      .eq("reward_id", reward.id)
-      .eq("draw_date", today);
-
-    if ((todayDrawCount ?? 0) < reward.daily_limit) {
-      availableRewards.push(reward);
-    }
-  }
-
-  if (availableRewards.length === 0) {
-    return NextResponse.json(
-      { success: false, error: "All rewards exhausted for today" },
-      { status: 503 }
-    );
-  }
-
-  // Weighted random draw
-  const selected = weightedRandom(availableRewards);
-
-  // Insert draw record
-  const { error: drawInsertError } = await supabaseAdmin.from("draws").insert({
+  // 5. 寫入抽獎紀錄並「累積加碼獎券」
+  const { error: drawError } = await supabaseAdmin.from("draws").insert({
     user_id: user.id,
     reward_id: selected.id,
     draw_date: today,
   });
 
-  if (drawInsertError) {
-    // Unique violation — already drawn today (race condition guard)
-    if (drawInsertError.code === "23505") {
-      return NextResponse.json(
-        { success: false, error: "Already drawn today" },
-        { status: 409 }
-      );
-    }
-    return NextResponse.json(
-      { success: false, error: "Failed to record draw", detail: drawInsertError.message },
-      { status: 500 }
-    );
-  }
+  if (drawError) return NextResponse.json({ success: false, error: "Draw failed" }, { status: 500 });
+
+  // 關鍵邏輯：今日首次抽獎完成，加碼獎券 +1
+  await supabaseAdmin.from("users").update({ tickets_count: (user.tickets_count || 0) + 1 }).eq("id", user.id);
 
   return NextResponse.json({
     success: true,
-    reward: {
-      id: selected.id,
-      name: selected.name,
-      conditions: selected.conditions,
-      validity_days: selected.validity_days,
-    },
+    reward: selected,
+    ticketAdded: true,
+    totalTickets: (user.tickets_count || 0) + 1
   });
 }

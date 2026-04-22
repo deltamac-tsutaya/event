@@ -10,7 +10,7 @@ interface Reward {
 
 interface RewardCardProps {
   reward: Reward;
-  drawDate: string; // ISO date string or "YYYY-MM-DD"
+  drawDate?: string; // ISO date string or "YYYY-MM-DD"
 }
 
 function getTierLabel(id: string): {
@@ -35,7 +35,7 @@ function addDays(dateStr: string, days: number): string {
   });
 }
 
-export default function RewardCard({ reward, drawDate }: RewardCardProps) {
+export default function RewardCard({ reward, drawDate = new Date().toISOString() }: RewardCardProps) {
   const tier = getTierLabel(reward.id);
   const expiryDate = addDays(drawDate, reward.validity_days);
 

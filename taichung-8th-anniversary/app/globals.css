@@ -129,14 +129,8 @@
   }
 }
 
-/* ── Brand token ───────────────────────────── */
+/* ── Background override ──────────────────── */
 :root {
-  --brand: #1A2B4A;
-  --brand-light: #EEE9E2;
-  --brand-navy: #1A2B4A;
-  --brand-brown: #8A6F5C;
-  --brand-nexus: #3B82C4;
-  --brand-bg: #F5F2ED;
   --background: #F5F2ED;
 }
 
@@ -219,6 +213,37 @@
 
 .animate-countdown {
   animation: countdown-tick 1s step-start infinite;
+}
+
+/* ── Hero Milestone Animations ────────────────── */
+@keyframes hero-milestone-pulse {
+  0%, 100% { filter: contrast(1) saturate(1); }
+  50%       { filter: contrast(1.05) saturate(1.1); }
+}
+
+@keyframes hero-glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(1px, 1px); }
+  80% { transform: translate(1px, -1px); }
+  100% { transform: translate(0); }
+}
+
+.animate-hero-half {
+  animation: hero-milestone-pulse 3s ease-in-out infinite;
+}
+
+.animate-hero-near {
+  animation: hero-milestone-pulse 1.5s ease-in-out infinite;
+}
+
+.animate-hero-complete {
+  animation: hero-milestone-pulse 0.8s ease-in-out infinite;
+}
+
+.animate-hero-complete .font-heading {
+  text-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
 }
 
 /* ── Loading skeleton ────────────────────────────────── */

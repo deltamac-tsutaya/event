@@ -46,7 +46,7 @@ export default function HelpPage() {
             ← 返回
           </Link>
           <span className="text-sm font-bold text-gray-800">
-            現場服務指南（店員專用）
+            活動規則說明
           </span>
           <div className="w-8" />
         </div>

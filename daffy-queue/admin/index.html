@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1A1A1A">
+<title>後台叫號管理｜Daffy 似顏畫</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="admin-header">
+    <span class="admin-staff-badge">STAFF ONLY</span>
+    <p class="admin-header-title">Daffy 似顏畫｜後台管理</p>
+  </header>
+
+  <!-- ── Login view ── -->
+  <section id="login-view" class="login-box">
+    <h2>請輸入工作人員密碼</h2>
+    <form id="login-form" autocomplete="off">
+      <input id="pw-input" type="password" inputmode="text"
+             placeholder="密碼" aria-label="密碼" required>
+      <div class="status error" id="login-status"></div>
+      <button class="btn btn-plus" type="submit" style="margin-top:0.5rem">登入</button>
+    </form>
+  </section>
+
+  <!-- ── Admin view ── -->
+  <section id="admin-view" class="hidden admin-panel">
+
+    <!-- Current calling card -->
+    <div class="card admin-number-card" style="text-align:center">
+      <span class="card-label" id="call-badge"
+            style="background:var(--ink);color:var(--yellow)">等候中</span>
+      <div id="current" class="admin-current">—</div>
+
+      <!-- 60 s countdown ring (visible when calling) -->
+      <div id="countdown-wrap" class="countdown-wrap hidden">
+        <svg class="countdown-svg" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="ring-bg"    cx="50" cy="50" r="44"/>
+          <circle class="ring-track" cx="50" cy="50" r="44" id="ring-track"/>
+        </svg>
+        <span id="countdown-num" class="countdown-num">60</span>
+      </div>
+
+      <!-- Report / Skip (only when calling) -->
+      <div id="call-actions" class="admin-row hidden" style="margin-top:1rem">
+        <button id="btn-checked-in" class="btn btn-plus"      type="button">已報到</button>
+        <button id="btn-skip"       class="btn btn-secondary" type="button">過號</button>
+      </div>
+
+      <p class="updated" style="margin-top:0.75rem">
+        <span class="dot" aria-hidden="true"></span>
+        <span>最後更新</span>
+        <time id="updated-at">—</time>
+      </p>
+    </div>
+
+    <!-- Call-next card -->
+    <div class="card" style="text-align:center">
+      <p class="section-head">下一號</p>
+      <div id="next-preview" class="next-big">—</div>
+      <p id="pending-info" class="status" style="margin-bottom:0.75rem"></p>
+      <button id="btn-call-next" class="btn btn-plus btn-hero" style="width:100%" type="button">
+        呼叫下一號
+      </button>
+    </div>
+
+    <!-- 過號區 (hidden when empty) -->
+    <div id="missed-card" class="card hidden" style="text-align:center">
+      <p class="section-head">過號區</p>
+      <div id="chip-grid" class="chip-grid"></div>
+      <p style="font-size:0.78rem;opacity:0.5;margin-top:0.65rem;line-height:1.5">
+        點白色號碼 → 排入重新叫號（變黃色）｜再點黃色 → 取消
+      </p>
+    </div>
+
+    <div id="main-status" class="status"></div>
+
+    <div class="admin-row">
+      <button id="btn-init"  class="btn btn-secondary" type="button">初始化 1–60</button>
+      <button id="btn-reset" class="btn btn-danger"    type="button">清空全部</button>
+    </div>
+
+    <a class="admin-link" href="../">← 返回顧客頁</a>
+  </section>
+
+</div>
+
+<script type="module">
+  import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue, update, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { firebaseConfig, ADMIN_PASSWORD }         from "../assets/config.js";
+
+  // ── constants ─────────────────────────────────────────────────
+  const SESSION_KEY    = "daffy-queue-auth";
+  const COUNTDOWN_SECS = 60;
+  const CIRCUMFERENCE  = 2 * Math.PI * 44; // r=44 → ≈ 276.46
+
+  // ── DOM ───────────────────────────────────────────────────────
+  const loginView     = document.getElementById("login-view");
+  const adminView     = document.getElementById("admin-view");
+  const loginForm     = document.getElementById("login-form");
+  const pwInput       = document.getElementById("pw-input");
+  const loginStatus   = document.getElementById("login-status");
+  const callBadge     = document.getElementById("call-badge");
+  const currentEl     = document.getElementById("current");
+  const countdownWrap = document.getElementById("countdown-wrap");
+  const callActions   = document.getElementById("call-actions");
+  const ringTrack     = document.getElementById("ring-track");
+  const cdNumEl       = document.getElementById("countdown-num");
+  const nextPreview   = document.getElementById("next-preview");
+  const pendingInfo   = document.getElementById("pending-info");
+  const missedCard    = document.getElementById("missed-card");
+  const chipGrid      = document.getElementById("chip-grid");
+  const mainStatus    = document.getElementById("main-status");
+  const btnCallNext   = document.getElementById("btn-call-next");
+  const btnCheckedIn  = document.getElementById("btn-checked-in");
+  const btnSkip       = document.getElementById("btn-skip");
+  const btnInit       = document.getElementById("btn-init");
+  const btnReset      = document.getElementById("btn-reset");
+  const updatedAt     = document.getElementById("updated-at");
+
+  // ── state ─────────────────────────────────────────────────────
+  let db, queueRef;
+  let s         = null;
+  let tickTimer = null;
+  let missGuard = false;
+
+  // ── helpers ───────────────────────────────────────────────────
+  function toArr(v) {
+    if (!v) return [];
+    if (Array.isArray(v)) return [...v];
+    return Object.keys(v).sort((a, b) => +a - +b).map(k => Number(v[k]));
+  }
+
+  function fmt(d) {
+    return [d.getHours(), d.getMinutes(), d.getSeconds()]
+      .map(n => String(n).padStart(2, "0")).join(":");
+  }
+
+  function msg(text, isErr = false) {
+    mainStatus.textContent = text;
+    mainStatus.classList.toggle("error", isErr);
+    if (text && !isErr)
+      setTimeout(() => { if (mainStatus.textContent === text) mainStatus.textContent = ""; }, 2500);
+  }
+
+  // ── countdown ring ────────────────────────────────────────────
+  function ringUpdate(secs) {
+    const pct = Math.max(0, secs) / COUNTDOWN_SECS;
+    ringTrack.style.strokeDasharray  = CIRCUMFERENCE;
+    ringTrack.style.strokeDashoffset = CIRCUMFERENCE * (1 - pct);
+    cdNumEl.textContent = Math.ceil(Math.max(0, secs));
+    ringTrack.classList.toggle("urgent", secs <= 10);
+  }
+
+  function tick() {
+    if (!s || s.status !== "calling" || !s.called_at) { clearInterval(tickTimer); return; }
+    const remaining = COUNTDOWN_SECS - (Date.now() - s.called_at) / 1000;
+    ringUpdate(remaining);
+    if (remaining <= 0 && !missGuard) {
+      missGuard = true;
+      clearInterval(tickTimer);
+      doMiss(s.current);
+    }
+  }
+
+  // ── render ────────────────────────────────────────────────────
+  function render(raw) {
+    s = {
+      status:    raw?.status    || "idle",
+      current:   raw?.current   ?? null,
+      called_at: raw?.called_at ?? null,
+      pending:   toArr(raw?.pending),
+      requeued:  toArr(raw?.requeued),
+      missed:    toArr(raw?.missed),
+    };
+    missGuard = false;
+    updatedAt.textContent = fmt(new Date());
+
+    const calling = s.status === "calling";
+    currentEl.textContent = s.current !== null ? String(s.current) : "待機中";
+    currentEl.classList.toggle("compact", calling);
+    callBadge.textContent  = calling ? "叫號中" : "等候中";
+    callBadge.style.background = calling ? "var(--pink)" : "var(--ink)";
+
+    countdownWrap.classList.toggle("hidden", !calling);
+    callActions.classList.toggle("hidden",   !calling);
+
+    if (calling) {
+      clearInterval(tickTimer);
+      tickTimer = setInterval(tick, 200);
+      tick();
+    } else {
+      clearInterval(tickTimer);
+    }
+
+    // next-up
+    const nextNum = s.requeued[0] ?? s.pending[0] ?? null;
+    const waiting = s.pending.length + s.requeued.length;
+    nextPreview.textContent = nextNum !== null ? String(nextNum) : "—";
+
+    if (s.requeued.length > 0) {
+      pendingInfo.textContent = `過號回來優先・等候 ${s.pending.length} 人`;
+    } else if (waiting > 0) {
+      pendingInfo.textContent = `等候 ${waiting} 人`;
+    } else {
+      pendingInfo.textContent = "號碼已全部叫完";
+    }
+    btnCallNext.disabled = calling || waiting === 0;
+
+    // 過號區
+    const hasMissed = s.missed.length + s.requeued.length > 0;
+    missedCard.classList.toggle("hidden", !hasMissed);
+    chipGrid.innerHTML = "";
+    s.requeued.forEach(n => chipGrid.appendChild(chip(n, true,  () => cancelRequeue(n))));
+    s.missed.forEach(  n => chipGrid.appendChild(chip(n, false, () => requeueMissed(n))));
+  }
+
+  function chip(num, isRequeued, onClick) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chip" + (isRequeued ? " requeued" : "");
+    btn.textContent = String(num);
+    btn.title = isRequeued ? "取消重新排隊" : "點擊重新排隊";
+    btn.addEventListener("click", onClick);
+    return btn;
+  }
+
+  // ── Firebase actions ──────────────────────────────────────────
+
+  async function callNext() {
+    if (!s || s.status === "calling") return;
+    const requeued = [...s.requeued];
+    const pending  = [...s.pending];
+    let next;
+    if (requeued.length > 0)     next = requeued.shift();
+    else if (pending.length > 0) next = pending.shift();
+    else { msg("已無等候號碼", true); return; }
+    try {
+      playChime();
+      pushNotify(next);
+      await update(queueRef, { current: next, status: "calling", called_at: Date.now(), pending, requeued });
+    } catch (e) { console.error(e); msg("呼叫失敗，請重試", true); }
+  }
+
+  async function checkedIn() {
+    if (!s || s.status !== "calling") return;
+    try {
+      await update(queueRef, { status: "idle", called_at: null });
+      msg(`${s.current} 號報到`);
+    } catch (e) { msg("更新失敗", true); }
+  }
+
+  async function doMiss(num) {
+    if (!s || num == null) return;
+    const missed = [...s.missed, num];
+    try {
+      await update(queueRef, { status: "idle", called_at: null, missed });
+      msg(`${num} 號過號，已移至過號區`);
+    } catch (e) { console.error(e); missGuard = false; }
+  }
+
+  async function requeueMissed(num) {
+    if (!s) return;
+    const missed   = s.missed.filter(n => n !== num);
+    const requeued = [...s.requeued, num];
+    try { await update(queueRef, { missed, requeued }); msg(`${num} 號排入重新叫號`); }
+    catch (e) { msg("操作失敗", true); }
+  }
+
+  async function cancelRequeue(num) {
+    if (!s) return;
+    const requeued = s.requeued.filter(n => n !== num);
+    const missed   = [...s.missed, num];
+    try { await update(queueRef, { missed, requeued }); }
+    catch (e) { msg("操作失敗", true); }
+  }
+
+  async function initNumbers() {
+    if (!confirm("初始化 1–60 號碼？這將清除所有記錄。")) return;
+    try {
+      await set(queueRef, {
+        current: null, status: "idle", called_at: null,
+        pending: Array.from({ length: 60 }, (_, i) => i + 1),
+        requeued: [], missed: [],
+      });
+      msg("已初始化 1–60 號");
+    } catch (e) { msg("初始化失敗", true); }
+  }
+
+  async function clearAll() {
+    if (!confirm("清空所有資料？")) return;
+    try {
+      await set(queueRef, { current: null, status: "idle", called_at: null, pending: [], requeued: [], missed: [] });
+    } catch (e) { msg("清空失敗", true); }
+  }
+
+  // ── audio / notification ──────────────────────────────────────
+
+  function playChime() {
+    try {
+      const ctx = new AudioContext();
+      [[880, 0], [1100, 0.13], [1320, 0.26]].forEach(([freq, t]) => {
+        const osc = ctx.createOscillator();
+        const g   = ctx.createGain();
+        osc.connect(g); g.connect(ctx.destination);
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(0.22, ctx.currentTime + t);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.45);
+        osc.start(ctx.currentTime + t); osc.stop(ctx.currentTime + t + 0.45);
+      });
+    } catch (_) {}
+  }
+
+  function pushNotify(num) {
+    if (!("Notification" in window)) return;
+    const send = () => new Notification(`叫號 ${num}`, { body: "60 秒內請至現場報到" });
+    if (Notification.permission === "granted") send();
+    else if (Notification.permission !== "denied")
+      Notification.requestPermission().then(p => { if (p === "granted") send(); });
+  }
+
+  // ── keyboard shortcut: Enter = +1 ────────────────────────────
+  document.addEventListener("keydown", e => {
+    if (e.key === "Enter" && document.activeElement.tagName !== "INPUT") {
+      e.preventDefault();
+      if (s?.status === "idle") btnCallNext.click();
+    }
+  });
+
+  // ── Firebase init ─────────────────────────────────────────────
+  function initFirebase() {
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+      queueRef = ref(db, "queue");
+      onValue(queueRef, snap => render(snap.val()), err => {
+        console.error(err); msg("資料庫連線失敗", true);
+      });
+    } catch (e) { msg("Firebase 設定錯誤，請檢查 config.js", true); }
+  }
+
+  // ── login ─────────────────────────────────────────────────────
+  function showAdmin() {
+    loginView.classList.add("hidden");
+    adminView.classList.remove("hidden");
+    initFirebase();
+    Notification.requestPermission?.();
+  }
+
+  loginForm.addEventListener("submit", e => {
+    e.preventDefault();
+    if (pwInput.value.trim() === ADMIN_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, "1");
+      loginStatus.textContent = "";
+      showAdmin();
+    } else {
+      loginStatus.textContent = "密碼錯誤，請重試。";
+      pwInput.value = ""; pwInput.focus();
+    }
+  });
+
+  btnCallNext.addEventListener("click",  callNext);
+  btnCheckedIn.addEventListener("click", checkedIn);
+  btnSkip.addEventListener("click",      () => { if (s?.current != null) doMiss(s.current); });
+  btnInit.addEventListener("click",      initNumbers);
+  btnReset.addEventListener("click",     clearAll);
+
+  if (sessionStorage.getItem(SESSION_KEY) === "1") showAdmin();
+  else pwInput.focus();
+</script>
+
+</body>
+</html>

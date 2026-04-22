@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FFE600">
+<title>目前叫號｜Daffy 似顏畫 × TSUTAYA BOOKSTORE 信義店</title>
+<meta name="description" content="Daffy 似顏畫活動現場叫號。請確認您的號碼，並留意現場廣播。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="brand">
+    <h1 class="brand-title">Daffy 似顏畫</h1>
+    <div class="brand-pills">
+      <span class="brand-store-pill">TSUTAYA BOOKSTORE 信義店</span>
+      <div class="brand-event-sticker">
+        <span class="brand-date-line">2026.4.19（日）</span>
+        <span class="brand-time-line">14:00 – 18:00</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="card" aria-live="polite">
+    <span class="card-label">目前叫到</span>
+    <div id="number" class="big-number loading">—</div>
+    <div class="upcoming">
+      <span class="upcoming-label">即將叫號</span>
+      <div class="upcoming-numbers">
+        <span class="upcoming-num" id="next-1">—</span>
+        <span class="upcoming-num" id="next-2">—</span>
+        <span class="upcoming-num" id="next-3">—</span>
+      </div>
+    </div>
+    <p class="updated">
+      <span class="dot" aria-hidden="true"></span>
+      <span>最後更新</span>
+      <time id="updated-at">—</time>
+    </p>
+  </section>
+
+  <p class="note">
+    預估等候時間僅供參考，請以現場叫號為準。
+  </p>
+
+  <section class="info-card">
+    <h2 class="info-title">過號處理</h2>
+    <p class="info-body">號碼叫到時若不在場，視為過號。</p>
+    <p class="info-body">過號者返場後，將安排插入第四順位候補。</p>
+  </section>
+
+  <section class="disclaimer-card">
+    <h3 class="disclaimer-title">【注意事項】</h3>
+    <ul class="disclaimer-list">
+      <li>預估等候時間僅供參考，實際進度以現場叫號為準。</li>
+      <li>號碼牌遺失者，請持購買收據向店員核對；無法核實者不予補號。</li>
+      <li>寵物請以手機照片代替本體入店，避免違反百貨規定。</li>
+      <li>退款：老師尚未開始繪製前因故放棄者，退款與否由現場主管決定。</li>
+      <li>活動因不可抗力因素暫停或終止時，退款事宜由現場主管公告處理，主辦方保留最終決定權。</li>
+      <li>頁面叫號進度由門市人員手動更新，數據僅供參考，不構成任何等候時間之保證。</li>
+    </ul>
+  </section>
+
+  <a class="admin-link" href="admin/">STAFF</a>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { firebaseConfig, QUEUE_PATH } from "./assets/config.js";
+
+  const numberEl = document.getElementById("number");
+  const updatedEl = document.getElementById("updated-at");
+  const next1El = document.getElementById("next-1");
+  const next2El = document.getElementById("next-2");
+  const next3El = document.getElementById("next-3");
+
+  function formatTime(date) {
+    const hh = String(date.getHours()).padStart(2, "0");
+    const mm = String(date.getMinutes()).padStart(2, "0");
+    const ss = String(date.getSeconds()).padStart(2, "0");
+    return `${hh}:${mm}:${ss}`;
+  }
+
+  function render(value) {
+    if (value == null || Number.isNaN(Number(value))) {
+      numberEl.textContent = "尚未開始";
+      numberEl.classList.add("loading");
+      next1El.textContent = "—";
+      next2El.textContent = "—";
+      next3El.textContent = "—";
+    } else {
+      const n = Number(value);
+      numberEl.textContent = String(n);
+      numberEl.classList.remove("loading");
+      next1El.textContent = String(n + 1);
+      next2El.textContent = String(n + 2);
+      next3El.textContent = String(n + 3);
+    }
+    updatedEl.textContent = formatTime(new Date());
+  }
+
+  // Watchdog: reconnect if no Firebase event arrives within 45 s.
+  // Replaces the old hard-reload — safer on slow connections.
+  const WATCHDOG_MS = 45_000;
+  let unsubscribe = null, watchdog = null, retryTimer = null, db;
+
+  function resetWatchdog() {
+    clearTimeout(watchdog);
+    watchdog = setTimeout(reconnect, WATCHDOG_MS);
+  }
+
+  function connect() {
+    if (unsubscribe) return;
+    clearTimeout(retryTimer);
+    const queueRef = ref(db, QUEUE_PATH);
+    unsubscribe = onValue(queueRef, snap => {
+      render(snap.val());
+      resetWatchdog();
+    }, err => {
+      console.error(err);
+      numberEl.textContent = "連線失敗";
+      numberEl.classList.add("loading");
+      unsubscribe = null;
+      retryTimer = setTimeout(connect, 5_000);
+    });
+    resetWatchdog();
+  }
+
+  function disconnect() {
+    clearTimeout(watchdog); clearTimeout(retryTimer);
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  }
+
+  function reconnect() { disconnect(); connect(); }
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    connect();
+    document.addEventListener("visibilitychange", () => {
+      document.hidden ? disconnect() : connect();
+    });
+  } catch (err) {
+    console.error(err);
+    numberEl.textContent = "設定錯誤";
+    numberEl.classList.add("loading");
+  }
+</script>
+
+</body>
+</html>

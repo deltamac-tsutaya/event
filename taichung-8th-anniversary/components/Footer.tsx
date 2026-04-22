@@ -2,17 +2,17 @@ export default function Footer() {
   return (
     <footer className="w-full bg-[#1A2B4A] py-8 text-center text-xs text-white/70">
       <div className="mx-auto max-w-2xl space-y-2 px-4">
-        <img
-          src="/tsutaya-logo.svg"
-          alt="TSUTAYA BOOKSTORE"
-          className="h-8 w-auto mx-auto brightness-0 invert opacity-80"
-        />
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-[10px] font-mono text-white/40">×</span>
+        <div className="flex items-center justify-center gap-2 max-w-full">
+          <img
+            src="/tsutaya-logo.svg"
+            alt="TSUTAYA BOOKSTORE"
+            className="h-3 w-auto brightness-0 invert opacity-80"
+          />
+          <span className="text-[10px] font-mono text-white/40 shrink-0">×</span>
           <img
             src="/wired-tokyo-logo.svg"
             alt="WIRED TOKYO"
-            className="h-3.5 w-auto brightness-0 invert opacity-50"
+            className="h-4 w-auto brightness-0 invert opacity-50"
           />
         </div>
         <p className="font-semibold text-white/70 text-xs">

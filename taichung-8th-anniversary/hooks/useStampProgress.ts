@@ -17,7 +17,7 @@ export function useStampProgress(lineUserId: string | null): UseStampProgressRes
 
   const fetch = useCallback(async () => {
     if (!lineUserId) return;
-    setLoading(true);
+    if (!progress) setLoading(true); // 僅在第一次沒有資料時顯示全螢幕 Loading
     setError(null);
     try {
       const res = await window.fetch(

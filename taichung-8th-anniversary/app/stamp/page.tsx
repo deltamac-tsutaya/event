@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Header from "@/components/Header";
 import QrScanner from "@/components/QrScanner";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import { showStampSuccess } from "@/components/ui-state/SuccessToast";
+import { Button } from "@/components/ui/button";
 
 type ScanStatus =
   | "idle"
@@ -16,9 +16,20 @@ type ScanStatus =
   | "already_stamped"
   | "error";
 
-export default function StampPage() {
+function extractStampUuid(raw: string): string {
+  try {
+    const url = new URL(raw);
+    const id = url.searchParams.get("id");
+    if (id) return id;
+  } catch {}
+  return raw;
+}
+
+function StampPageContent() {
   const router = useRouter();
-  const { user } = useLiffUser();
+  const searchParams = useSearchParams();
+  const urlStampId = searchParams.get("id");
+  const { user, loading, login } = useLiffUser();
   const { progress, refetch } = useStampProgress(user?.userId ?? null);
 
   const [status, setStatus] = useState<ScanStatus>("idle");
@@ -28,9 +39,11 @@ export default function StampPage() {
   const totalStamps = progress?.totalStamps ?? 0;
 
   const handleScan = useCallback(
-    async (stampId: string) => {
+    async (rawValue: string) => {
       if (!user) return;
       if (status === "submitting") return;
+
+      const stampId = extractStampUuid(rawValue);
 
       setStatus("submitting");
       setLastStampId(stampId);
@@ -52,8 +65,8 @@ export default function StampPage() {
           setStatus("success");
           showStampSuccess(stampId);
           await refetch();
-          // Return to home after 3 s
-          setTimeout(() => router.push("/"), 3000);
+          // Return to home after 1.5s with collection param
+          setTimeout(() => router.push(`/?collect=${stampId}`), 1500);
         } else if (data.reason === "already_stamped") {
           setStatus("already_stamped");
         } else {
@@ -68,19 +81,60 @@ export default function StampPage() {
     [user, status, refetch, router]
   );
 
+  // 從 URL ?id= 自動觸發集章（手機相機掃碼後直接開啟此頁）
+  useEffect(() => {
+    if (urlStampId && user && status === "idle") {
+      handleScan(urlStampId);
+    }
+  }, [urlStampId, user, status, handleScan]);
+
   const reset = () => {
     setStatus("idle");
     setErrorMsg("");
     setLastStampId("");
   };
 
+  const getAchievementMeta = (id: string) => {
+    const meta: Record<string, { icon: string; title: string; copy: string }> = {
+      "A": { icon: "🐿️", title: "你找到了松鼠", copy: "牠觀察你的時間比你想像的還久。" },
+      "B": { icon: "🐦", title: "你讓自己慢下來", copy: "小鳥才現身。" },
+      "C": { icon: "🦌", title: "這不是告示牌", copy: "是小鹿留給觀察者的訊息。" },
+    };
+    return meta[id];
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-svh items-center justify-center bg-[#F5F2ED]">
+        <div className="size-8 animate-spin rounded-full border-4 border-[#1A2B4A] border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-[#F5F2ED] px-8 text-center">
+        <div className="space-y-2">
+          <p className="text-lg font-bold text-[#1A2B4A]">請透過 LINE 開啟此頁面</p>
+          <p className="text-sm text-gray-500 leading-relaxed">
+            集章需要 LINE 帳號來記錄您的進度<br />請在 LINE 中點開活動連結
+          </p>
+        </div>
+        <Button
+          onClick={login}
+          className="h-12 px-8 bg-[#06C755] hover:bg-[#06C755]/90 text-white font-bold rounded-full"
+        >
+          使用 LINE 登入
+        </Button>
+        <Link href="/" className="text-xs text-gray-400 underline underline-offset-2">
+          返回首頁
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-full flex-col bg-[#F5F2ED]">
-      <Header
-        pictureUrl={user?.pictureUrl}
-        displayName={user?.displayName}
-      />
-
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-6 gap-5">
         {/* Progress indicator */}
         <div className="flex items-center justify-between">
@@ -112,18 +166,41 @@ export default function StampPage() {
         )}
 
         {status === "success" && (
-          <div className="flex flex-col items-center gap-4 py-8 text-center">
-            <div className="animate-stamp-drop rounded-full bg-[#EEE9E2] p-6">
-              <span className="font-mono text-3xl font-bold text-[#1A2B4A] leading-none">
-                {lastStampId}
-              </span>
-            </div>
-            <div className="space-y-1">
-              <p className="text-lg font-bold text-[#1A2B4A]">蓋章成功</p>
-              <p className="text-sm text-gray-500">
-                印章 {lastStampId} 已收集
-              </p>
-              <p className="text-xs text-gray-400">3 秒後返回首頁…</p>
+          <div className="flex flex-col items-center gap-6 py-12 text-center animate-in fade-in zoom-in duration-500">
+            {['A', 'B', 'C'].includes(lastStampId) ? (
+              // 隱藏成就點特別視覺
+              <>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-yellow-400/20 blur-3xl rounded-full animate-pulse" />
+                  <div className="relative size-32 bg-white rounded-full flex items-center justify-center text-6xl shadow-xl border-4 border-[#C9A84C] animate-bounce">
+                    {getAchievementMeta(lastStampId)?.icon}
+                  </div>
+                </div>
+                <div className="space-y-3 px-6">
+                  <p className="text-xs font-bold tracking-widest text-[#C9A84C] uppercase">Achievement Unlocked</p>
+                  <h2 className="text-2xl font-bold text-[#1A2B4A]">{getAchievementMeta(lastStampId)?.title}</h2>
+                  <p className="text-sm text-[#8A6F5C] italic leading-relaxed">「{getAchievementMeta(lastStampId)?.copy}」</p>
+                </div>
+              </>
+            ) : (
+              // 標準點位視覺
+              <>
+                <div className="animate-stamp-drop rounded-full bg-[#EEE9E2] p-8 shadow-inner">
+                  <span className="font-mono text-5xl font-bold text-[#1A2B4A] leading-none tracking-tighter">
+                    {lastStampId}
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xl font-bold text-[#1A2B4A]">蓋章成功</p>
+                  <p className="text-sm text-gray-500 italic">
+                    探索 Nexus Life 的第 {totalStamps} 個印記
+                  </p>
+                </div>
+              </>
+            )}
+            
+            <div className="pt-4">
+               <p className="text-[10px] text-gray-400 animate-pulse">正在為您重新對焦生活，請稍後…</p>
             </div>
           </div>
         )}
@@ -164,5 +241,17 @@ export default function StampPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function StampPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-svh items-center justify-center bg-[#F5F2ED]">
+        <div className="size-8 animate-spin rounded-full border-4 border-[#1A2B4A] border-t-transparent" />
+      </div>
+    }>
+      <StampPageContent />
+    </Suspense>
   );
 }

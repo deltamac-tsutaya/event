@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFE600">
+<title>現場叫號看板｜Daffy 似顏繪</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --yellow: #FFE600;
+  --pink:   #FF2D78;
+  --ink:    #1A1A1A;
+  --white:  #FFFFFF;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Rotate board -90deg for sideways TV ── */
+.board {
+  position: fixed;
+  transform-origin: center center;
+  transform: rotate(-90deg);
+  width: 100vh;
+  height: 100vw;
+  top: calc((100vh - 100vw) / 2);
+  left: calc((100vw - 100vh) / 2);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ══════════════════════════════════════
+   INFO PANEL (top in CSS = left on TV)
+   ══════════════════════════════════════ */
+.info-panel {
+  flex: 0 0 54%;
+  background: var(--ink);
+  color: var(--yellow);
+  display: flex;
+  flex-direction: column;
+  padding: 5vw 6vw 3vw;
+  gap: 2.8vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 2px, transparent 2.5px);
+  background-size: 44px 44px;
+  pointer-events: none;
+}
+
+/* Brand */
+.brand-block { display: flex; flex-direction: column; gap: 0.6vw; }
+
+.brand-title {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(2rem, 7vw, 72px);
+  color: var(--yellow);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.brand-store {
+  font-family: 'Nunito', 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.8rem, 2.4vw, 26px);
+  font-weight: 700;
+  color: var(--yellow);
+  opacity: 0.55;
+  letter-spacing: 0.08em;
+}
+
+/* Date / Time pills */
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2vw;
+}
+
+.pill {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(0.9rem, 2.8vw, 30px);
+  background: var(--yellow);
+  color: var(--ink);
+  padding: 0.28em 1em;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* Pricing table */
+.price-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9vw;
+}
+
+.price-title {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.7rem, 2vw, 22px);
+  font-weight: 700;
+  color: var(--yellow);
+  opacity: 0.5;
+  letter-spacing: 0.12em;
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1vw;
+}
+
+.price-label {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.85rem, 2.6vw, 28px);
+  font-weight: 700;
+  color: var(--yellow);
+  opacity: 0.85;
+}
+
+.price-amount {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(1rem, 3.2vw, 34px);
+  color: var(--pink);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.price-divider {
+  flex: 1;
+  border: none;
+  border-top: 1.5px dashed rgba(255,230,0,0.2);
+  margin: 0 0.5vw;
+}
+
+/* Format notes */
+.format-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vw;
+  border-top: 1.5px solid rgba(255,230,0,0.15);
+  padding-top: 1.5vw;
+}
+
+.format-item {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.75rem, 2.2vw, 24px);
+  font-weight: 700;
+  color: var(--yellow);
+  opacity: 0.6;
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════
+   QUEUE PANEL (bottom in CSS = right on TV)
+   ══════════════════════════════════════ */
+.queue-panel {
+  flex: 1;
+  background: var(--yellow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.queue-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.3) 2.5px, transparent 3px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+
+.call-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(1.2rem, 3.8vw, 42px);
+  background: var(--ink);
+  color: var(--yellow);
+  padding: 0.4em 1.6em;
+  border-radius: 999px;
+  letter-spacing: 0.2em;
+  position: relative;
+  z-index: 1;
+}
+
+.big-num {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(100px, 26vw, 28vh);
+  line-height: 0.9;
+  color: var(--pink);
+  text-shadow: 7px 9px 0 var(--ink);
+  letter-spacing: -0.02em;
+  user-select: none;
+  position: relative;
+  z-index: 1;
+}
+
+.big-num.loading {
+  color: var(--ink);
+  opacity: 0.2;
+  text-shadow: none;
+  font-size: clamp(50px, 10vw, 10vh);
+}
+
+@keyframes board-pop {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.1); }
+  55%  { transform: scale(0.96); }
+  80%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.big-num.pop {
+  animation: board-pop 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+/* Live dot */
+.live-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(0.75rem, 2.2vw, 24px);
+  color: var(--ink);
+  opacity: 0.55;
+  position: relative;
+  z-index: 1;
+}
+
+.live-row::before {
+  content: '';
+  display: block;
+  width: clamp(8px, 1.6vw, 14px);
+  height: clamp(8px, 1.6vw, 14px);
+  border-radius: 50%;
+  background: var(--pink);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.6); }
+}
+
+/* Upcoming */
+.upcoming-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6vw;
+  position: relative;
+  z-index: 1;
+}
+
+.upcoming-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(0.7rem, 2vw, 22px);
+  color: var(--ink);
+  opacity: 0.4;
+  letter-spacing: 0.15em;
+}
+
+.upcoming-nums {
+  display: flex;
+  gap: clamp(0.6rem, 2.5vw, 2rem);
+}
+
+.upcoming-num {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(2rem, 8vw, 9vh);
+  color: var(--ink);
+  opacity: 0.2;
+  line-height: 1;
+  min-width: 2ch;
+  text-align: center;
+}
+
+/* Updated time */
+.updated-info {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(0.65rem, 1.8vw, 20px);
+  color: var(--ink);
+  opacity: 0.35;
+  position: relative;
+  z-index: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="board">
+
+  <!-- ── 活動資訊（旋轉後在左側） ── -->
+  <div class="info-panel">
+
+    <div class="brand-block">
+      <p class="brand-title">Daffy 似顏繪</p>
+      <p class="brand-store">TSUTAYA BOOKSTORE 信義店</p>
+    </div>
+
+    <div class="meta-row">
+      <span class="pill">4/19（日）限定</span>
+      <span class="pill">14:00 – 18:00</span>
+    </div>
+
+    <div class="price-table">
+      <p class="price-title">費 用</p>
+      <div class="price-row">
+        <span class="price-label">每人</span>
+        <span class="price-divider"></span>
+        <span class="price-amount">NT$500</span>
+      </div>
+      <div class="price-row">
+        <span class="price-label">兩人一起畫</span>
+        <span class="price-divider"></span>
+        <span class="price-amount">NT$1,000</span>
+      </div>
+      <div class="price-row">
+        <span class="price-label">人＋寵物</span>
+        <span class="price-divider"></span>
+        <span class="price-amount">NT$1,000</span>
+      </div>
+    </div>
+
+    <div class="format-block">
+      <p class="format-item">小木板現場繪製・約 3 分鐘・含簽名</p>
+      <p class="format-item">本人・寵物・照片皆可</p>
+      <p class="format-item">現場即畫，可立即帶走</p>
+    </div>
+
+  </div>
+
+  <!-- ── 叫號顯示（旋轉後在右側） ── -->
+  <div class="queue-panel">
+    <span class="call-label">現在叫號</span>
+    <div id="number" class="big-num loading" aria-live="assertive" aria-atomic="true">—</div>
+    <div class="live-row">即時更新</div>
+    <div class="upcoming-wrap">
+      <span class="upcoming-label">即將叫號</span>
+      <div class="upcoming-nums">
+        <span class="upcoming-num" id="next-1">—</span>
+        <span class="upcoming-num" id="next-2">—</span>
+        <span class="upcoming-num" id="next-3">—</span>
+      </div>
+    </div>
+    <p class="updated-info">最後更新 <time id="updated-at">—</time></p>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { firebaseConfig, QUEUE_PATH } from "../assets/config.js";
+
+  const numEl     = document.getElementById("number");
+  const updatedEl = document.getElementById("updated-at");
+  const next1El   = document.getElementById("next-1");
+  const next2El   = document.getElementById("next-2");
+  const next3El   = document.getElementById("next-3");
+
+  const WATCHDOG_MS = 45_000;
+  let unsubscribe = null, watchdog = null, retryTimer = null, db;
+  let prev = undefined;
+
+  function fmt(d) {
+    return [d.getHours(), d.getMinutes(), d.getSeconds()]
+      .map(n => String(n).padStart(2, "0")).join(":");
+  }
+
+  function pop() {
+    numEl.classList.remove("pop");
+    void numEl.offsetWidth;
+    numEl.classList.add("pop");
+    numEl.addEventListener("animationend", () => numEl.classList.remove("pop"), { once: true });
+  }
+
+  function render(val) {
+    updatedEl.textContent = fmt(new Date());
+    if (val == null || Number.isNaN(Number(val))) {
+      numEl.textContent = "尚未開始";
+      numEl.classList.add("loading");
+      next1El.textContent = "—";
+      next2El.textContent = "—";
+      next3El.textContent = "—";
+    } else {
+      const n = Number(val);
+      numEl.textContent = String(n);
+      numEl.classList.remove("loading");
+      next1El.textContent = String(n + 1);
+      next2El.textContent = String(n + 2);
+      next3El.textContent = String(n + 3);
+      if (prev !== undefined && prev !== n) pop();
+      prev = n;
+    }
+    resetWatchdog();
+  }
+
+  function resetWatchdog() {
+    clearTimeout(watchdog);
+    watchdog = setTimeout(reconnect, WATCHDOG_MS);
+  }
+
+  function connect() {
+    if (unsubscribe) return;
+    clearTimeout(retryTimer);
+    const queueRef = ref(db, QUEUE_PATH);
+    unsubscribe = onValue(queueRef, snap => render(snap.val()), err => {
+      console.error(err);
+      numEl.textContent = "連線失敗";
+      numEl.classList.add("loading");
+      unsubscribe = null;
+      retryTimer = setTimeout(connect, 5_000);
+    });
+    resetWatchdog();
+  }
+
+  function disconnect() {
+    clearTimeout(watchdog); clearTimeout(retryTimer);
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  }
+
+  function reconnect() { disconnect(); connect(); }
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    connect();
+    document.addEventListener("visibilitychange", () => {
+      document.hidden ? disconnect() : connect();
+    });
+  } catch (e) {
+    console.error(e);
+    numEl.textContent = "設定錯誤";
+    numEl.classList.add("loading");
+  }
+</script>
+
+</body>
+</html>

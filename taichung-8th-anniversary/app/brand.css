@@ -1,0 +1,161 @@
+/*
+ * brand.css — TSUTAYA BOOKSTORE × WIRED TOKYO 8th Anniversary
+ * 品牌設計系統：色票、字型比例、元件樣式
+ * 在 layout.tsx 的 globals.css 之後 import
+ */
+
+/* ── 1. 品牌色票 → 生成 Tailwind utilities ──────────────────────────────
+ *  使用方式：bg-brand-navy / text-brand-brown / border-brand-warm 等
+ * ──────────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-brand-navy:    #1A2B4A;   /* 深藍：主按鈕、標題 */
+  --color-brand-brown:   #8A6F5C;   /* 棕褐：說明文字、裝飾線 */
+  --color-brand-cream:   #F5F2ED;   /* 米白：頁面底色 */
+  --color-brand-warm:    #EEE9E2;   /* 暖白：印章格、卡片 */
+  --color-brand-nexus:   #3B82C4;   /* 藍色：日期強調、連結 */
+  --color-brand-surface: #FDFAF6;   /* 白：卡片表面 */
+}
+
+/* ── 2. 語義 CSS 變數（給 var() 使用） ─────────────────────────────────── */
+:root {
+  /* 主色 */
+  --c-primary:   #1A2B4A;
+  --c-secondary: #8A6F5C;
+  --c-bg:        #F5F2ED;
+  --c-card:      #EEE9E2;
+  --c-accent:    #3B82C4;
+  --c-surface:   #FDFAF6;
+
+  /* 邊框 / 分隔線 */
+  --c-border:    oklch(from #8A6F5C l c h / 0.18);
+  --c-divider:   oklch(from #8A6F5C l c h / 0.28);
+
+  /* 文字階層 */
+  --c-text-main:    #1A2B4A;
+  --c-text-sub:     #8A6F5C;
+  --c-text-muted:   oklch(from #1A2B4A l c h / 0.45);
+  --c-text-faint:   oklch(from #1A2B4A l c h / 0.28);
+}
+
+/* ── 3. 字型比例 ────────────────────────────────────────────────────────── */
+:root {
+  --type-label:   0.625rem;   /* 10px  極小標籤 */
+  --type-caption: 0.75rem;    /* 12px  說明文字 */
+  --type-body:    0.875rem;   /* 14px  主要內文 */
+  --type-base:    1rem;       /* 16px  預設 */
+  --type-lg:      1.125rem;   /* 18px */
+  --type-xl:      1.25rem;    /* 20px  頁面標題 */
+  --type-2xl:     1.5rem;     /* 24px */
+}
+
+/* ── 4. 通用元件類別 ────────────────────────────────────────────────────── */
+
+/* 頁首（全站一致） */
+.brand-page-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--c-border);
+  background-color: oklch(from var(--c-bg) l c h / 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.brand-page-header-inner {
+  display: flex;
+  height: 3.5rem;
+  max-width: 42rem;       /* max-w-2xl */
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* 返回連結 */
+.brand-back-link {
+  font-size: var(--type-body);
+  color: var(--c-text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.brand-back-link:hover {
+  color: var(--c-primary);
+}
+
+/* 區段標題（terms / faq / help 頁面使用） */
+.brand-section-title {
+  font-size: var(--type-label);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-primary);
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--c-border);
+}
+
+/* Mono 標籤（日期、代碼、座標） */
+.brand-mono-label {
+  font-family: var(--font-mono);
+  font-size: var(--type-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-secondary);
+}
+
+/* 裝飾分隔線 */
+.brand-rule {
+  width: 2.5rem;
+  height: 1px;
+  background-color: var(--c-divider);
+}
+
+/* 卡片容器 */
+.brand-card {
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+/* 印章格 — 未收集 */
+.stamp-cell-empty {
+  background-color: oklch(0.96 0 0);
+  border: 1px solid transparent;
+  opacity: 0.45;
+}
+
+/* 印章格 — 已收集 */
+.stamp-cell-filled {
+  background-color: var(--c-card);
+  border: 1px solid var(--c-border);
+  box-shadow: 0 1px 3px oklch(from #000 l c h / 0.06);
+}
+
+/* ── 5. 頁面進場動畫 ────────────────────────────────────────────────────── */
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-in {
+  animation: page-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── 6. 印刷樣式（列印 QR code 用） ───────────────────────────────────── */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}
