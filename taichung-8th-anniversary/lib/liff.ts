@@ -3,8 +3,8 @@ import liff from "@line/liff";
 let initialized = false;
 
 export const MOCK_USER = {
-  userId: "U_mock_test_user_001",
-  displayName: "Mock User",
+  userId: process.env.NEXT_PUBLIC_TEST_LINE_USER_ID ?? "U_mock_test_user_001",
+  displayName: process.env.NEXT_PUBLIC_TEST_DISPLAY_NAME ?? "Mock User",
   pictureUrl: undefined as string | undefined,
 };
 
