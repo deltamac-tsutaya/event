@@ -193,12 +193,19 @@ export default function PrintPage() {
             </p>
           </div>
         </div>
-        <Button
-          onClick={() => window.print()}
-          className="bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 gap-2 h-11 px-6 rounded-full"
-        >
-          <Printer size={18} /> 列印全部
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link href="/admin/print/flyer">
+            <Button variant="outline" className="gap-2 h-11 px-5 rounded-full border-[#1A2B4A]/30 text-[#1A2B4A]">
+              A5 文宣
+            </Button>
+          </Link>
+          <Button
+            onClick={() => window.print()}
+            className="bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 gap-2 h-11 px-6 rounded-full"
+          >
+            <Printer size={18} /> 列印全部
+          </Button>
+        </div>
       </div>
 
       <div className="print:hidden max-w-4xl mx-auto mt-4 mb-6 px-6">
