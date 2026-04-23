@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 import {
   Lock, LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
   BarChart3, ShieldCheck, Search, RotateCcw, Plus,
@@ -331,6 +332,12 @@ export default function AdminPage() {
                 {tab === "stats"   && <><BarChart3 size={14}/> 統計</>}
               </Button>
             ))}
+            <div className="w-px h-4 bg-gray-200 mx-1" />
+            <Link href="/admin/print">
+              <Button variant="outline" className="h-9 gap-1.5 rounded-full px-4 text-xs border-purple-200 text-purple-700 hover:bg-purple-50">
+                <Printer size={14} /> 列印 QR
+              </Button>
+            </Link>
             <div className="w-px h-4 bg-gray-200 mx-1" />
             <Button variant="outline" size="icon" onClick={fetchAllData} disabled={loading} className="rounded-full">
               <RefreshCcw size={14} className={loading ? "animate-spin" : ""} />
