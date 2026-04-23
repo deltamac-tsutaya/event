@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { type User } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase";
+import { type User, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getFirebaseAuth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 import {
   Lock, LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
   BarChart3, ShieldCheck, Search, RotateCcw, Plus,
@@ -245,26 +246,23 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setFirebaseUser(session?.user ?? null);
+    const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (user) => {
+      setFirebaseUser(user);
       setAuthLoading(false);
-      if (session?.user) fetchAllData();
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setFirebaseUser(session?.user ?? null);
-      if (session?.user) fetchAllData();
+      if (user) fetchAllData();
       else setUsers([]);
     });
-
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, [fetchAllData]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError(""); setLoginLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setLoginError("帳號或密碼錯誤");
+    try {
+      await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
+    } catch {
+      setLoginError("帳號或密碼錯誤");
+    }
     setLoginLoading(false);
   };
 
@@ -332,10 +330,16 @@ export default function AdminPage() {
               </Button>
             ))}
             <div className="w-px h-4 bg-gray-200 mx-1" />
+            <Link href="/admin/print">
+              <Button variant="outline" className="h-9 gap-1.5 rounded-full px-4 text-xs border-purple-200 text-purple-700 hover:bg-purple-50">
+                <Printer size={14} /> 列印 QR
+              </Button>
+            </Link>
+            <div className="w-px h-4 bg-gray-200 mx-1" />
             <Button variant="outline" size="icon" onClick={fetchAllData} disabled={loading} className="rounded-full">
               <RefreshCcw size={14} className={loading ? "animate-spin" : ""} />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => supabase.auth.signOut()} className="rounded-full text-gray-400 hover:text-red-500">
+            <Button variant="ghost" size="icon" onClick={() => signOut(getFirebaseAuth())} className="rounded-full text-gray-400 hover:text-red-500">
               <LogOut size={14} />
             </Button>
           </div>

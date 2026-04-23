@@ -4,7 +4,6 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import QrScanner from "@/components/QrScanner";
-import StampCard from "@/components/StampCard";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import { showStampSuccess } from "@/components/ui-state/SuccessToast";
@@ -198,21 +197,16 @@ function StampPageContent() {
           </span>
         </div>
 
-        <div className="text-center space-y-1.5 mt-2 mb-6">
-          <h1 className="text-2xl font-black tracking-tight text-[#1A2B4A]">集章進度</h1>
+        <div className="text-center space-y-1.5 mt-2 mb-2">
+          <h1 className="text-2xl font-black tracking-tight text-[#1A2B4A]">掃描集章</h1>
           <p className="text-xs text-[#8A6F5C] font-medium">找出店內 8 個印記，集滿解鎖每日抽獎</p>
         </div>
 
-        {/* 1. 集章格 — 永遠顯示 */}
-        <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white">
-          <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} />
-        </div>
-
-        {/* 2. 抽獎狀態卡片 — 在集章格正下方 */}
+        {/* 抽獎狀態卡片 */}
         {progress?.canDraw && <DrawReadyCard />}
         {progress?.drawnToday && <DrawnTodayCard />}
 
-        {/* 3. 分隔線 */}
+        {/* 分隔線 */}
         <div className="relative flex items-center">
           <div className="flex-1 h-px bg-[#E0DDD6]" />
           <span className="px-3 text-[10px] text-gray-400 font-mono tracking-widest shrink-0">
