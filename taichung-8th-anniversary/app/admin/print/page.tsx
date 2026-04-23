@@ -13,15 +13,74 @@ interface StampConfig {
   area_name?: string;
 }
 
-// 點位 02/05/06 有多個 variant，以顏色區別方便工作人員識別
+const ROTATING_IDS = ["02", "05", "06"];
 const VARIANT_COLORS: Record<number, string> = {
   1: "#1A2B4A",
   2: "#2B5CE6",
   3: "#C9A84C",
 };
 
-// 旋轉點位
-const ROTATING_IDS = ["02", "05", "06"];
+function QRCard({ config }: { config: StampConfig }) {
+  const base = typeof window !== "undefined" ? window.location.origin : "";
+  const stampUrl = `${base}/stamp?id=${config.uuid}`;
+  const isRotating = ROTATING_IDS.includes(config.stamp_id);
+  const isHidden = ["A", "B", "C"].includes(config.stamp_id);
+  const accentColor = isRotating ? (VARIANT_COLORS[config.variant_id] ?? "#1A2B4A") : "#1A2B4A";
+
+  return (
+    <div
+      className="flex flex-col items-center justify-between border-2 rounded-3xl p-6 print:rounded-2xl print:p-5 bg-white"
+      style={{ borderColor: `${accentColor}30` }}
+    >
+      {/* 頂部：點位編號 + 標籤 */}
+      <div className="w-full flex items-start justify-between mb-3">
+        <div className="flex items-baseline gap-2">
+          <span className="text-5xl font-black tracking-tighter" style={{ color: accentColor }}>
+            {config.stamp_id}
+          </span>
+          {isRotating && (
+            <span
+              className="text-xs font-black px-2 py-0.5 rounded-full"
+              style={{ color: accentColor, background: `${accentColor}15` }}
+            >
+              V{config.variant_id}
+            </span>
+          )}
+        </div>
+        <span className="text-[10px] font-mono text-gray-300 uppercase mt-2">
+          {isHidden ? "hidden" : "stamp"}
+        </span>
+      </div>
+
+      {/* QR Code — 縮放填滿可用空間 */}
+      <div className="w-full flex items-center justify-center py-2">
+        <div className="w-full max-w-[220px] sm:max-w-[240px] p-3 bg-white rounded-2xl border border-gray-100 shadow-inner">
+          <QRCode
+            value={stampUrl}
+            size={256}
+            fgColor={accentColor}
+            bgColor="#FFFFFF"
+            level="M"
+            style={{ width: "100%", height: "auto" }}
+            viewBox="0 0 256 256"
+          />
+        </div>
+      </div>
+
+      {/* 底部：區域名稱 + UUID */}
+      <div className="w-full text-center mt-3 space-y-1">
+        <p className="text-sm font-bold text-gray-800 leading-tight">{config.area_name}</p>
+        <p className="text-[8px] font-mono text-gray-300 break-all leading-tight">{config.uuid}</p>
+      </div>
+
+      {/* 品牌 */}
+      <div className="flex items-center gap-1.5 opacity-15 mt-3">
+        <img src="/tsutaya-logo.svg" alt="TSUTAYA" className="h-2.5 w-auto" />
+        <span className="text-[8px] font-mono">× 8th Anniv.</span>
+      </div>
+    </div>
+  );
+}
 
 export default function PrintPage() {
   const [configs, setConfigs] = useState<StampConfig[]>([]);
@@ -33,11 +92,12 @@ export default function PrintPage() {
         const res = await fetch("/api/admin/configs?all=true");
         const data = await res.json();
         if (data.success) {
-          const sorted = data.configs.sort((a: StampConfig, b: StampConfig) => {
-            if (a.stamp_id !== b.stamp_id) return a.stamp_id.localeCompare(b.stamp_id);
-            return a.variant_id - b.variant_id;
-          });
-          setConfigs(sorted);
+          setConfigs(
+            data.configs.sort((a: StampConfig, b: StampConfig) => {
+              if (a.stamp_id !== b.stamp_id) return a.stamp_id.localeCompare(b.stamp_id);
+              return a.variant_id - b.variant_id;
+            })
+          );
         }
       } catch (e) {
         console.error("Fetch failed", e);
@@ -48,24 +108,25 @@ export default function PrintPage() {
     fetchConfigs();
   }, []);
 
-  const getStampUrl = (uuid: string) => {
-    const base = typeof window !== "undefined" ? window.location.origin : "";
-    return `${base}/stamp?id=${uuid}`;
-  };
-
   if (loading) {
     return (
       <div className="flex min-h-svh items-center justify-center">
-        <p className="text-gray-400 text-sm">正在載入 QR Code 資料…</p>
+        <p className="text-gray-400 text-sm animate-pulse">正在載入 QR Code 資料…</p>
       </div>
     );
   }
 
+  // 每4張一頁 (2×2)，共5頁
+  const pages: StampConfig[][] = [];
+  for (let i = 0; i < configs.length; i += 4) {
+    pages.push(configs.slice(i, i + 4));
+  }
+
   return (
-    <div className="min-h-svh bg-white p-4 sm:p-8">
+    <div className="bg-white min-h-svh">
 
       {/* ── 控制列（列印時隱藏）── */}
-      <div className="print:hidden max-w-5xl mx-auto mb-6 flex items-center justify-between bg-[#1A2B4A]/5 p-5 rounded-2xl border border-[#1A2B4A]/10">
+      <div className="print:hidden sticky top-0 z-10 bg-white border-b px-6 py-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <Link href="/admin">
             <Button variant="ghost" size="icon" className="rounded-full">
@@ -74,7 +135,9 @@ export default function PrintPage() {
           </Link>
           <div>
             <h1 className="text-lg font-bold text-[#1A2B4A]">QR Code 批次列印</h1>
-            <p className="text-xs text-gray-500">共 {configs.length} 張・建議 A4 橫向、關閉縮放</p>
+            <p className="text-xs text-gray-500">
+              共 {configs.length} 張 · {pages.length} 頁 · 每頁 4 張（A4 直向）
+            </p>
           </div>
         </div>
         <Button
@@ -85,90 +148,55 @@ export default function PrintPage() {
         </Button>
       </div>
 
-      <div className="print:hidden max-w-5xl mx-auto mb-8 flex items-start gap-2 text-xs text-amber-700 bg-amber-50 p-3 rounded-lg border border-amber-100">
-        <Info size={14} className="mt-0.5 shrink-0" />
-        <span>
-          旋轉點位（02 / 05 / 06）有 3 個版本，每天輪替使用一個。
-          版本顏色：<strong className="text-[#1A2B4A]">V1 深藍</strong>、
-          <strong className="text-[#2B5CE6]">V2 藍</strong>、
-          <strong className="text-[#C9A84C]">V3 金</strong>。
-        </span>
+      <div className="print:hidden max-w-4xl mx-auto mt-4 mb-6 px-6">
+        <div className="flex items-start gap-2 text-xs text-amber-700 bg-amber-50 p-3 rounded-xl border border-amber-100">
+          <Info size={14} className="mt-0.5 shrink-0" />
+          <span>
+            每頁 4 張 QR Code（2×2），A4 直向列印。
+            旋轉點位顏色：
+            <strong className="text-[#1A2B4A]">V1 深藍</strong>、
+            <strong className="text-[#2B5CE6]">V2 藍</strong>、
+            <strong className="text-[#C9A84C]">V3 金</strong>。
+          </span>
+        </div>
       </div>
 
-      {/* ── QR Code 網格 ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-5xl mx-auto print:grid-cols-3 print:gap-4">
-        {configs.map((config) => {
-          const isRotating = ROTATING_IDS.includes(config.stamp_id);
-          const accentColor = isRotating
-            ? VARIANT_COLORS[config.variant_id] ?? "#1A2B4A"
-            : "#1A2B4A";
-          const stampUrl = getStampUrl(config.uuid);
-
-          return (
-            <div
-              key={config.uuid}
-              className="break-inside-avoid rounded-3xl border-2 p-5 flex flex-col items-center gap-4 shadow-sm print:shadow-none print:rounded-2xl print:p-4"
-              style={{ borderColor: `${accentColor}22` }}
-            >
-              {/* 標題列 */}
-              <div className="w-full flex items-center justify-between">
-                <div className="flex items-baseline gap-1.5">
-                  <span
-                    className="text-3xl font-black tracking-tighter"
-                    style={{ color: accentColor }}
-                  >
-                    {config.stamp_id}
-                  </span>
-                  {isRotating && (
-                    <span
-                      className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-                      style={{
-                        color: accentColor,
-                        backgroundColor: `${accentColor}18`,
-                      }}
-                    >
-                      V{config.variant_id}
-                    </span>
-                  )}
-                </div>
-                <span className="text-[10px] font-mono text-gray-300 uppercase">
-                  {config.stamp_id === "A" || config.stamp_id === "B" || config.stamp_id === "C"
-                    ? "hidden"
-                    : "stamp"}
-                </span>
+      {/* ── 分頁列印區域 ── */}
+      {pages.map((page, pageIdx) => (
+        <div
+          key={pageIdx}
+          className="print:break-after-page px-6 py-4 print:px-0 print:py-0 max-w-4xl mx-auto print:max-w-none"
+        >
+          {/* 螢幕上顯示頁碼 */}
+          <p className="print:hidden text-[10px] font-mono text-gray-300 mb-3 text-right">
+            第 {pageIdx + 1} 頁 / 共 {pages.length} 頁
+          </p>
+          <div className="grid grid-cols-2 gap-5 print:gap-0 print:h-screen print:grid-rows-2">
+            {page.map((config) => (
+              <div key={config.uuid} className="print:p-4 print:border-b print:border-r print:border-gray-100 last:border-r-0 [&:nth-child(2)]:border-r-0">
+                <QRCard config={config} />
               </div>
-
-              {/* QR Code (純 SVG，不依賴外部服務) */}
-              <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-inner">
-                <QRCode
-                  value={stampUrl}
-                  size={160}
-                  fgColor={accentColor}
-                  bgColor="#FFFFFF"
-                  level="M"
-                />
-              </div>
-
-              {/* 區域名稱 */}
-              <div className="text-center space-y-0.5 w-full">
-                <p className="text-xs font-bold text-gray-800 leading-snug">{config.area_name}</p>
-                <p className="text-[8px] text-gray-300 font-mono truncate">{config.uuid}</p>
-              </div>
-
-              {/* 品牌頁尾 */}
-              <div className="flex items-center gap-1 opacity-15 pt-1">
-                <img src="/tsutaya-logo.svg" alt="TSUTAYA" className="h-2 w-auto" />
-                <span className="text-[7px] font-mono text-gray-800">× 8th Anniv.</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            ))}
+            {/* 若最後一頁不足4張，補空白佔位 */}
+            {page.length < 4 &&
+              Array.from({ length: 4 - page.length }).map((_, i) => (
+                <div key={`empty-${i}`} />
+              ))}
+          </div>
+        </div>
+      ))}
 
       <style jsx global>{`
         @media print {
-          body { background: white !important; }
-          @page { margin: 0.8cm; size: A4; }
+          body {
+            background: white !important;
+            margin: 0;
+            padding: 0;
+          }
+          @page {
+            size: A4 portrait;
+            margin: 1cm;
+          }
         }
       `}</style>
     </div>
