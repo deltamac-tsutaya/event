@@ -2,21 +2,21 @@
 
 import React from "react";
 
-type P = { className?: string };
+type P = { className?: string; style?: React.CSSProperties };
 
 // 01 — ∞ 無限
-function InfinityIcon({ className }: P) {
+function InfinityIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <path strokeWidth="2" d="M12 12 C10 7.5 4 7.5 4 12 C4 16.5 10 16.5 12 12 C14 7.5 20 7.5 20 12 C20 16.5 14 16.5 12 12" />
     </svg>
   );
 }
 
 // 02 — 陶杯
-function CeramicCupIcon({ className }: P) {
+function CeramicCupIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <path strokeWidth="1.5" d="M7 9 L9 19 Q12 21 15 19 L17 9 Z" />
       <path strokeWidth="1.5" d="M6 9 Q12 7.5 18 9" />
       <path strokeWidth="1.5" d="M17 11 Q21 11 21 15 Q21 19 17 19" />
@@ -25,9 +25,9 @@ function CeramicCupIcon({ className }: P) {
 }
 
 // 03 — 風
-function WindIcon({ className }: P) {
+function WindIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" className={className} style={style}>
       <path strokeWidth="1.8" d="M3 9 Q6 7 9 9 Q12 11 15 9 Q18 7 21 9" />
       <path strokeWidth="1.8" d="M3 13 Q7 11 12 13 Q17 15 21 13" />
       <path strokeWidth="1.8" d="M6 17 Q9 15 12 17 Q15 19 18 17" />
@@ -36,9 +36,9 @@ function WindIcon({ className }: P) {
 }
 
 // 04 — 橡實
-function AcornIcon({ className }: P) {
+function AcornIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <circle cx="12" cy="16" r="5.5" strokeWidth="1.5" />
       {/* cap (filled) */}
       <path d="M6.5 14 Q12 10.5 17.5 14 Q12 12.5 6.5 14Z" fill="currentColor" stroke="none" />
@@ -49,9 +49,9 @@ function AcornIcon({ className }: P) {
 }
 
 // 05 — 書
-function BookIcon({ className }: P) {
+function BookIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <path strokeWidth="1.5" d="M12 7 Q7 5.5 3 7.5 L3 19 Q7 17 12 18.5" />
       <path strokeWidth="1.5" d="M12 7 Q17 5.5 21 7.5 L21 19 Q17 17 12 18.5" />
       <line x1="12" y1="7" x2="12" y2="18.5" strokeWidth="1" />
@@ -60,9 +60,9 @@ function BookIcon({ className }: P) {
 }
 
 // 06 — 咖啡
-function CoffeeIcon({ className }: P) {
+function CoffeeIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <path strokeWidth="1.5" d="M7 11 L9 19 Q12 21 15 19 L17 11 Z" />
       <path strokeWidth="1.5" d="M6 11 Q12 9.5 18 11" />
       <path strokeWidth="1.5" d="M17 13 Q21 13 21 16 Q21 19 17 19" />
@@ -73,9 +73,9 @@ function CoffeeIcon({ className }: P) {
 }
 
 // 07 — 光點
-function SparkleIcon({ className }: P) {
+function SparkleIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" className={className} style={style}>
       <circle cx="12" cy="12" r="2.5" strokeWidth="1.5" />
       <line x1="12" y1="3.5" x2="12" y2="8"    strokeWidth="1.5" />
       <line x1="12" y1="16"  x2="12" y2="20.5" strokeWidth="1.5" />
@@ -90,9 +90,9 @@ function SparkleIcon({ className }: P) {
 }
 
 // 08 — 花朵  (5 petals at 72° intervals)
-function FlowerIcon({ className }: P) {
+function FlowerIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={className} style={style}>
       <circle cx="12"  cy="7"    r="3.5" strokeWidth="1.5" />
       <circle cx="7.2" cy="10.5" r="3.5" strokeWidth="1.5" />
       <circle cx="9.1" cy="16"   r="3.5" strokeWidth="1.5" />
@@ -105,9 +105,9 @@ function FlowerIcon({ className }: P) {
 }
 
 // A — 松鼠
-function SquirrelIcon({ className }: P) {
+function SquirrelIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       {/* head */}
       <circle cx="10" cy="10" r="5" strokeWidth="1.5" />
       {/* ears */}
@@ -127,9 +127,9 @@ function SquirrelIcon({ className }: P) {
 }
 
 // B — 小鳥
-function BirdIcon({ className }: P) {
+function BirdIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       {/* body */}
       <ellipse cx="10" cy="15" rx="6" ry="4.5" strokeWidth="1.5" />
       {/* head */}
@@ -150,9 +150,9 @@ function BirdIcon({ className }: P) {
 }
 
 // C — 小鹿
-function DeerIcon({ className }: P) {
+function DeerIcon({ className, style }: P) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       {/* head */}
       <path strokeWidth="1.5" d="M12 22 Q6.5 22 6.5 15 Q6.5 9 12 9 Q17.5 9 17.5 15 Q17.5 22 12 22Z" />
       {/* ears */}
@@ -184,8 +184,8 @@ const ICON_MAP: Record<string, React.ComponentType<P>> = {
   "C":  DeerIcon,
 };
 
-export function StampIcon({ stampId, className }: { stampId: string; className?: string }) {
+export function StampIcon({ stampId, className, style }: { stampId: string; className?: string; style?: React.CSSProperties }) {
   const Icon = ICON_MAP[stampId];
   if (!Icon) return null;
-  return <Icon className={className} />;
+  return <Icon className={className} style={style} />;
 }
