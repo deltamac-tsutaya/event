@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
+import { StampIcon } from "@/components/StampIcon";
 
 export interface StampItem {
   stamp_id: string;
@@ -145,13 +146,11 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
                     ${isNew ? "animate-stamp-drop" : ""}
                   `}
                 >
-                  <span
-                    className={`font-serif text-lg font-bold tabular-nums ${
-                      collected ? "text-transparent bg-clip-text bg-gradient-to-br from-[#C9A84C] to-[#E5C97D]" : "text-[#B0AEAD]"
-                    }`}
-                  >
-                    {collected ? meta.element.slice(0, 2) : id}
-                  </span>
+                  {collected ? (
+                    <StampIcon stampId={id} className="w-1/2 h-1/2 text-[#C9A84C]" />
+                  ) : (
+                    <span className="font-mono text-xs font-medium text-[#B0AEAD]">{id}</span>
+                  )}
                 </div>
                 <span
                   className={`text-[9px] text-center leading-tight transition-colors ${
@@ -185,8 +184,8 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
 
               return (
                 <div key={id} className={`flex flex-col items-center gap-1 ${isNew ? "animate-bounce" : ""}`}>
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1A2B4A] to-[#3B82C4] flex items-center justify-center text-xl shadow-lg border border-white/20">
-                    🕶️
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1A2B4A] to-[#3B82C4] flex items-center justify-center shadow-lg border border-white/20">
+                    <StampIcon stampId={id} className="w-7 h-7 text-white" />
                   </div>
                   <span className="text-[9px] font-bold text-[#1A2B4A]">{meta.element.split('-')[1]}</span>
                 </div>
