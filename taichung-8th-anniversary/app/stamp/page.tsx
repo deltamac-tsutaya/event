@@ -112,8 +112,9 @@ function StampPageContent() {
         const data = await res.json();
 
         if (data.success) {
+          setLastStampId(data.stampId ?? stampId);
           setStatus("success");
-          showStampSuccess(stampId);
+          showStampSuccess(data.stampId ?? stampId);
           await refetch();
           // 不轉頁，2 秒後回到 idle 供繼續掃描
           setTimeout(() => setStatus("idle"), 2000);
