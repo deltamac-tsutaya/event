@@ -77,5 +77,5 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ success: true, totalStamps: count ?? 0 });
+  return NextResponse.json({ success: true, stampId: realStampId, totalStamps: count ?? 0 });
 }

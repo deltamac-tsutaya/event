@@ -14,27 +14,20 @@ interface StampConfig {
   area_name?: string;
 }
 
-const ROTATING_IDS = ["02", "05", "06"];
-const VARIANT_COLORS: Record<number, string> = {
-  1: "#1A2B4A",
-  2: "#2B5CE6",
-  3: "#C9A84C",
-};
+const QR_COLOR = "#1A2B4A";
 
 function QRCard({ config }: { config: StampConfig }) {
   const base = typeof window !== "undefined" ? window.location.origin : "";
   const stampUrl = `${base}/stamp?id=${config.uuid}`;
-  const isRotating = ROTATING_IDS.includes(config.stamp_id);
   const isHidden = ["A", "B", "C"].includes(config.stamp_id);
-  const accentColor = isRotating ? (VARIANT_COLORS[config.variant_id] ?? "#1A2B4A") : "#1A2B4A";
 
   return (
-    <div className="flex flex-col items-center w-full h-full">
+    <div className="flex flex-col items-center w-full">
 
       {/* ── 裝飾框（印刷主體）── */}
       <div
-        className="relative flex-1 w-full flex flex-col border-2 overflow-hidden"
-        style={{ borderColor: "#1A2B4A" }}
+        className="relative w-full flex flex-col border-2 overflow-hidden"
+        style={{ borderColor: QR_COLOR }}
       >
         {/* 內框線（金色） */}
         <div
@@ -55,7 +48,7 @@ function QRCard({ config }: { config: StampConfig }) {
 
         {/* ── 頂部品牌帶 ── */}
         <div
-          className="flex items-center justify-center gap-2 py-2 px-4"
+          className="flex items-center justify-center gap-2 py-1.5 px-4 shrink-0"
           style={{ borderBottom: "0.5px solid rgba(201,168,76,0.3)" }}
         >
           <img src="/tsutaya-logo.svg" alt="TSUTAYA" className="h-2.5 w-auto opacity-60" />
@@ -63,56 +56,47 @@ function QRCard({ config }: { config: StampConfig }) {
           <img src="/wired-tokyo-logo.svg" alt="WIRED" className="h-3 w-auto opacity-50" />
         </div>
 
-        {/* ── QR Code 主體 ── */}
-        <div className="flex-1 flex items-center justify-center bg-white px-6 py-4">
+        {/* ── QR Code — 強制正方形，不留空白 ── */}
+        <div className="w-full bg-white p-3" style={{ aspectRatio: "1 / 1" }}>
           <QRCode
             value={stampUrl}
             size={256}
-            fgColor={accentColor}
+            fgColor={QR_COLOR}
             bgColor="#FFFFFF"
             level="M"
-            style={{ width: "100%", height: "auto", maxWidth: 200 }}
             viewBox="0 0 256 256"
+            style={{ width: "100%", height: "auto", display: "block" }}
           />
         </div>
 
         {/* ── 底部印章帶 ── */}
         <div
-          className="flex flex-col items-center gap-1.5 py-3 px-4"
+          className="flex flex-col items-center gap-1 py-2 px-4 shrink-0"
           style={{ borderTop: "0.5px solid rgba(201,168,76,0.3)" }}
         >
-          {/* 分隔線 */}
           <div className="w-full flex items-center gap-1.5">
             <div className="flex-1 h-px" style={{ backgroundColor: "rgba(201,168,76,0.3)" }} />
             <span className="text-[8px] font-serif" style={{ color: "rgba(201,168,76,0.6)" }}>∞</span>
             <div className="flex-1 h-px" style={{ backgroundColor: "rgba(201,168,76,0.3)" }} />
           </div>
-
-          {/* 印章 Icon + 標題 */}
           <div className="flex items-center gap-2">
-            <span style={{ color: accentColor }}><StampIcon stampId={config.stamp_id} className="w-5 h-5" /></span>
+            <span style={{ color: QR_COLOR }}>
+              <StampIcon stampId={config.stamp_id} className="w-4 h-4" />
+            </span>
             <div className="flex flex-col items-start">
-              <span className="text-[7px] font-mono tracking-[0.2em] uppercase" style={{ color: "#1A2B4A" }}>
+              <span className="text-[7px] font-mono tracking-[0.2em] uppercase" style={{ color: QR_COLOR }}>
                 Nexus Life
               </span>
               <span className="text-[6px] font-mono tracking-[0.15em]" style={{ color: "rgba(26,43,74,0.5)" }}>
                 8th Anniversary
               </span>
             </div>
-            {isRotating && (
-              <span
-                className="text-[8px] font-black px-1.5 py-0.5 rounded-full ml-1"
-                style={{ color: accentColor, background: `${accentColor}18` }}
-              >
-                V{config.variant_id}
-              </span>
-            )}
           </div>
         </div>
       </div>
 
-      {/* ── 框外資訊（僅供店員核對，不屬於展示主體）── */}
-      <div className="w-full mt-1.5 px-0.5 space-y-0.5">
+      {/* ── 框外資訊（僅供店員核對）── */}
+      <div className="w-full mt-1 px-0.5 space-y-0.5">
         <div className="flex items-center justify-between">
           <p className="text-[9px] font-bold text-gray-700 leading-tight">{config.area_name}</p>
           {isHidden && (
@@ -194,12 +178,7 @@ export default function PrintPage() {
       <div className="print:hidden max-w-4xl mx-auto mt-4 mb-6 px-6">
         <div className="flex items-start gap-2 text-xs text-amber-700 bg-amber-50 p-3 rounded-xl border border-amber-100">
           <Info size={14} className="mt-0.5 shrink-0" />
-          <span>
-            框外的區域名稱與 UUID 僅供店員核對用。
-            旋轉點位顏色：<strong className="text-[#1A2B4A]">V1 深藍</strong>、
-            <strong className="text-[#2B5CE6]">V2 藍</strong>、
-            <strong className="text-[#C9A84C]">V3 金</strong>。
-          </span>
+          <span>框外的區域名稱與 UUID 僅供店員核對用。</span>
         </div>
       </div>
 
@@ -207,12 +186,12 @@ export default function PrintPage() {
       {pages.map((page, pageIdx) => (
         <div
           key={pageIdx}
-          className="print:break-after-page px-6 py-4 print:px-3 print:py-3 max-w-4xl mx-auto print:max-w-none"
+          className="print:break-after-page px-6 py-4 print:p-[8mm] max-w-4xl mx-auto print:max-w-none"
         >
           <p className="print:hidden text-[10px] font-mono text-gray-300 mb-3 text-right">
             第 {pageIdx + 1} 頁 / 共 {pages.length} 頁
           </p>
-          <div className="grid grid-cols-2 gap-6 print:gap-4 print:h-[calc(100vh-24px)]">
+          <div className="grid grid-cols-2 gap-6 print:gap-[6mm]">
             {page.map((config) => (
               <QRCard key={config.uuid} config={config} />
             ))}
@@ -227,7 +206,7 @@ export default function PrintPage() {
       <style jsx global>{`
         @media print {
           body { background: white !important; margin: 0; padding: 0; }
-          @page { size: A4 portrait; margin: 0.8cm; }
+          @page { size: A4 portrait; margin: 0; }
         }
       `}</style>
     </div>
