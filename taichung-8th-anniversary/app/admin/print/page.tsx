@@ -16,6 +16,20 @@ interface StampConfig {
 
 const QR_COLOR = "#1A2B4A";
 
+const STAMP_DESC: Record<string, { title: string; desc: string }> = {
+  "01": { title: "入口主題陳列區", desc: "踏入空間的第一個印記。本季策展陳列，迎接每一位到訪的旅人。" },
+  "02": { title: "生活選品區",     desc: "生活即選品。這裡匯集了我們認為值得放進日常的物件。" },
+  "03": { title: "露台區",         desc: "城市之上，靜謐一隅。帶一本書，讓台中的風輕輕翻頁。" },
+  "04": { title: "兒童繪本區",     desc: "最初的閱讀記憶，從這裡開始。那些圖畫，藏著比文字更大的世界。" },
+  "05": { title: "書櫃深處",       desc: "不是每本書都等在明顯的地方。有些故事，需要你走進來才能發現。" },
+  "06": { title: "WIRED TOKYO 吧檯", desc: "餐飲與靈感的交會點。一杯飲料的時間，剛好夠想清楚一件事。" },
+  "07": { title: "天井區",         desc: "光從上方落下。在這個空間，時間的流動變得可見。" },
+  "08": { title: "結帳櫃檯旁",     desc: "帶走你選擇的一切。每一次結帳，都是一個生活主張的確認。" },
+  "A":  { title: "∞",             desc: "有些印記，只留給真正觀察的人。" },
+  "B":  { title: "∞",             desc: "有些印記，只留給真正觀察的人。" },
+  "C":  { title: "∞",             desc: "有些印記，只留給真正觀察的人。" },
+};
+
 function QRCard({ config }: { config: StampConfig }) {
   const base = typeof window !== "undefined" ? window.location.origin : "";
   const stampUrl = `${base}/stamp?id=${config.uuid}`;
@@ -68,6 +82,18 @@ function QRCard({ config }: { config: StampConfig }) {
             style={{ width: "100%", height: "auto", display: "block" }}
           />
         </div>
+
+        {/* ── 活動說明帶 ── */}
+        {STAMP_DESC[config.stamp_id] && (
+          <div className="px-5 py-2.5 shrink-0 bg-[#F9F7F3]" style={{ borderTop: "0.5px solid rgba(201,168,76,0.2)" }}>
+            <p className="text-[7.5px] font-bold tracking-[0.1em] text-[#1A2B4A] mb-0.5">
+              {STAMP_DESC[config.stamp_id].title}
+            </p>
+            <p className="text-[6.5px] leading-[1.6] text-[#1A2B4A]/60">
+              {STAMP_DESC[config.stamp_id].desc}
+            </p>
+          </div>
+        )}
 
         {/* ── 底部印章帶 ── */}
         <div
@@ -167,12 +193,19 @@ export default function PrintPage() {
             </p>
           </div>
         </div>
-        <Button
-          onClick={() => window.print()}
-          className="bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 gap-2 h-11 px-6 rounded-full"
-        >
-          <Printer size={18} /> 列印全部
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link href="/admin/print/flyer">
+            <Button variant="outline" className="gap-2 h-11 px-5 rounded-full border-[#1A2B4A]/30 text-[#1A2B4A]">
+              A5 文宣
+            </Button>
+          </Link>
+          <Button
+            onClick={() => window.print()}
+            className="bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 gap-2 h-11 px-6 rounded-full"
+          >
+            <Printer size={18} /> 列印全部
+          </Button>
+        </div>
       </div>
 
       <div className="print:hidden max-w-4xl mx-auto mt-4 mb-6 px-6">

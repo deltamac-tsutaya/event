@@ -335,6 +335,11 @@ export default function AdminPage() {
                 <Printer size={14} /> 列印 QR
               </Button>
             </Link>
+            <Link href="/admin/social">
+              <Button variant="outline" className="h-9 gap-1.5 rounded-full px-4 text-xs border-blue-200 text-blue-700 hover:bg-blue-50">
+                社群文宣
+              </Button>
+            </Link>
             <div className="w-px h-4 bg-gray-200 mx-1" />
             <Button variant="outline" size="icon" onClick={fetchAllData} disabled={loading} className="rounded-full">
               <RefreshCcw size={14} className={loading ? "animate-spin" : ""} />
