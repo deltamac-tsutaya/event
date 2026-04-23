@@ -90,7 +90,7 @@ function QRCard({ config }: { config: StampConfig }) {
 
           {/* 印章 Icon + 標題 */}
           <div className="flex items-center gap-2">
-            <StampIcon stampId={config.stamp_id} className="w-5 h-5" style={{ color: accentColor }} />
+            <span style={{ color: accentColor }}><StampIcon stampId={config.stamp_id} className="w-5 h-5" /></span>
             <div className="flex flex-col items-start">
               <span className="text-[7px] font-mono tracking-[0.2em] uppercase" style={{ color: "#1A2B4A" }}>
                 Nexus Life
