@@ -49,8 +49,8 @@ const MONO_ICONS: Record<string, string> = {
 // Coloured hidden stamps (A/B/C): preserve original SVG colours.
 const COLOR_ICONS: Record<string, string> = {
   "A": "/squirrel-svgrepo-com%20(1)%202.svg",
-  "B": "/bird-svgrepo-com%202.svg",
-  "C": "/deer-svgrepo-com%202.svg",
+  "B": "/hummingbird-svgrepo-com%202.svg",
+  "C": "/deer-svgrepo-com%20(1)%202.svg",
 };
 
 export function StampIcon({

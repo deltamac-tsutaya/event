@@ -184,8 +184,8 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
 
               return (
                 <div key={id} className={`flex flex-col items-center gap-1 ${isNew ? "animate-bounce" : ""}`}>
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1A2B4A] to-[#3B82C4] flex items-center justify-center shadow-lg border border-white/20">
-                    <StampIcon stampId={id} className="w-7 h-7 text-white" />
+                  <div className="w-12 h-12 rounded-xl bg-[#F9F6F0] flex items-center justify-center shadow-sm border border-[#C9A84C]/25">
+                    <StampIcon stampId={id} className="w-8 h-8" />
                   </div>
                   <span className="text-[9px] font-bold text-[#1A2B4A]">{meta.element.split('-')[1]}</span>
                 </div>
