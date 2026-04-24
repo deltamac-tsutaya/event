@@ -50,6 +50,25 @@ CREATE TABLE IF NOT EXISTS public.rewards (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 6. Bonus Lottery Results (Infinity Day 加碼獎)
+CREATE TABLE IF NOT EXISTS public.bonus_lottery_results (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    prize_name TEXT NOT NULL DEFAULT 'WIRED TOKYO 雙人和牛牛排套餐',
+    drawn_at TIMESTAMPTZ DEFAULT NOW(),
+    notified_at TIMESTAMPTZ,
+    UNIQUE(user_id)
+);
+
+-- 7. Bonus Lottery State (singleton row, id = 1)
+CREATE TABLE IF NOT EXISTS public.bonus_lottery_state (
+    id INTEGER PRIMARY KEY,
+    executed_at TIMESTAMPTZ,
+    total_tickets INTEGER,
+    total_participants INTEGER,
+    winner_count INTEGER
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_stamps_user_id ON public.stamps(user_id);
 CREATE INDEX IF NOT EXISTS idx_draws_user_id ON public.draws(user_id);

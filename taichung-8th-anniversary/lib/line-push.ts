@@ -55,6 +55,75 @@ function buildCouponMessage(reward: Reward): object {
   };
 }
 
+function buildWinnerMessage(): object {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://taichung-8th-anniversary.vercel.app";
+  return {
+    type: "flex",
+    altText: "🎉 恭喜！您在 Infinity Day 加碼獎中獎！",
+    contents: {
+      type: "bubble",
+      styles: {
+        header: { backgroundColor: "#1A2B4A" },
+        body:   { backgroundColor: "#FAFAFA" },
+      },
+      header: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          { type: "text", text: "♾️ Nexus Life 8 週年 — Infinity Day", color: "#FFFFFF", size: "xs", weight: "bold" },
+          { type: "text", text: "加碼大獎抽籤結果", color: "#AABBCC", size: "xxs" },
+        ],
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          { type: "text", text: "🎉 恭喜您中獎！", color: "#C8A86B", size: "lg", weight: "bold" },
+          { type: "text", text: "WIRED TOKYO 雙人和牛牛排套餐", size: "md", weight: "bold", wrap: true, color: "#1A2B4A" },
+          { type: "separator" },
+          {
+            type: "box", layout: "vertical", spacing: "xs",
+            contents: [
+              { type: "text", text: "・對外價值 $2,300", size: "xs", color: "#666666" },
+              { type: "text", text: "・兌換期限：2026/06/12 前", size: "xs", color: "#666666" },
+              { type: "text", text: "・需提前訂位，每人限用 1 張", size: "xs", color: "#666666", wrap: true },
+            ],
+          },
+        ],
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#1A2B4A",
+            action: { type: "uri", label: "查看中獎資訊", uri: `${appUrl}/` },
+          },
+        ],
+      },
+    },
+  };
+}
+
+export async function sendWinnerNotification(lineUserId: string): Promise<void> {
+  const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+  if (!token) throw new Error("LINE_CHANNEL_ACCESS_TOKEN not set");
+
+  const res = await fetch(LINE_API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ to: lineUserId, messages: [buildWinnerMessage()] }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`LINE API error ${res.status}: ${body}`);
+  }
+}
+
 export async function sendCouponMessage(lineUserId: string, reward: Reward): Promise<void> {
   const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
   if (!token) throw new Error("LINE_CHANNEL_ACCESS_TOKEN not set");
