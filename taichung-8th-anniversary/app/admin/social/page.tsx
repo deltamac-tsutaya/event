@@ -63,7 +63,7 @@ function InstagramPost() {
       <div className="relative z-10 text-center space-y-3">
         <p className="text-[11px] font-mono tracking-[0.5em] uppercase" style={{ color: `${GOLD}CC` }}>8th Anniversary</p>
         <h1 className="text-6xl font-black tracking-tight text-white leading-none">Nexus Life</h1>
-        <p className="text-sm font-mono tracking-[0.3em]" style={{ color: "rgba(255,255,255,0.4)" }}>∞ TAICHUNG · 2025</p>
+        <p className="text-sm font-mono tracking-[0.3em]" style={{ color: "rgba(255,255,255,0.4)" }}>無限日常 ∞ 2026</p>
       </div>
 
       {/* 底部 CTA */}
@@ -113,9 +113,9 @@ function InstagramStories() {
 
         {/* 步驟 */}
         {[
-          { n: "01", t: "LINE 掃描 QR Code", d: "用 LINE 掃描店內各區的 QR Code" },
-          { n: "02", t: "集滿 8 枚印記",     d: "找出散落在空間各處的 8 個印記" },
-          { n: "03", t: "每日解鎖抽獎",       d: "抽取餐飲體驗券、書籍折扣等好禮" },
+          { n: "01", t: "用 LINE 登入",      d: "掃現場 QR Code，點擊「用 LINE 帳號參加」" },
+          { n: "02", t: "掃碼集印",           d: "找出館內 8 個集印點，掃碼集章" },
+          { n: "03", t: "每日解鎖抽獎",       d: "集滿 8 枚每日可抽 LINE 優惠券" },
         ].map((s) => (
           <div key={s.n} className="flex items-start gap-2.5">
             <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[7px] font-black text-white" style={{ background: NAVY }}>
@@ -177,7 +177,7 @@ function FacebookPost() {
         </div>
         <p className="relative z-10 text-[8px] font-mono tracking-[0.4em] mb-1" style={{ color: `${GOLD}BB` }}>8TH ANNIVERSARY</p>
         <h1 className="relative z-10 text-4xl font-black text-white tracking-tight leading-none">Nexus Life</h1>
-        <p className="relative z-10 text-[9px] font-mono mt-2 tracking-[0.2em]" style={{ color: "rgba(255,255,255,0.35)" }}>∞ TAICHUNG · 2025</p>
+        <p className="relative z-10 text-[9px] font-mono mt-2 tracking-[0.2em]" style={{ color: "rgba(255,255,255,0.35)" }}>無限日常 ∞ 2026</p>
       </div>
 
       {/* 右：內容 */}
@@ -196,8 +196,8 @@ function FacebookPost() {
 
         <div className="relative z-10 space-y-2">
           {[
-            { n: "01", t: "LINE 掃描 QR Code" },
-            { n: "02", t: "集滿 8 枚印記" },
+            { n: "01", t: "用 LINE 登入" },
+            { n: "02", t: "掃碼集印 8 枚" },
             { n: "03", t: "每日解鎖抽獎好禮" },
           ].map((s) => (
             <div key={s.n} className="flex items-center gap-2">

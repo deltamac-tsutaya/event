@@ -16,18 +16,18 @@ interface StampConfig {
 
 const QR_COLOR = "#1A2B4A";
 
-const STAMP_DESC: Record<string, { title: string; desc: string }> = {
-  "01": { title: "入口主題陳列區", desc: "踏入空間的第一個印記。本季策展陳列，迎接每一位到訪的旅人。" },
-  "02": { title: "生活選品區",     desc: "生活即選品。這裡匯集了我們認為值得放進日常的物件。" },
-  "03": { title: "露台區",         desc: "城市之上，靜謐一隅。帶一本書，讓台中的風輕輕翻頁。" },
-  "04": { title: "兒童繪本區",     desc: "最初的閱讀記憶，從這裡開始。那些圖畫，藏著比文字更大的世界。" },
-  "05": { title: "書櫃深處",       desc: "不是每本書都等在明顯的地方。有些故事，需要你走進來才能發現。" },
-  "06": { title: "WIRED TOKYO 吧檯", desc: "餐飲與靈感的交會點。一杯飲料的時間，剛好夠想清楚一件事。" },
-  "07": { title: "天井區",         desc: "光從上方落下。在這個空間，時間的流動變得可見。" },
-  "08": { title: "結帳櫃檯旁",     desc: "帶走你選擇的一切。每一次結帳，都是一個生活主張的確認。" },
-  "A":  { title: "∞",             desc: "有些印記，只留給真正觀察的人。" },
-  "B":  { title: "∞",             desc: "有些印記，只留給真正觀察的人。" },
-  "C":  { title: "∞",             desc: "有些印記，只留給真正觀察的人。" },
+const STAMP_DESC: Record<string, { title: string; element: string; phrase: string }> = {
+  "01": { title: "入口主題陳列區", element: "♾️ 無限",   phrase: "從這裡走出去，8 與 ∞ 同時開始。" },
+  "02": { title: "職人雜貨區",     element: "陶杯",      phrase: "手溫傳過陶杯，8 年的 ∞ 就在掌心。" },
+  "03": { title: "戶外座位區",     element: "風",        phrase: "露台吹來 ∞ 的風，繞了 8 個年頭才停。" },
+  "04": { title: "兒童繪本書櫃",   element: "橡實",      phrase: "一顆橡實用 8 年 ∞ 生長，長成整片森林。" },
+  "05": { title: "樓梯書牆",       element: "書",        phrase: "8 層書牆向 ∞ 展開，每格都是新世界。" },
+  "06": { title: "吧檯區",         element: "咖啡",      phrase: "一杯咖啡，8 年的 ∞ 日常，從未厭倦。" },
+  "07": { title: "天井吊燈區",     element: "光點",      phrase: "光從天井 ∞ 落，你離第 8 枚只剩一步。" },
+  "08": { title: "告示牌",         element: "花朵",      phrase: "8 年 ∞ 循環，每天都有一朵花記住你。" },
+  "A":  { title: "隱藏彩蛋",       element: "墨鏡-松鼠", phrase: "牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。" },
+  "B":  { title: "隱藏彩蛋",       element: "墨鏡-小鳥", phrase: "這個位子空著。小鳥只停在不趕路的人身邊。" },
+  "C":  { title: "隱藏彩蛋",       element: "墨鏡-小鹿", phrase: "電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。" },
 };
 
 function QRCard({ config }: { config: StampConfig }) {
@@ -86,14 +86,21 @@ function QRCard({ config }: { config: StampConfig }) {
         {/* ── 活動說明帶 ── */}
         {STAMP_DESC[config.stamp_id] && (
           <div className="px-5 py-2.5 shrink-0 bg-[#F9F7F3]" style={{ borderTop: "0.5px solid rgba(201,168,76,0.2)" }}>
-            <p className="text-[7.5px] font-bold tracking-[0.1em] text-[#1A2B4A] mb-0.5">
-              {STAMP_DESC[config.stamp_id].title}
+            <p className="text-[6px] font-bold tracking-[0.15em] text-[#C9A84C] mb-0.5 uppercase">
+              {STAMP_DESC[config.stamp_id].element}
             </p>
-            <p className="text-[6.5px] leading-[1.6] text-[#1A2B4A]/60">
-              {STAMP_DESC[config.stamp_id].desc}
+            <p className="text-[7px] leading-[1.7] text-[#1A2B4A]/80 font-medium">
+              {STAMP_DESC[config.stamp_id].phrase}
             </p>
           </div>
         )}
+
+        {/* ── 底部通用提示 ── */}
+        <div className="px-5 py-2 shrink-0" style={{ borderTop: "0.5px solid rgba(201,168,76,0.15)", backgroundColor: "#F5F2ED" }}>
+          <p className="text-[5.5px] leading-[1.6] text-[#1A2B4A]/40 text-center">
+            每個帳號每個點位限蓋 1 次。集滿 8 枚可每日抽獎，午夜 00:00 重置。
+          </p>
+        </div>
 
         {/* ── 底部印章帶 ── */}
         <div

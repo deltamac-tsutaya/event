@@ -12,17 +12,17 @@ import {
 // ── 資料 ──────────────────────────────────────────────────────────────────
 
 const STAMP_LOCATIONS = [
-  { id: "01", area: "入口主題陳列區",      hint: "入口右側大型主題陳列旁，掃描貼紙高度約 150cm。" },
-  { id: "02", area: "生活選品區",           hint: "生活雜貨選品陳列中，請留意貨架側面。" },
-  { id: "03", area: "露台區",              hint: "通往露台的玻璃門旁，或露台欄杆處。" },
-  { id: "04", area: "兒童繪本區",          hint: "低矮書架側邊，約兒童視線高度，90cm 以下。" },
-  { id: "05", area: "書櫃深處",            hint: "後方高書牆角落，需走進去才能看到。" },
-  { id: "06", area: "WIRED TOKYO 吧檯",   hint: "吧檯點餐台正面或側邊。" },
-  { id: "07", area: "天井區",              hint: "天井採光下方的展示台或柱子。" },
-  { id: "08", area: "結帳櫃檯旁",          hint: "收銀台正面或側面貼近顧客視線處。" },
-  { id: "A",  area: "牆角角落（隱藏）",    hint: "不顯眼的角落，高度偏低，需主動尋找。", hidden: true },
-  { id: "B",  area: "窗邊位置（隱藏）",    hint: "窗框邊或窗簾旁，光線充足之處。", hidden: true },
-  { id: "C",  area: "告示牌後（隱藏）",    hint: "大型告示牌或立牌背後。", hidden: true },
+  { id: "01", floor: "2F", area: "入口主題陳列區",  element: "♾️ 無限",     hint: "入口右側大型主題陳列旁，掃描貼紙高度約 150cm。" },
+  { id: "02", floor: "2F", area: "職人雜貨區",      element: "陶杯",        hint: "職人雜貨選品陳列中，請留意貨架側面。每日輪替×3。" },
+  { id: "03", floor: "3F", area: "戶外座位區",      element: "風",          hint: "戶外座位區玻璃門旁或欄杆處。" },
+  { id: "04", floor: "3F", area: "兒童繪本書櫃",    element: "橡實",        hint: "低矮書架側邊，約兒童視線高度，90cm 以下。" },
+  { id: "05", floor: "3F", area: "樓梯書牆",        element: "書",          hint: "樓梯旁高書牆，需走進去才能看到。每日輪替×3。" },
+  { id: "06", floor: "2F", area: "吧檯區",          element: "咖啡",        hint: "吧檯點餐台正面或側邊。每日輪替×3。" },
+  { id: "07", floor: "3F", area: "天井吊燈區",      element: "光點",        hint: "天井吊燈下方展示台或柱子。" },
+  { id: "08", floor: "1F", area: "告示牌",          element: "花朵",        hint: "1F 告示牌附近，貼近顧客視線處。" },
+  { id: "A",  floor: "—",  area: "員工身上（隨機）", element: "墨鏡-松鼠", hint: "彩蛋點：由特定員工隨身佩戴，主動詢問 Nexus Life 服務人員。", hidden: true },
+  { id: "B",  floor: "3F", area: "戶外座位桌上",    element: "墨鏡-小鳥",  hint: "彩蛋點：戶外座位某張桌面上，需留心觀察。", hidden: true },
+  { id: "C",  floor: "—",  area: "電梯告示",        element: "墨鏡-小鹿",  hint: "彩蛋點：電梯告示位置，往往被忽略的角落。", hidden: true },
 ];
 
 const REWARD_TIERS = [
@@ -256,8 +256,12 @@ export default function ManualPage() {
                   <div className="w-8 h-8 rounded-lg bg-[#1A2B4A] text-white flex items-center justify-center font-black text-xs shrink-0">
                     {s.id}
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-800">{s.area}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-sm font-semibold text-gray-800">{s.area}</p>
+                      <span className="text-[10px] font-mono text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">{s.floor}</span>
+                      <span className="text-[10px] text-[#C9A84C] font-medium">{s.element}</span>
+                    </div>
                     <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{s.hint}</p>
                   </div>
                 </div>
