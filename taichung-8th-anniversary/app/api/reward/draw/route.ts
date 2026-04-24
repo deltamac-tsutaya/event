@@ -74,6 +74,11 @@ export async function POST(request: NextRequest) {
   // 關鍵邏輯：今日首次抽獎完成，加碼獎券 +1
   await supabaseAdmin.from("users").update({ tickets_count: (user.tickets_count || 0) + 1 }).eq("id", user.id);
 
+  // 發送 LINE 優惠券訊息（非同步，不影響抽獎回傳）
+  import("@/lib/line-push")
+    .then(({ sendCouponMessage }) => sendCouponMessage(lineUserId, selected))
+    .catch(err => console.error("[LINE push] 發送失敗:", err));
+
   return NextResponse.json({
     success: true,
     reward: selected,

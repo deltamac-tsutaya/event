@@ -12,7 +12,7 @@ import {
   LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
   BarChart3, ShieldCheck, Search, RotateCcw, Plus,
   ChevronDown, ChevronUp, Zap, Settings2, CheckCircle, AlertCircle,
-  X, Printer, Image, FileText, ChevronRight,
+  X, Printer, Image, FileText, ChevronRight, Send,
 } from "lucide-react";
 
 // ── 型別 ──────────────────────────────────────────────────────────────────
@@ -150,6 +150,17 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
     onRefresh();
   };
 
+  const pushCoupon = async () => {
+    if (user.draw_count === 0) { flash("err", "此用戶尚無抽獎紀錄"); return; }
+    setBusy("push");
+    const res = await fetch("/api/admin/user/push-coupon", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user.id }),
+    }).then(r => r.json());
+    setBusy(null);
+    res.success ? flash("ok", "LINE 訊息已發送") : flash("err", res.error ?? "發送失敗");
+  };
+
   return (
     <div className="border border-gray-100 rounded-2xl overflow-hidden hover:shadow-sm transition-shadow">
       <div
@@ -223,6 +234,10 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
             <Button size="sm" variant="outline" onClick={forceDraw} disabled={!!busy}
               className="h-8 text-xs gap-1.5 rounded-full border-purple-200 text-purple-700 hover:bg-purple-50">
               {busy === "draw" ? <RefreshCcw size={10} className="animate-spin" /> : <Zap size={10} />} 強制抽獎
+            </Button>
+            <Button size="sm" variant="outline" onClick={pushCoupon} disabled={!!busy}
+              className="h-8 text-xs gap-1.5 rounded-full border-green-200 text-green-700 hover:bg-green-50">
+              {busy === "push" ? <RefreshCcw size={10} className="animate-spin" /> : <Send size={10} />} 發送優惠券
             </Button>
             <Button size="sm" variant="outline" onClick={resetUser} disabled={!!busy}
               className="h-8 text-xs gap-1.5 rounded-full border-red-200 text-red-600 hover:bg-red-50 ml-auto">
