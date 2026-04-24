@@ -80,7 +80,7 @@ function TableCard() {
 
       {/* Bottom */}
       <div className="relative z-10 flex items-center justify-between px-[6mm] pb-[4mm] shrink-0">
-        <p className="font-mono" style={{ fontSize: "4.5px", color: "rgba(255,255,255,0.2)" }}>2026.04.25 — 05.24</p>
+        <p className="font-mono" style={{ fontSize: "4.5px", color: "rgba(255,255,255,0.2)" }}>2026.04.23 — 05.13</p>
         <p className="font-serif" style={{ fontSize: "7px", color: `${GOLD}45` }}>∞</p>
       </div>
     </div>

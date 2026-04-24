@@ -18,7 +18,7 @@ const STEPS = [
   { num: "01", title: "用 LINE 登入", desc: "掃描現場活動 QR Code，點擊「用 LINE 帳號參加」登入" },
   { num: "02", title: "掃碼集印", desc: "找出館內 8 個集印點，用活動頁掃碼集印，每點限蓋 1 次" },
   { num: "03", title: "每日解鎖抽獎", desc: "集滿 8 枚後每天可抽 1 次 LINE 優惠券，午夜 00:00 重置" },
-  { num: "04", title: "累積加碼獎券", desc: "每日抽獎後自動累積 1 張，全程最多 30 張，越常回訪中獎率越高" },
+  { num: "04", title: "累積加碼獎券", desc: "每日抽獎後自動累積 1 張，全程最多 21 張，越常回訪中獎率越高" },
 ];
 
 function Poster() {
@@ -61,7 +61,7 @@ function Poster() {
 
         <div className="relative z-10 mt-5">
           <p className="text-[7px] font-mono tracking-[0.2em] text-center" style={{ color: `${GOLD}80` }}>
-            台中市政店 8 週年 · 2026.04.25 — 2026.05.24
+            台中市政店 8 週年 · 2026.04.23 — 2026.05.13
           </p>
         </div>
 
@@ -115,7 +115,7 @@ function Poster() {
             <p className="text-[6px] leading-relaxed" style={{ color: `${NAVY}55` }}>
               每日抽獎累積加碼獎券，限量 8 份 WIRED TOKYO 雙人和牛牛排套餐（市值 $2,300）
             </p>
-            <p className="text-[5.5px] font-mono mt-0.5" style={{ color: `${GOLD}90` }}>2026/05/24 20:00 準時開獎</p>
+            <p className="text-[5.5px] font-mono mt-0.5" style={{ color: `${GOLD}90` }}>2026/05/13 20:00 準時開獎</p>
           </div>
         </div>
 
@@ -137,7 +137,7 @@ function Poster() {
             <p className="text-[6px] leading-relaxed" style={{ color: `${NAVY}50` }}>
               用 LINE 內建掃描器掃此 QR Code<br />開啟活動頁面後，即可開始集章
             </p>
-            <p className="text-[5.5px] font-mono" style={{ color: `${GOLD}80` }}>2026.04.25 — 2026.05.24</p>
+            <p className="text-[5.5px] font-mono" style={{ color: `${GOLD}80` }}>2026.04.23 — 2026.05.13</p>
           </div>
         </div>
 

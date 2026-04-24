@@ -41,7 +41,7 @@ function CounterCard() {
             <h1 className="text-[28px] font-black tracking-tight text-white leading-none">Nexus Life</h1>
             <p className="text-[8px] font-mono mt-1 tracking-[0.2em]" style={{ color: "rgba(255,255,255,0.35)" }}>無限日常 ∞ 連結生活</p>
           </div>
-          <p className="text-[6px] font-mono tracking-widest" style={{ color: `${GOLD}60` }}>台中市政店 8 週年 · 2026/04/25 — 05/24</p>
+          <p className="text-[6px] font-mono tracking-widest" style={{ color: `${GOLD}60` }}>台中市政店 8 週年 · 2026/04/23 — 05/13</p>
         </div>
       </div>
 
@@ -67,7 +67,7 @@ function CounterCard() {
             { n: "1", t: "掃描現場活動 QR Code", d: "點擊「用 LINE 帳號參加」登入" },
             { n: "2", t: "找出館內 8 個集印點", d: "用活動頁掃碼集印，每個點位限蓋 1 次" },
             { n: "3", t: "集滿後每天可抽 1 次", d: "抽取 LINE 優惠券，14 項獎品 100% 中獎" },
-            { n: "4", t: "每日 00:00 重置機會", d: "全程 30 天，每日回訪累積加碼獎券" },
+            { n: "4", t: "每日 00:00 重置機會", d: "全程 21 天，每日回訪累積加碼獎券" },
           ].map((s) => (
             <div key={s.n} className="flex items-start gap-[3mm]">
               <span className="shrink-0 w-[6mm] h-[6mm] rounded-full flex items-center justify-center text-[7px] font-black text-white mt-[0.3mm]" style={{ background: NAVY }}>
@@ -96,7 +96,7 @@ function CounterCard() {
             <p className="text-[5.5px] leading-relaxed" style={{ color: `${NAVY}55` }}>
               用 LINE 內建掃描器掃此 QR Code<br />開啟活動頁面後，即可開始集章
             </p>
-            <p className="text-[5px] font-mono" style={{ color: `${GOLD}80` }}>活動期間 2026/04/25 — 2026/05/24</p>
+            <p className="text-[5px] font-mono" style={{ color: `${GOLD}80` }}>活動期間 2026/04/23 — 2026/05/13</p>
           </div>
         </div>
       </div>
@@ -126,11 +126,11 @@ function CounterCard() {
 
           <div className="rounded-lg px-[6mm] py-[2.5mm] w-full text-center" style={{ background: `${GOLD}18`, border: `0.5px solid ${GOLD}50` }}>
             <p className="text-[5.5px] font-mono tracking-[0.3em] mb-0.5" style={{ color: `${GOLD}90` }}>開獎時間</p>
-            <p className="text-[13px] font-black" style={{ color: GOLD }}>2026 / 05 / 24 · 20:00</p>
+            <p className="text-[13px] font-black" style={{ color: GOLD }}>2026 / 05 / 13 · 20:00</p>
           </div>
 
           <p className="text-[4.5px] font-mono" style={{ color: "rgba(255,255,255,0.2)" }}>
-            每日完成抽獎自動累積加碼獎券，全程最多 30 張，越常回訪中獎機率越高
+            每日完成抽獎自動累積加碼獎券，全程最多 21 張，越常回訪中獎機率越高
           </p>
         </div>
       </div>
