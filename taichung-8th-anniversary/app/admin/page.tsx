@@ -44,12 +44,14 @@ function ToolsMenu() {
   }, []);
 
   const items = [
-    { href: "/admin/print",         icon: <Printer size={15} />,  label: "列印 QR Code",      sub: "A4 批次列印" },
-    { href: "/admin/print/flyer",   icon: <FileText size={15} />, label: "A5 活動文宣",        sub: "A5 直向文宣列印" },
-    { href: "/admin/print/counter", icon: <FileText size={15} />, label: "櫃檯說明立卡",       sub: "A5 × 2 張" },
-    { href: "/admin/print/board",   icon: <FileText size={15} />, label: "獎項板 ／ 樓層指引", sub: "A4 × 2 張" },
-    { href: "/admin/social",        icon: <Image size={15} />,    label: "社群媒體文宣",        sub: "IG / FB / LINE" },
-    { href: "/admin/manual",        icon: <FileText size={15} />, label: "活動操作手冊",        sub: "員工操作指引" },
+    { href: "/admin/print",         icon: <Printer size={15} />,  label: "列印 QR Code",        sub: "A4 批次列印" },
+    { href: "/admin/print/stand",   icon: <FileText size={15} />, label: "集印點立牌（文字）",   sub: "10×15 cm × 11 張" },
+    { href: "/admin/print/flyer",   icon: <FileText size={15} />, label: "活動主視覺海報",       sub: "A4 直向" },
+    { href: "/admin/print/counter", icon: <FileText size={15} />, label: "櫃檯說明立卡",         sub: "A4 × 1 張" },
+    { href: "/admin/print/table",   icon: <FileText size={15} />, label: "餐廳桌卡",             sub: "A6 平放" },
+    { href: "/admin/print/board",   icon: <FileText size={15} />, label: "獎項板 ／ 樓層指引",   sub: "A4 × 2 張" },
+    { href: "/admin/social",        icon: <Image size={15} />,    label: "社群媒體文宣",         sub: "IG / FB / LINE" },
+    { href: "/admin/manual",        icon: <FileText size={15} />, label: "活動操作手冊",         sub: "員工操作指引" },
   ];
 
   return (
