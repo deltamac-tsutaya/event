@@ -12,7 +12,7 @@ import {
   LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
   BarChart3, ShieldCheck, Search, RotateCcw, Plus,
   ChevronDown, ChevronUp, Zap, Settings2, CheckCircle, AlertCircle,
-  X, Printer, Image, FileText, ChevronRight, Send, Sparkles,
+  X, Printer, Image, FileText, ChevronRight, Send,
 } from "lucide-react";
 
 // ── 型別 ──────────────────────────────────────────────────────────────────
@@ -290,129 +290,6 @@ function QRModal({ config, onClose }: { config: StampConfig; onClose: () => void
   );
 }
 
-// ── Infinity Day 開獎面板 ─────────────────────────────────────────────────
-function InfinityDayPanel() {
-  const [stats, setStats]       = useState<any>(null);
-  const [loading, setLoading]   = useState(true);
-  const [executing, setExec]    = useState(false);
-  const [result, setResult]     = useState<any>(null);
-
-  const DRAW_TIME = new Date("2026-05-24T12:00:00Z");
-  const canExecute = new Date() >= DRAW_TIME;
-
-  const load = async () => {
-    setLoading(true);
-    const res = await fetch("/api/admin/bonus-draw/stats").catch(() => null);
-    if (res?.ok) setStats(await res.json());
-    setLoading(false);
-  };
-
-  useEffect(() => { load(); }, []);
-
-  const execute = async (force = false) => {
-    if (!confirm(force ? "強制開獎（忽略時間限制）？此操作不可逆！" : "確認執行 Infinity Day 開獎？此操作不可逆！")) return;
-    setExec(true);
-    const res = await fetch("/api/admin/bonus-draw/execute", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ force }),
-    });
-    const data = await res.json();
-    setResult(data);
-    if (data.success) load();
-    setExec(false);
-  };
-
-  return (
-    <div className="space-y-4">
-      <Card className="border-none shadow-sm overflow-hidden">
-        <div className="bg-gradient-to-r from-[#1A2B4A] to-[#2B5CE6] px-5 py-4 flex items-center gap-3">
-          <Sparkles size={16} className="text-yellow-300" />
-          <div>
-            <p className="text-white font-bold text-sm">Infinity Day 加碼獎</p>
-            <p className="text-white/60 text-[10px]">開獎時間 2026/05/24 20:00 Taipei</p>
-          </div>
-        </div>
-        <CardContent className="p-5 space-y-4">
-          {loading ? (
-            <p className="text-center text-gray-400 text-sm py-4">載入中⋯</p>
-          ) : (
-            <>
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { label: "獎券總池", value: stats?.totalTickets ?? 0, unit: "張" },
-                  { label: "參賽人數", value: stats?.totalParticipants ?? 0, unit: "人" },
-                  { label: "預計獎品", value: 8, unit: "份" },
-                ].map(({ label, value, unit }) => (
-                  <div key={label} className="bg-gray-50 rounded-2xl p-3 text-center">
-                    <p className="text-[10px] text-gray-400 font-bold">{label}</p>
-                    <p className="text-xl font-black text-[#1A2B4A]">{value.toLocaleString()}</p>
-                    <p className="text-[10px] text-gray-400">{unit}</p>
-                  </div>
-                ))}
-              </div>
-
-              {stats?.executed ? (
-                <div className="bg-green-50 border border-green-100 rounded-2xl p-4 space-y-1">
-                  <p className="text-xs font-bold text-green-700 flex items-center gap-1.5">
-                    <CheckCircle size={13} /> 開獎已完成
-                  </p>
-                  <p className="text-[10px] text-green-600">執行時間：{new Date(stats.executedAt).toLocaleString("zh-TW")}</p>
-                  <p className="text-[10px] text-green-600">共抽出 {stats.winnerCount} 位得獎者</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <Button
-                    onClick={() => execute(false)}
-                    disabled={executing || !canExecute}
-                    className="w-full h-11 rounded-full bg-gradient-to-r from-[#1A2B4A] to-[#2B5CE6] font-bold text-sm gap-2"
-                  >
-                    <Sparkles size={14} />
-                    {executing ? "開獎中⋯" : canExecute ? "執行開獎" : "尚未到開獎時間"}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => execute(true)}
-                    disabled={executing}
-                    className="w-full h-9 rounded-full text-xs text-gray-400 border-dashed"
-                  >
-                    強制開獎（測試用）
-                  </Button>
-                </div>
-              )}
-
-              {result && !result.success && (
-                <div className="bg-red-50 rounded-xl p-3 text-xs text-red-600">{result.error}</div>
-              )}
-            </>
-          )}
-        </CardContent>
-      </Card>
-
-      {stats?.executed && stats.winners?.length > 0 && (
-        <Card className="border-none shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2 text-gray-700">
-              <Trophy size={14} className="text-yellow-500" /> 得獎名單
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {stats.winners.map((w: any, i: number) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-yellow-50 border border-yellow-100">
-                <div className="w-6 h-6 rounded-full bg-yellow-200 flex items-center justify-center text-[10px] font-black text-yellow-800">{i + 1}</div>
-                <div>
-                  <p className="text-xs font-bold text-gray-800">{w.users?.display_name ?? "—"}</p>
-                  <p className="text-[10px] text-gray-400 font-mono">{w.users?.line_user_id}</p>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-}
-
 // ── 主頁面 ────────────────────────────────────────────────────────────────
 export default function AdminPage() {
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
@@ -422,7 +299,7 @@ export default function AdminPage() {
   const [loginError, setLoginError]     = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
-  const [activeTab, setActiveTab]   = useState<"users" | "configs" | "stats" | "infinity">("users");
+  const [activeTab, setActiveTab]   = useState<"users" | "configs" | "stats">("users");
   const [users, setUsers]           = useState<AdminUser[]>([]);
   const [configs, setConfigs]       = useState<StampConfig[]>([]);
   const [stats, setStats]           = useState<DashboardStats | null>(null);
@@ -508,10 +385,9 @@ export default function AdminPage() {
   );
 
   const TAB_ITEMS = [
-    { id: "users"    as const, icon: <Users size={18} />,      label: "使用者" },
-    { id: "configs"  as const, icon: <QrCode size={18} />,     label: "QR 點位" },
-    { id: "stats"    as const, icon: <BarChart3 size={18} />,  label: "統計" },
-    { id: "infinity" as const, icon: <Sparkles size={18} />,   label: "Infinity Day" },
+    { id: "users"   as const, icon: <Users size={18} />,     label: "使用者" },
+    { id: "configs" as const, icon: <QrCode size={18} />,    label: "QR 點位" },
+    { id: "stats"   as const, icon: <BarChart3 size={18} />, label: "統計" },
   ];
 
   return (
@@ -673,11 +549,6 @@ export default function AdminPage() {
               )}
             </CardContent>
           </Card>
-        )}
-
-        {/* Infinity Day */}
-        {activeTab === "infinity" && (
-          <InfinityDayPanel />
         )}
       </main>
 

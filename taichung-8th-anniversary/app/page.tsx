@@ -17,18 +17,11 @@ import type { Reward } from "@/lib/types";
 import { DynamicHero } from "@/components/DynamicHero";
 import SideDrawer from "@/components/SideDrawer";
 
-// ── 活動期間 & 加碼獎時間常數 ────────────────────────────────────────────
-const ACTIVITY_END    = new Date("2026-05-24T23:59:59+08:00");
-const LOTTERY_DRAW    = new Date("2026-05-24T12:00:00Z"); // 20:00 Taipei
-const LOTTERY_REVEAL  = new Date("2026-05-24T12:05:00Z"); // 20:05 Taipei
+// ── 活動期間常數 ─────────────────────────────────────────────────────────
+const ACTIVITY_END = new Date("2026-05-13T23:59:59+08:00");
 
-function isActivityEnded(): boolean { return new Date() > ACTIVITY_END; }
-
-function getLotteryStatus(): "countdown" | "processing" | "revealed" {
-  const now = new Date();
-  if (now < LOTTERY_DRAW)   return "countdown";
-  if (now < LOTTERY_REVEAL) return "processing";
-  return "revealed";
+function isActivityEnded(): boolean {
+  return new Date() > ACTIVITY_END;
 }
 
 // ── Hero Section ─────────────────────────────────────────────────────────
@@ -107,7 +100,7 @@ function HeroSection({
               <span className="w-px h-3 bg-[#1A2B4A]/10" />
               <span>Est. 2018</span>
               <span className="w-px h-3 bg-[#1A2B4A]/10" />
-              <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 25 — 05 / 24</span>
+              <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 23 — 05 / 13</span>
             </div>
           </div>
         )}
@@ -117,62 +110,9 @@ function HeroSection({
 }
 
 // ── Infinity Day Section ─────────────────────────────────────────────────
-function InfinityDaySection({
-  tickets,
-  lotteryStatus,
-  won,
-}: {
-  tickets: number;
-  lotteryStatus: "countdown" | "processing" | "revealed";
-  won?: boolean;
-}) {
-  if (lotteryStatus === "revealed") {
-    return won ? (
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#C9A84C] to-[#E5C97D] text-[#1A2B4A] shadow-[0_20px_40px_-15px_rgba(201,168,76,0.5)] animate-in zoom-in-95 duration-500">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-white/20 blur-3xl rounded-full" />
-        <div className="relative p-6 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-[#1A2B4A]/10 p-2 rounded-xl"><Sparkles size={18} className="text-[#1A2B4A]" /></div>
-            <span className="font-black tracking-widest text-sm uppercase">Infinity Day</span>
-          </div>
-          <p className="text-2xl font-black leading-snug">🎉 恭喜中獎！</p>
-          <p className="text-sm font-bold leading-relaxed">WIRED TOKYO 雙人和牛牛排套餐</p>
-          <p className="text-xs opacity-70">對外價值 $2,300 ・兌換期限 2026/06/23</p>
-          <p className="text-[10px] opacity-60">請至 WIRED TOKYO 台中市政店提前訂位使用，LINE 訊息已傳送詳細說明。</p>
-        </div>
-      </div>
-    ) : (
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-[0_20px_40px_-15px_rgba(43,92,230,0.4)]">
-        <div className="relative p-6 space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-xl"><Sparkles size={18} className="text-white/80" /></div>
-            <span className="font-black tracking-widest text-sm uppercase">Infinity Day</span>
-          </div>
-          <p className="text-sm font-bold opacity-80">感謝您的參與</p>
-          <p className="text-xs text-white/60 leading-relaxed">您共累積 {tickets} 張加碼獎券。本次 8 份和牛套餐已完成開獎，期待下次再見！</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (lotteryStatus === "processing") {
-    return (
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-[0_20px_40px_-15px_rgba(43,92,230,0.5)]">
-        <div className="relative p-6 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-xl"><Sparkles size={18} className="text-yellow-300 animate-spin" /></div>
-            <span className="font-black tracking-widest text-sm uppercase">Infinity Day</span>
-          </div>
-          <p className="text-sm font-bold animate-pulse">開獎中⋯⋯</p>
-          <p className="text-xs text-white/60">系統正在從 {tickets} 張加碼獎券中抽出 8 位幸運得主，請稍候片刻。</p>
-        </div>
-      </div>
-    );
-  }
-
-  // countdown
-  const totalPool = 1250 + tickets;
-  const userProb  = ((tickets * (8 / totalPool)) * 100).toFixed(2);
+function InfinityDaySection({ tickets }: { tickets: number }) {
+  const totalPool = 1250 + tickets; 
+  const userProb = ((tickets * (8 / totalPool)) * 100).toFixed(2);
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-[0_20px_40px_-15px_rgba(43,92,230,0.5)] transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(43,92,230,0.6)] hover:-translate-y-1">
@@ -187,10 +127,14 @@ function InfinityDaySection({
             <span className="font-black tracking-widest text-sm uppercase">Infinity Day</span>
           </div>
           <div className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 font-bold tracking-wider">
-            5/24 20:00 開獎
+            5/13 20:00 開獎
           </div>
         </div>
-        <p className="text-xs text-white/80 font-medium tracking-wide">抽出 8 份 WIRED TOKYO 雙人和牛牛排套餐</p>
+
+        <div className="space-y-1">
+          <p className="text-xs text-white/80 font-medium tracking-wide">抽出 8 份 WIRED TOKYO 雙人和牛牛排套餐</p>
+        </div>
+
         <div className="grid grid-cols-2 gap-3 pt-2">
           <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10 shadow-sm transition-transform hover:scale-[1.02]">
             <p className="text-[10px] text-white/60 mb-1 font-bold tracking-wider">已累積券數</p>
@@ -219,11 +163,9 @@ function MainContent() {
   const { user, login, loading: userLoading } = useLiffUser();
   const { progress, loading: progressLoading, refetch } = useStampProgress(user?.userId ?? null);
 
-  const [drawLoading, setDrawLoading]   = useState(false);
-  const [lastReward, setLastReward]     = useState<Reward | null>(null);
+  const [drawLoading, setDrawLoading] = useState(false);
+  const [lastReward, setLastReward] = useState<Reward | null>(null);
   const [userHeroExpanded, setUserHeroExpanded] = useState(false);
-  const [bonusWon, setBonusWon]         = useState<boolean | null>(null);
-  const lotteryStatus = getLotteryStatus();
 
   const isLoading = userLoading || (!!user && progressLoading);
 
@@ -236,14 +178,6 @@ function MainContent() {
       return mask | (1 << (idNum - 1));
     }, 0);
   }, [progress?.stamps]);
-
-  useEffect(() => {
-    if (!user || lotteryStatus !== "revealed") return;
-    fetch(`/api/bonus-draw/result?lineUserId=${user.userId}`)
-      .then(r => r.json())
-      .then(d => setBonusWon(d.won ?? false))
-      .catch(() => {});
-  }, [user, lotteryStatus]);
 
   const handleDraw = async () => {
     if (!user) return;
@@ -392,25 +326,16 @@ function MainContent() {
 
         {/* 狀態 F */}
         {state === "F" && (
-          <PageCard className="p-8 shadow-xl border-none space-y-5 bg-white/90 backdrop-blur-xl text-center">
-            <div className="space-y-2">
-              <p className="text-xs font-mono tracking-widest text-[#8A6F5C] opacity-60">2026 · 04/25 — 05/24</p>
-              <h2 className="text-2xl font-black text-[#1A2B4A]">感謝 30 天的相伴</h2>
-              <p className="text-sm text-[#8A6F5C]">Nexus Life 8 週年活動圓滿結束</p>
-            </div>
-            <Button className="h-12 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
-              查看我的獎券
-            </Button>
+          <PageCard className="p-10 text-center shadow-xl border-none space-y-6 bg-gray-50">
+             <h2 className="text-2xl font-bold text-[#1A2B4A]">感謝 21 天的相伴</h2>
+             <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
+                查看我的獎券
+             </Button>
           </PageCard>
         )}
 
-        {/* Infinity Day 區塊 — 有票就顯示；state F 時一律顯示 */}
-        {user && (state === "F" || (progress?.ticketsCount ?? 0) > 0) && (
-          <InfinityDaySection
-            tickets={progress?.ticketsCount ?? 0}
-            lotteryStatus={lotteryStatus}
-            won={bonusWon ?? undefined}
-          />
+        {user && state !== "F" && progress?.canDraw && (
+          <InfinityDaySection tickets={progress?.ticketsCount ?? 0} />
         )}
 
         {/* 底部導覽 */}
