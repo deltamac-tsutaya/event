@@ -5,10 +5,10 @@ import { Printer, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import QRCode from "react-qr-code";
 
-const APP_URL =
-  typeof window !== "undefined"
-    ? window.location.origin
-    : process.env.NEXT_PUBLIC_APP_URL ?? "https://taichung-8th-anniversary.vercel.app";
+const _LIFF_ID = process.env.NEXT_PUBLIC_LIFF_ID;
+const APP_URL = _LIFF_ID
+  ? `https://liff.line.me/${_LIFF_ID}`
+  : process.env.NEXT_PUBLIC_APP_URL ?? "https://taichung-8th-anniversary.vercel.app";
 
 const NAVY = "#1A2B4A";
 const GOLD = "#C9A84C";
