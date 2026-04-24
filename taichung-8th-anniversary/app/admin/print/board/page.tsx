@@ -68,7 +68,7 @@ function PrizeBoard() {
           <p className="text-[6px] font-mono tracking-[0.4em]" style={{ color: `${GOLD}99` }}>NEXUS LIFE 8TH ANNIVERSARY</p>
           <h2 className="text-[18px] font-black text-white leading-none">集滿抽好禮</h2>
           <p className="text-[7px] tracking-[0.15em]" style={{ color: "rgba(255,255,255,0.5)" }}>
-            全程 21 天，每日一次機會　14 項獎品　100% 中獎　LINE 優惠券即時發放
+            全程 30 天，每日一次機會　14 項獎品　100% 中獎　LINE 優惠券即時發放
           </p>
         </div>
       </div>
@@ -100,7 +100,7 @@ function PrizeBoard() {
         <div className="rounded-xl overflow-hidden" style={{ background: NAVY, border: `1px solid ${GOLD}40` }}>
           <div className="flex items-center gap-2 px-[4mm] py-[2mm]" style={{ borderBottom: `1px solid ${GOLD}25` }}>
             <span className="text-[8px] font-mono tracking-[0.2em]" style={{ color: GOLD }}>✦ INFINITY DAY</span>
-            <span className="ml-auto text-[6px] font-mono" style={{ color: `${GOLD}70` }}>2026/05/13 20:00 開獎</span>
+            <span className="ml-auto text-[6px] font-mono" style={{ color: `${GOLD}70` }}>2026/05/24 20:00 開獎</span>
           </div>
           <div className="px-[4mm] py-[3mm] flex items-center gap-[4mm]">
             <div className="flex-1">
@@ -122,10 +122,10 @@ function PrizeBoard() {
             <div className="flex-1 h-px" style={{ background: `${GOLD}30` }} />
           </div>
           <p className="text-[5.5px] text-center" style={{ color: `${NAVY}50` }}>
-            獎項以 LINE 優惠券形式發放，有效期統一至 2026/5/30。加碼獎券兌換期限至 2026/6/13，需提前預約使用。
+            獎項以 LINE 優惠券形式發放，有效期統一至 2026/5/30。加碼獎券兌換期限至 2026/6/23，需提前預約使用。
           </p>
           <p className="text-[5px] text-center font-mono" style={{ color: `${NAVY}35` }}>
-            TSUTAYA BOOKSTORE ｜ WIRED TOKYO 台中市政店　活動期間 2026/04/23 — 2026/05/13
+            TSUTAYA BOOKSTORE ｜ WIRED TOKYO 台中市政店　活動期間 2026/04/25 — 2026/05/24
           </p>
         </div>
       </div>
@@ -215,14 +215,14 @@ function FloorGuide() {
         <div className="mt-auto rounded-xl px-[5mm] py-[3mm] flex items-center justify-between" style={{ border: `1px dashed ${NAVY}25`, background: "white" }}>
           <div>
             <p className="text-[7px] font-bold" style={{ color: NAVY }}>上樓找印記，集滿 8 枚抽好禮</p>
-            <p className="text-[5.5px]" style={{ color: `${NAVY}50` }}>Nexus Life｜台中市政店 8 週年・活動至 2026/05/13</p>
+            <p className="text-[5.5px]" style={{ color: `${NAVY}50` }}>Nexus Life｜台中市政店 8 週年・活動至 2026/05/24</p>
           </div>
           <p className="text-[10px] font-serif" style={{ color: `${GOLD}70` }}>∞</p>
         </div>
 
         {/* 底部 */}
         <p className="text-[5px] text-center font-mono" style={{ color: `${NAVY}35` }}>
-          TSUTAYA BOOKSTORE ｜ WIRED TOKYO 台中市政店　2026/04/23 — 2026/05/13
+          TSUTAYA BOOKSTORE ｜ WIRED TOKYO 台中市政店　2026/04/25 — 2026/05/24
         </p>
       </div>
     </div>

@@ -213,7 +213,7 @@ function FacebookPost() {
           </div>
           <div>
             <p className="text-[8px] font-bold" style={{ color: NAVY }}>掃描加入活動</p>
-            <p className="text-[6px] leading-relaxed" style={{ color: `${NAVY}60` }}>活動至 2026/5/13 止<br />TSUTAYA BOOKSTORE 台中市政店</p>
+            <p className="text-[6px] leading-relaxed" style={{ color: `${NAVY}60` }}>活動至 2026/5/30 止<br />TSUTAYA BOOKSTORE 台中市政店</p>
           </div>
         </div>
       </div>
@@ -348,7 +348,7 @@ function LineRichMenu() {
 
       {/* 底部說明 */}
       <div className="absolute bottom-2 left-0 right-0 flex justify-center">
-        <p className="text-[8px] font-mono" style={{ color: "rgba(255,255,255,0.2)" }}>TSUTAYA BOOKSTORE 台中市政店 · 活動至 2026/5/13</p>
+        <p className="text-[8px] font-mono" style={{ color: "rgba(255,255,255,0.2)" }}>TSUTAYA BOOKSTORE 台中市政店 · 活動至 2026/5/30</p>
       </div>
     </div>
   );
