@@ -26,20 +26,10 @@ function MaskIcon({ src, className, style }: { src: string } & P) {
   );
 }
 
-// 02 — 陶杯（無對應上傳檔，保留手繪）
-function CeramicCupIcon({ className, style }: P) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path strokeWidth="1.5" d="M7 9 L9 19 Q12 21 15 19 L17 9 Z" />
-      <path strokeWidth="1.5" d="M6 9 Q12 7.5 18 9" />
-      <path strokeWidth="1.5" d="M17 11 Q21 11 21 15 Q21 19 17 19" />
-    </svg>
-  );
-}
-
 // stamp_id → 公開資料夾中的 SVG 路徑（空格需 %20 編碼）
 const SVG_ICONS: Record<string, string> = {
   "01": "/endless_1745143%202.svg",
+  "02": "/african-drum_520119%202.svg",
   "03": "/wind_3026423%202.svg",
   "04": "/acorn_120142%202.svg",
   "05": "/open-book_2702134%202.svg",
@@ -51,9 +41,6 @@ const SVG_ICONS: Record<string, string> = {
   "C":  "/deer-illustration-1-svgrepo-com.svg",
 };
 
-const HAND_DRAWN: Record<string, React.ComponentType<P>> = {
-  "02": CeramicCupIcon,
-};
 
 export function StampIcon({
   stampId,
@@ -66,9 +53,5 @@ export function StampIcon({
 }) {
   const src = SVG_ICONS[stampId];
   if (src) return <MaskIcon src={src} className={className} style={style} />;
-
-  const HandDrawn = HAND_DRAWN[stampId];
-  if (HandDrawn) return <HandDrawn className={className} style={style} />;
-
   return null;
 }
