@@ -109,7 +109,7 @@ export default function SideDrawer({ triggerClassName }: SideDrawerProps) {
             <img src="/wired-tokyo-logo.svg" alt="WIRED" className="h-3.5 w-auto brightness-0 invert" />
           </div>
           <p className="mt-1.5 text-[9px] font-mono text-white/30 tracking-wide">
-            2026/04/23 — 2026/05/13
+            2026/04/25 — 2026/05/24
           </p>
         </div>
       </div>
