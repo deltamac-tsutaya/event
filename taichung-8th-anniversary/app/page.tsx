@@ -18,7 +18,7 @@ import { DynamicHero } from "@/components/DynamicHero";
 import SideDrawer from "@/components/SideDrawer";
 
 // ── 活動期間常數 ─────────────────────────────────────────────────────────
-const ACTIVITY_END = new Date("2026-05-13T23:59:59+08:00");
+const ACTIVITY_END = new Date("2026-05-24T23:59:59+08:00");
 
 function isActivityEnded(): boolean {
   return new Date() > ACTIVITY_END;
@@ -100,7 +100,7 @@ function HeroSection({
               <span className="w-px h-3 bg-[#1A2B4A]/10" />
               <span>Est. 2018</span>
               <span className="w-px h-3 bg-[#1A2B4A]/10" />
-              <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 23 — 05 / 13</span>
+              <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 25 — 05 / 24</span>
             </div>
           </div>
         )}
@@ -127,7 +127,7 @@ function InfinityDaySection({ tickets }: { tickets: number }) {
             <span className="font-black tracking-widest text-sm uppercase">Infinity Day</span>
           </div>
           <div className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 font-bold tracking-wider">
-            5/13 20:00 開獎
+            5/24 20:00 開獎
           </div>
         </div>
 
@@ -327,7 +327,7 @@ function MainContent() {
         {/* 狀態 F */}
         {state === "F" && (
           <PageCard className="p-10 text-center shadow-xl border-none space-y-6 bg-gray-50">
-             <h2 className="text-2xl font-bold text-[#1A2B4A]">感謝 21 天的相伴</h2>
+             <h2 className="text-2xl font-bold text-[#1A2B4A]">感謝 30 天的相伴</h2>
              <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
                 查看我的獎券
              </Button>

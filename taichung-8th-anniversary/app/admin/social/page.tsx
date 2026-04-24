@@ -63,7 +63,7 @@ function InstagramPost() {
       <div className="relative z-10 text-center space-y-3">
         <p className="text-[11px] font-mono tracking-[0.5em] uppercase" style={{ color: `${GOLD}CC` }}>8th Anniversary</p>
         <h1 className="text-6xl font-black tracking-tight text-white leading-none">Nexus Life</h1>
-        <p className="text-sm font-mono tracking-[0.3em]" style={{ color: "rgba(255,255,255,0.4)" }}>無限日常 ∞ 2026</p>
+        <p className="text-sm font-mono tracking-[0.3em]" style={{ color: "rgba(255,255,255,0.4)" }}>無限日常 ∞ 連結生活</p>
       </div>
 
       {/* 底部 CTA */}
@@ -245,7 +245,7 @@ function LinePush() {
         </p>
         <div className="mt-4 flex items-center gap-2">
           <div className="h-px w-8" style={{ background: `${GOLD}60` }} />
-          <p className="text-[9px] font-mono tracking-widest" style={{ color: `${GOLD}99` }}>TAICHUNG · 2025</p>
+          <p className="text-[9px] font-mono tracking-widest" style={{ color: `${GOLD}99` }}>TAICHUNG · 2026</p>
         </div>
       </div>
 
