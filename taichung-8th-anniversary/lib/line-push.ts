@@ -86,7 +86,7 @@ function buildWinnerMessage(): object {
             type: "box", layout: "vertical", spacing: "xs",
             contents: [
               { type: "text", text: "・對外價值 $2,300", size: "xs", color: "#666666" },
-              { type: "text", text: "・兌換期限：2026/06/12 前", size: "xs", color: "#666666" },
+              { type: "text", text: "・兌換期限：2026/06/23 前", size: "xs", color: "#666666" },
               { type: "text", text: "・需提前訂位，每人限用 1 張", size: "xs", color: "#666666", wrap: true },
             ],
           },

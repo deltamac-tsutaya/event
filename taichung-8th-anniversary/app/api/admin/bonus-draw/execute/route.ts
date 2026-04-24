@@ -3,8 +3,8 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 const PRIZE_COUNT = 8;
 const PRIZE_NAME  = "WIRED TOKYO 雙人和牛牛排套餐";
-// 2026-05-13 20:00 Asia/Taipei = 12:00 UTC
-const DRAW_TIME = new Date("2026-05-13T12:00:00Z");
+// 2026-05-24 20:00 Asia/Taipei = 12:00 UTC
+const DRAW_TIME = new Date("2026-05-24T12:00:00Z");
 
 export async function POST(request: NextRequest) {
   const { force } = await request.json().catch(() => ({}));
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!force && new Date() < DRAW_TIME) {
-    return NextResponse.json({ success: false, error: "開獎時間未到（2026/5/13 20:00 Taipei）" }, { status: 400 });
+    return NextResponse.json({ success: false, error: "開獎時間未到（2026/5/24 20:00 Taipei）" }, { status: 400 });
   }
 
   // Fetch all eligible users (tickets_count > 0)

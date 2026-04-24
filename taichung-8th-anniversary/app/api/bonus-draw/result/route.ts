@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
-// 2026-05-13 20:00 / 20:05 Asia/Taipei
-const DRAW_TIME   = new Date("2026-05-13T12:00:00Z");
-const REVEAL_TIME = new Date("2026-05-13T12:05:00Z");
+// 2026-05-24 20:00 / 20:05 Asia/Taipei
+const DRAW_TIME   = new Date("2026-05-24T12:00:00Z");
+const REVEAL_TIME = new Date("2026-05-24T12:05:00Z");
 
 function getLotteryStatus(): "countdown" | "processing" | "revealed" {
   const now = new Date();

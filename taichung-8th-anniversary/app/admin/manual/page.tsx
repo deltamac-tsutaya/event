@@ -218,7 +218,7 @@ export default function ManualPage() {
             <BookOpen size={18} className="text-[#1A2B4A]" />
             <h1 className="font-bold text-[#1A2B4A] text-sm">活動操作手冊</h1>
           </div>
-          <span className="ml-auto text-[10px] font-mono text-gray-400">Nexus Life 8th · 2026/04/23–05/13</span>
+          <span className="ml-auto text-[10px] font-mono text-gray-400">Nexus Life 8th · 2026/04/25–05/24</span>
         </div>
       </header>
 
@@ -248,7 +248,7 @@ export default function ManualPage() {
               <div className="grid grid-cols-2 gap-3 text-sm">
                 {[
                   ["活動名稱", "Nexus Life｜無限日常 ∞ 連結生活"],
-                  ["活動期間", "2026/04/23（三）— 2026/05/13（三）"],
+                  ["活動期間", "2026/04/25（六）— 2026/05/24（日）"],
                   ["主辦品牌", "TSUTAYA BOOKSTORE × WIRED TOKYO 台中市政店"],
                   ["集章點位", "8 個主要點位 + 3 個隱藏點位"],
                   ["抽獎資格", "集滿 8 枚印章，每日可抽一次"],

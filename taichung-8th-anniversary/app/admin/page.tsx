@@ -297,7 +297,7 @@ function InfinityDayPanel() {
   const [executing, setExec]    = useState(false);
   const [result, setResult]     = useState<any>(null);
 
-  const DRAW_TIME = new Date("2026-05-13T12:00:00Z");
+  const DRAW_TIME = new Date("2026-05-24T12:00:00Z");
   const canExecute = new Date() >= DRAW_TIME;
 
   const load = async () => {
@@ -330,7 +330,7 @@ function InfinityDayPanel() {
           <Sparkles size={16} className="text-yellow-300" />
           <div>
             <p className="text-white font-bold text-sm">Infinity Day 加碼獎</p>
-            <p className="text-white/60 text-[10px]">開獎時間 2026/05/13 20:00 Taipei</p>
+            <p className="text-white/60 text-[10px]">開獎時間 2026/05/24 20:00 Taipei</p>
           </div>
         </div>
         <CardContent className="p-5 space-y-4">

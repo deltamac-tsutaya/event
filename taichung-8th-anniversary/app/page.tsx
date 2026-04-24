@@ -18,9 +18,9 @@ import { DynamicHero } from "@/components/DynamicHero";
 import SideDrawer from "@/components/SideDrawer";
 
 // ── 活動期間 & 加碼獎時間常數 ────────────────────────────────────────────
-const ACTIVITY_END    = new Date("2026-05-13T23:59:59+08:00");
-const LOTTERY_DRAW    = new Date("2026-05-13T12:00:00Z"); // 20:00 Taipei
-const LOTTERY_REVEAL  = new Date("2026-05-13T12:05:00Z"); // 20:05 Taipei
+const ACTIVITY_END    = new Date("2026-05-24T23:59:59+08:00");
+const LOTTERY_DRAW    = new Date("2026-05-24T12:00:00Z"); // 20:00 Taipei
+const LOTTERY_REVEAL  = new Date("2026-05-24T12:05:00Z"); // 20:05 Taipei
 
 function isActivityEnded(): boolean { return new Date() > ACTIVITY_END; }
 
@@ -107,7 +107,7 @@ function HeroSection({
               <span className="w-px h-3 bg-[#1A2B4A]/10" />
               <span>Est. 2018</span>
               <span className="w-px h-3 bg-[#1A2B4A]/10" />
-              <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 23 — 05 / 13</span>
+              <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 25 — 05 / 24</span>
             </div>
           </div>
         )}
@@ -137,7 +137,7 @@ function InfinityDaySection({
           </div>
           <p className="text-2xl font-black leading-snug">🎉 恭喜中獎！</p>
           <p className="text-sm font-bold leading-relaxed">WIRED TOKYO 雙人和牛牛排套餐</p>
-          <p className="text-xs opacity-70">對外價值 $2,300 ・兌換期限 2026/06/12</p>
+          <p className="text-xs opacity-70">對外價值 $2,300 ・兌換期限 2026/06/23</p>
           <p className="text-[10px] opacity-60">請至 WIRED TOKYO 台中市政店提前訂位使用，LINE 訊息已傳送詳細說明。</p>
         </div>
       </div>
@@ -187,7 +187,7 @@ function InfinityDaySection({
             <span className="font-black tracking-widest text-sm uppercase">Infinity Day</span>
           </div>
           <div className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 font-bold tracking-wider">
-            5/13 20:00 開獎
+            5/24 20:00 開獎
           </div>
         </div>
         <p className="text-xs text-white/80 font-medium tracking-wide">抽出 8 份 WIRED TOKYO 雙人和牛牛排套餐</p>
@@ -394,8 +394,8 @@ function MainContent() {
         {state === "F" && (
           <PageCard className="p-8 shadow-xl border-none space-y-5 bg-white/90 backdrop-blur-xl text-center">
             <div className="space-y-2">
-              <p className="text-xs font-mono tracking-widest text-[#8A6F5C] opacity-60">2026 · 04/23 — 05/13</p>
-              <h2 className="text-2xl font-black text-[#1A2B4A]">感謝 21 天的相伴</h2>
+              <p className="text-xs font-mono tracking-widest text-[#8A6F5C] opacity-60">2026 · 04/25 — 05/24</p>
+              <h2 className="text-2xl font-black text-[#1A2B4A]">感謝 30 天的相伴</h2>
               <p className="text-sm text-[#8A6F5C]">Nexus Life 8 週年活動圓滿結束</p>
             </div>
             <Button className="h-12 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
