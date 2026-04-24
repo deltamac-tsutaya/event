@@ -121,7 +121,7 @@ export default function ConsentPage() {
             ))}
           </ul>
           <p className="text-[10px] text-[#8A6F5C]/70 leading-relaxed">
-            上述資料僅用於本次活動（2026/04/25–05/24），活動結束後依法規處理。
+            上述資料僅用於本次活動（2026/04/23–05/13），活動結束後依法規處理。
           </p>
           <Link
             href="/privacy"
