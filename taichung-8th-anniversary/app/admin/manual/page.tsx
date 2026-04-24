@@ -25,23 +25,44 @@ const STAMP_LOCATIONS = [
   { id: "C",  area: "告示牌後（隱藏）",    hint: "大型告示牌或立牌背後。", hidden: true },
 ];
 
-const REWARD_TIERS = [
-  {
-    tier: "S", label: "S 級獎項", color: "text-yellow-700 bg-yellow-50 border-yellow-200",
-    examples: ["WIRED TOKYO 雙人套餐", "TSUTAYA 精選書籍禮盒"],
-    note: "數量稀少，每日限量發放，優先以加碼獎券抽出。",
-  },
-  {
-    tier: "A", label: "A 級獎項", color: "text-blue-700 bg-blue-50 border-blue-200",
-    examples: ["WIRED TOKYO 飲品兌換券", "TSUTAYA 選書禮券"],
-    note: "中等機率，每日有固定上限。",
-  },
-  {
-    tier: "B", label: "B 級獎項", color: "text-gray-600 bg-gray-50 border-gray-200",
-    examples: ["活動特製書籤", "TSUTAYA 折扣碼"],
-    note: "基本獎項，無每日上限，保底兜底。",
-  },
+const REWARDS: {
+  id: string; tier: "S" | "A" | "B"; provider: string; name: string; validity: string; conditions: string[];
+}[] = [
+  { id: "S1", tier: "S", provider: "WIRED TOKYO",       name: "雙人套餐 188 元抵用券",        validity: "2026/5/30",
+    conditions: ["憑券於 WIRED TOKYO 台中市政店點購雙人套餐，現折 188 元。","每份套餐限用 1 張。","限內用，不得外帶。","結帳時出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "S2", tier: "S", provider: "TSUTAYA BOOKSTORE", name: "88 元現金抵用券",               validity: "2026/5/30",
+    conditions: ["於 TSUTAYA BOOKSTORE 台中市政店結帳時出示券碼，折抵消費 88 元。","不限品項，不設最低消費門檻。","單筆交易限用 1 張。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "A1", tier: "A", provider: "WIRED TOKYO",       name: "法式巧克力香蕉聖代 體驗券",    validity: "2026/5/30",
+    conditions: ["憑券兌換法式巧克力香蕉聖代 1 份（原價 230 元）。","需搭配任一餐點或飲品同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "A2", tier: "A", provider: "WIRED TOKYO",       name: "松露薯條 體驗券",               validity: "2026/5/30",
+    conditions: ["憑券兌換松露薯條 1 份（原價 360 元）。","需搭配任一餐點或飲品同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "A3", tier: "A", provider: "TSUTAYA BOOKSTORE", name: "伯爵茶巴斯克 體驗券",           validity: "2026/5/30",
+    conditions: ["憑券於 WIRED TOKYO 台中市政店兌換伯爵茶巴斯克 1 份（原價 220 元）。","需搭配任一餐點或飲品同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "A4", tier: "A", provider: "TSUTAYA BOOKSTORE", name: "WIRED 招牌水果茶 體驗券",       validity: "2026/5/30",
+    conditions: ["憑券於 WIRED TOKYO 台中市政店兌換招牌水果茶（熱／冰）1 杯（原價 180 元）。","需搭配任一餐點或飲品同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "B1", tier: "B", provider: "WIRED TOKYO",       name: "雙人套餐 88 折",                validity: "2026/5/30",
+    conditions: ["憑券點購雙人套餐，套餐總金額享 88 折。","每份套餐限用 1 張。","限內用，結帳時出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "B2", tier: "B", provider: "WIRED TOKYO",       name: "Brunch 套餐 88 折",             validity: "2026/5/30",
+    conditions: ["憑券點購 Brunch 套餐，套餐總金額享 88 折。","限 Brunch 供應時段使用。","每份套餐限用 1 張。","限內用，點餐時出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "B3", tier: "B", provider: "WIRED TOKYO",       name: "草莓煉乳抹茶法式吐司 加碼體驗券", validity: "2026/5/30",
+    conditions: ["憑券加購草莓煉乳抹茶法式吐司 1 份，優惠價 288 元（原價 360 元）。","需搭配任一餐點同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼由店員確認。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "B4", tier: "B", provider: "WIRED TOKYO",       name: "外帶飲品 買一送一",              validity: "2026/5/30",
+    conditions: ["憑券外帶飲品買一送一，贈品限同品項且價格相同或較低者。","單筆消費限用 1 張。","點餐時出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "B5", tier: "B", provider: "TSUTAYA BOOKSTORE", name: "文具雜貨 88 折",                validity: "2026/5/30",
+    conditions: ["選購文具雜貨，單筆結帳享 88 折。","特價品及指定品牌除外。","單筆交易限用 1 張。","結帳前出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "B6", tier: "B", provider: "TSUTAYA BOOKSTORE", name: "書籍雜誌 88 折",                validity: "2026/5/30",
+    conditions: ["選購書籍與雜誌，單筆結帳享 88 折。","限正價商品。","單筆交易限用 1 張。","結帳前出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "B7", tier: "B", provider: "TSUTAYA BOOKSTORE", name: "88 元抵用券（滿 888 元）",       validity: "2026/5/30",
+    conditions: ["於 TSUTAYA BOOKSTORE 或 WIRED TOKYO 台中市政店，單筆消費滿 888 元現折 88 元。","書店與餐廳消費皆可使用。","單筆交易限用 1 張。","結帳前出示券碼由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+  { id: "B8", tier: "B", provider: "TSUTAYA BOOKSTORE", name: "8% off（92 折優惠券）",          validity: "2026/5/30",
+    conditions: ["於 TSUTAYA BOOKSTORE 或 WIRED TOKYO 台中市政店單筆消費享 92 折。","不限品項，不設最低消費門檻。","單筆交易限用 1 張。","無法與其他優惠券、折扣等活動合併使用。"] },
 ];
+
+const TIER_META: Record<string, { label: string; color: string; note: string }> = {
+  S: { label: "S 級獎項", color: "text-yellow-700 bg-yellow-50 border-yellow-200", note: "每日各限量 1 份，加碼獎券專屬抽出。" },
+  A: { label: "A 級獎項", color: "text-blue-700 bg-blue-50 border-blue-200",       note: "每日各限量 1 份，集章抽獎可得。" },
+  B: { label: "B 級獎項", color: "text-gray-600 bg-gray-50 border-gray-200",       note: "無每日上限（部分有限制），最常見的獎項。" },
+};
 
 const ADMIN_OPS = [
   {
@@ -339,22 +360,43 @@ export default function ManualPage() {
 
           {/* ── 獎項說明 ── */}
           <Section id="rewards" icon={<Gift size={16} />} title="獎項等級與核銷說明">
-            <div className="space-y-3">
-              {REWARD_TIERS.map(rt => (
-                <div key={rt.tier} className={`rounded-2xl border p-5 ${rt.color}`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-base font-black">{rt.label}</span>
+            <div className="space-y-4">
+              {(["S", "A", "B"] as const).map(tier => {
+                const meta = TIER_META[tier];
+                const list = REWARDS.filter(r => r.tier === tier);
+                return (
+                  <div key={tier} className={`rounded-2xl border p-4 ${meta.color}`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm font-black">{meta.label}</span>
+                      <span className="text-[10px] opacity-70 font-normal">— {meta.note}</span>
+                    </div>
+                    <div className="space-y-3 mt-3">
+                      {list.map(r => (
+                        <div key={r.id} className="bg-white/70 rounded-xl p-3 border border-current/10">
+                          <div className="flex items-start justify-between gap-2 mb-1.5">
+                            <div>
+                              <span className="text-[10px] font-bold opacity-50 mr-1.5">{r.id}</span>
+                              <span className="text-xs font-bold">{r.name}</span>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <p className="text-[9px] opacity-60 leading-tight">{r.provider}</p>
+                              <p className="text-[9px] opacity-60 leading-tight">效期 {r.validity}</p>
+                            </div>
+                          </div>
+                          <ul className="space-y-0.5">
+                            {r.conditions.map((c, i) => (
+                              <li key={i} className="flex items-start gap-1.5 text-[10px] opacity-75 leading-snug">
+                                <span className="shrink-0 mt-0.5">·</span>
+                                <span>{c}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <p className="text-xs mb-2 opacity-80">{rt.note}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {rt.examples.map(e => (
-                      <span key={e} className="text-[10px] font-medium px-2 py-1 rounded-full bg-white/60 border border-current/20">
-                        {e}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-2">
                 <p className="text-xs font-bold text-gray-700">核銷注意事項</p>
                 {[
