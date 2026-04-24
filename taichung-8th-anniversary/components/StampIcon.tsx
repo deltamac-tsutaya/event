@@ -4,7 +4,7 @@ import React from "react";
 
 type P = { className?: string; style?: React.CSSProperties };
 
-// Uses SVG file from /public as a CSS mask, so it respects currentColor.
+// Monochrome icons: CSS mask lets them follow currentColor.
 function MaskIcon({ src, className, style }: { src: string } & P) {
   return (
     <span
@@ -26,8 +26,16 @@ function MaskIcon({ src, className, style }: { src: string } & P) {
   );
 }
 
-// stamp_id → 公開資料夾中的 SVG 路徑（空格需 %20 編碼）
-const SVG_ICONS: Record<string, string> = {
+// Coloured icons: rendered as <img> to preserve original SVG colours.
+function ImgIcon({ src, className, style }: { src: string } & P) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt="" className={className} style={{ display: "inline-block", ...style }} />
+  );
+}
+
+// Monochrome stamps (01–08): follow currentColor via CSS mask.
+const MONO_ICONS: Record<string, string> = {
   "01": "/endless_1745143%202.svg",
   "02": "/african-drum_520119%202.svg",
   "03": "/wind_3026423%202.svg",
@@ -36,9 +44,13 @@ const SVG_ICONS: Record<string, string> = {
   "06": "/coffee_391898%202.svg",
   "07": "/flare_14778858%202.svg",
   "08": "/flower_6778042%202.svg",
-  "A":  "/squirrel_1864554.svg",
-  "B":  "/bird_7105157.svg",
-  "C":  "/deer-illustration-1-svgrepo-com.svg",
+};
+
+// Coloured hidden stamps (A/B/C): preserve original SVG colours.
+const COLOR_ICONS: Record<string, string> = {
+  "A": "/squirrel-svgrepo-com%20(1)%202.svg",
+  "B": "/bird-svgrepo-com%202.svg",
+  "C": "/deer-svgrepo-com%202.svg",
 };
 
 export function StampIcon({
@@ -50,7 +62,11 @@ export function StampIcon({
   className?: string;
   style?: React.CSSProperties;
 }) {
-  const src = SVG_ICONS[stampId];
-  if (src) return <MaskIcon src={src} className={className} style={style} />;
+  const monoSrc = MONO_ICONS[stampId];
+  if (monoSrc) return <MaskIcon src={monoSrc} className={className} style={style} />;
+
+  const colorSrc = COLOR_ICONS[stampId];
+  if (colorSrc) return <ImgIcon src={colorSrc} className={className} style={style} />;
+
   return null;
 }
