@@ -47,6 +47,7 @@ function ToolsMenu() {
     { href: "/admin/print",       icon: <Printer size={15} />,  label: "列印 QR Code",  sub: "A4 批次列印" },
     { href: "/admin/print/flyer", icon: <FileText size={15} />, label: "A5 活動文宣",   sub: "A5 直向文宣列印" },
     { href: "/admin/social",      icon: <Image size={15} />,    label: "社群媒體文宣",  sub: "IG / FB / LINE" },
+    { href: "/admin/manual",      icon: <FileText size={15} />, label: "活動操作手冊",  sub: "員工操作指引" },
   ];
 
   return (
