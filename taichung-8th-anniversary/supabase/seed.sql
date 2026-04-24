@@ -4,34 +4,34 @@ TRUNCATE public.stamp_configs CASCADE;
 
 -- 1. Insert Master Configs
 INSERT INTO public.stamp_configs (stamp_id, variant_id, area_name, is_active)
-VALUES 
-    ('01', 1, '入口主題陳列區', true),
-    
+VALUES
+    ('01', 1, '入口主題陳列區 (2F)', true),
+
     -- 02 Variants (Rotating)
-    ('02', 1, '生活雜貨區 (V1)', true),
-    ('02', 2, '生活雜貨區 (V2)', false),
-    ('02', 3, '生活雜貨區 (V3)', false),
-    
-    ('03', 1, '露台區', true),
-    ('04', 1, '兒童繪本區', true),
-    
+    ('02', 1, '職人雜貨區 (2F) V1', true),
+    ('02', 2, '職人雜貨區 (2F) V2', false),
+    ('02', 3, '職人雜貨區 (2F) V3', false),
+
+    ('03', 1, '戶外座位區 (3F)', true),
+    ('04', 1, '兒童繪本書櫃 (3F)', true),
+
     -- 05 Variants (Rotating)
-    ('05', 1, '書櫃深處 (V1)', true),
-    ('05', 2, '書櫃深處 (V2)', false),
-    ('05', 3, '書櫃深處 (V3)', false),
-    
+    ('05', 1, '樓梯書牆 (3F) V1', true),
+    ('05', 2, '樓梯書牆 (3F) V2', false),
+    ('05', 3, '樓梯書牆 (3F) V3', false),
+
     -- 06 Variants (Rotating)
-    ('06', 1, 'WIRED TOKYO 吧檯 (V1)', true),
-    ('06', 2, 'WIRED TOKYO 吧檯 (V2)', false),
-    ('06', 3, 'WIRED TOKYO 吧檯 (V3)', false),
-    
-    ('07', 1, '天井區', true),
-    ('08', 1, '結帳櫃檯旁', true),
-    
+    ('06', 1, '吧檯區 (2F) V1', true),
+    ('06', 2, '吧檯區 (2F) V2', false),
+    ('06', 3, '吧檯區 (2F) V3', false),
+
+    ('07', 1, '天井吊燈區 (3F)', true),
+    ('08', 1, '告示牌 (1F)', true),
+
     -- Hidden Points
-    ('A', 1, '隱藏點 (松鼠)', true),
-    ('B', 1, '隱藏點 (小鳥)', true),
-    ('C', 1, '隱藏點 (小鹿)', true);
+    ('A', 1, '員工身上（隨機）', true),
+    ('B', 1, '戶外座位桌上', true),
+    ('C', 1, '電梯告示', true);
 
 -- Insert Rewards
 INSERT INTO public.rewards (id, tier, provider, name, conditions, probability, daily_limit, validity_days)
