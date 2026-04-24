@@ -11,9 +11,9 @@ const APP_URL =
     : process.env.NEXT_PUBLIC_APP_URL ?? "https://taichung-8th-anniversary.vercel.app";
 
 const STEPS = [
-  { num: "01", title: "開啟 LINE 掃描", desc: "用 LINE 內建掃描器，對準店內各區的 QR Code" },
-  { num: "02", title: "集滿 8 枚印記", desc: "找出散落在空間各處的 8 個 Nexus Life 印記" },
-  { num: "03", title: "每日解鎖抽獎", desc: "集滿後每天可抽一次，獎品含餐飲體驗券與書籍折扣" },
+  { num: "01", title: "用 LINE 登入", desc: "掃描現場活動 QR Code，點擊「用 LINE 帳號參加」登入" },
+  { num: "02", title: "掃碼集印", desc: "找出館內 8 個集印點，用活動頁掃碼集印" },
+  { num: "03", title: "每日解鎖抽獎", desc: "集滿 8 枚後每天可抽 1 次 LINE 優惠券，午夜 00:00 重置" },
 ];
 
 function Flyer() {
@@ -67,7 +67,7 @@ function Flyer() {
         <div className="relative z-10 text-center space-y-1.5">
           <p className="text-[7px] font-mono tracking-[0.4em] text-[#C9A84C]/80 uppercase">8th Anniversary</p>
           <h1 className="text-[22px] font-black tracking-[0.05em] text-white leading-none">Nexus Life</h1>
-          <p className="text-[8px] font-mono tracking-[0.25em] text-white/50">∞ TAICHUNG · 2025</p>
+          <p className="text-[8px] font-mono tracking-[0.25em] text-white/50">無限日常 ∞ 連結生活</p>
         </div>
 
         {/* 金色下分隔線 */}
@@ -133,7 +133,7 @@ function Flyer() {
             <p className="text-[5.5px] text-[#1A2B4A]/50 leading-relaxed">
               用 LINE 內建掃描器掃此 QR Code<br />開啟活動頁面後，即可開始集章
             </p>
-            <p className="text-[5px] font-mono text-[#C9A84C]/70 mt-0.5">活動至 2026/5/30 止</p>
+            <p className="text-[5px] font-mono text-[#C9A84C]/70 mt-0.5">2026.04.25 — 2026.05.24</p>
           </div>
         </div>
 
