@@ -16,20 +16,6 @@ interface StampConfig {
 
 const QR_COLOR = "#1A2B4A";
 
-const STAMP_DESC: Record<string, { title: string; element: string; phrase: string }> = {
-  "01": { title: "入口主題陳列區", element: "♾️ 無限",   phrase: "從這裡走出去，8 與 ∞ 同時開始。" },
-  "02": { title: "職人雜貨區",     element: "陶杯",      phrase: "手溫傳過陶杯，8 年的 ∞ 就在掌心。" },
-  "03": { title: "戶外座位區",     element: "風",        phrase: "露台吹來 ∞ 的風，繞了 8 個年頭才停。" },
-  "04": { title: "兒童繪本書櫃",   element: "橡實",      phrase: "一顆橡實用 8 年 ∞ 生長，長成整片森林。" },
-  "05": { title: "樓梯書牆",       element: "書",        phrase: "8 層書牆向 ∞ 展開，每格都是新世界。" },
-  "06": { title: "吧檯區",         element: "咖啡",      phrase: "一杯咖啡，8 年的 ∞ 日常，從未厭倦。" },
-  "07": { title: "天井吊燈區",     element: "光點",      phrase: "光從天井 ∞ 落，你離第 8 枚只剩一步。" },
-  "08": { title: "告示牌",         element: "花朵",      phrase: "8 年 ∞ 循環，每天都有一朵花記住你。" },
-  "A":  { title: "隱藏彩蛋",       element: "墨鏡-松鼠", phrase: "牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。" },
-  "B":  { title: "隱藏彩蛋",       element: "墨鏡-小鳥", phrase: "這個位子空著。小鳥只停在不趕路的人身邊。" },
-  "C":  { title: "隱藏彩蛋",       element: "墨鏡-小鹿", phrase: "電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。" },
-};
-
 function QRCard({ config }: { config: StampConfig }) {
   const base = typeof window !== "undefined" ? window.location.origin : "";
   const stampUrl = `${base}/stamp?id=${config.uuid}`;
@@ -82,18 +68,6 @@ function QRCard({ config }: { config: StampConfig }) {
             style={{ width: "100%", height: "auto", display: "block" }}
           />
         </div>
-
-        {/* ── 活動說明帶 ── */}
-        {STAMP_DESC[config.stamp_id] && (
-          <div className="px-5 py-2.5 shrink-0 bg-[#F9F7F3]" style={{ borderTop: "0.5px solid rgba(201,168,76,0.2)" }}>
-            <p className="text-[6px] font-bold tracking-[0.15em] text-[#C9A84C] mb-0.5 uppercase">
-              {STAMP_DESC[config.stamp_id].element}
-            </p>
-            <p className="text-[7px] leading-[1.7] text-[#1A2B4A]/80 font-medium">
-              {STAMP_DESC[config.stamp_id].phrase}
-            </p>
-          </div>
-        )}
 
         {/* ── 底部通用提示 ── */}
         <div className="px-5 py-2 shrink-0" style={{ borderTop: "0.5px solid rgba(201,168,76,0.15)", backgroundColor: "#F5F2ED" }}>
