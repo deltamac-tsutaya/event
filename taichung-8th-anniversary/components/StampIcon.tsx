@@ -41,7 +41,6 @@ const SVG_ICONS: Record<string, string> = {
   "C":  "/deer-illustration-1-svgrepo-com.svg",
 };
 
-
 export function StampIcon({
   stampId,
   className,
