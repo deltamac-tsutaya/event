@@ -63,13 +63,14 @@ function DrawnTodayCard() {
           <p className="text-xs text-[#8A6F5C] leading-relaxed font-medium">明天 00:00 後將再次開放<br/>抽獎紀錄保存於優惠券匣</p>
         </div>
       </div>
-      <Button
-        className="h-14 w-full rounded-full font-bold border-2 border-[#1A2B4A]/10 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 hover:border-[#1A2B4A]/30 transition-all flex items-center justify-center gap-2 group"
-        onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}
-      >
-        <Ticket size={18} className="group-hover:-rotate-12 transition-transform" />
-        查看優惠券匣
-      </Button>
+      <Link href="/coupons" className="block">
+        <Button
+          className="h-14 w-full rounded-full font-bold border-2 border-[#1A2B4A]/10 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 hover:border-[#1A2B4A]/30 transition-all flex items-center justify-center gap-2 group"
+        >
+          <Ticket size={18} className="group-hover:-rotate-12 transition-transform" />
+          查看優惠券匣
+        </Button>
+      </Link>
     </div>
   );
 }
