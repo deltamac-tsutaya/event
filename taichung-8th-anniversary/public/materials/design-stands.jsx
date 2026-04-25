@@ -59,7 +59,7 @@ function StampStand({ p, egg = false }) {
           borderRadius: 8,
           padding: 10,
         }}>
-          <QRBlock size={170} color={BRAND.navy} bg={BRAND.surface} seed={p.seed} />
+          <QRBlock size={170} color={BRAND.navy} bg={BRAND.surface} url={p.url || ''} seed={p.seed} />
         </div>
 
         <div style={{ textAlign: 'center' }}>

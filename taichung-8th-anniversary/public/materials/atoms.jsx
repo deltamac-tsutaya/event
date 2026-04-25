@@ -135,7 +135,38 @@ function StampGrid8({ filled = 0, cell = 36, gap = 6 }) {
 }
 
 /* ── Faux QR block — deterministic pattern ── */
-function QRBlock({ size = 120, color = BRAND.navy, bg = BRAND.surface, seed = 1 }) {
+function QRBlock({ size = 120, color = BRAND.navy, bg = BRAND.surface, url = '', seed = 1 }) {
+  if (url && typeof qrcode !== 'undefined') {
+    try {
+      const qr = qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+      const m = qr.getModuleCount();
+      const cells = [];
+      for (let r = 0; r < m; r++)
+        for (let c = 0; c < m; c++)
+          if (qr.isDark(r, c)) cells.push([c, r]);
+      return (
+        <svg width={size} height={size} viewBox={`0 0 ${m} ${m}`} style={{ background: bg, display: 'block' }}>
+          {cells.map(([x, y], i) => <rect key={i} x={x} y={y} width="1" height="1" fill={color} />)}
+        </svg>
+      );
+    } catch(e) { /* fall through to placeholder */ }
+  }
+
+  /* No URL yet — show loading placeholder */
+  if (!url) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 21 21" style={{ background: bg, display: 'block' }}>
+        <rect x="1" y="1" width="5" height="5" fill="none" stroke={color} strokeWidth="0.5" opacity="0.25" />
+        <rect x="15" y="1" width="5" height="5" fill="none" stroke={color} strokeWidth="0.5" opacity="0.25" />
+        <rect x="1" y="15" width="5" height="5" fill="none" stroke={color} strokeWidth="0.5" opacity="0.25" />
+        <text x="10.5" y="11.5" textAnchor="middle" dominantBaseline="middle" fontSize="1.8" fill={color} opacity="0.3" fontFamily="monospace">…</text>
+      </svg>
+    );
+  }
+
+  /* Fallback seed-based placeholder */
   const N = 21;
   const cells = [];
   let s = seed;
