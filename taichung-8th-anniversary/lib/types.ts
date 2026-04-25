@@ -34,6 +34,9 @@ export interface DrawHistory {
   draw_date: string;
   reward_id: string;
   rewards: Reward;
+  is_used: boolean;
+  used_at: string | null;
+  used_by: string | null;
 }
 
 export interface InfinityDayStats {

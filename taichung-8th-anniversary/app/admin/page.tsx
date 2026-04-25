@@ -12,7 +12,8 @@ import {
   LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
   BarChart3, ShieldCheck, Search, RotateCcw, Plus,
   ChevronDown, ChevronUp, Zap, Settings2, CheckCircle, AlertCircle,
-  X, Printer, Image, FileText, ChevronRight, Send,
+  X, Printer, Image, FileText, ChevronRight, Send, BadgeCheck,
+  KeyRound, Eye, EyeOff,
 } from "lucide-react";
 
 // ── 型別 ──────────────────────────────────────────────────────────────────
@@ -44,13 +45,14 @@ function ToolsMenu() {
   }, []);
 
   const items = [
-    { href: "/admin/print",         icon: <Printer size={15} />,  label: "列印 QR Code",        sub: "A4 批次列印" },
-    { href: "/admin/print/stand",   icon: <FileText size={15} />, label: "集印點立牌（文字）",   sub: "10×15 cm × 11 張" },
-    { href: "/admin/print/flyer",   icon: <FileText size={15} />, label: "活動主視覺海報",       sub: "A4 直向" },
-    { href: "/admin/print/counter", icon: <FileText size={15} />, label: "櫃檯說明立卡",         sub: "A4 × 1 張" },
-    { href: "/admin/print/table",   icon: <FileText size={15} />, label: "餐廳桌卡",             sub: "A6 平放" },
-    { href: "/admin/print/board",   icon: <FileText size={15} />, label: "獎項板 ／ 樓層指引",   sub: "A4 × 2 張" },
-    { href: "/admin/manual",        icon: <FileText size={15} />, label: "活動操作手冊",         sub: "員工操作指引" },
+    { href: "/admin/redeem",        icon: <BadgeCheck size={15} />, label: "優惠券核銷站",       sub: "掃描 QR 核銷券" },
+    { href: "/admin/print",         icon: <Printer size={15} />,    label: "列印 QR Code",       sub: "A4 批次列印" },
+    { href: "/admin/print/stand",   icon: <FileText size={15} />,   label: "集印點立牌（文字）", sub: "10×15 cm × 11 張" },
+    { href: "/admin/print/flyer",   icon: <FileText size={15} />,   label: "活動主視覺海報",     sub: "A4 直向" },
+    { href: "/admin/print/counter", icon: <FileText size={15} />,   label: "櫃檯說明立卡",       sub: "A4 × 1 張" },
+    { href: "/admin/print/table",   icon: <FileText size={15} />,   label: "餐廳桌卡",           sub: "A6 平放" },
+    { href: "/admin/print/board",   icon: <FileText size={15} />,   label: "獎項板 ／ 樓層指引", sub: "A4 × 2 張" },
+    { href: "/admin/manual",        icon: <FileText size={15} />,   label: "活動操作手冊",       sub: "員工操作指引" },
   ];
 
   return (
@@ -81,6 +83,98 @@ function ToolsMenu() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// ── 抽獎紀錄（含核銷） ────────────────────────────────────────────────────────
+interface DrawRecord {
+  id: string; draw_date: string; reward_id: string;
+  rewards: { name: string; tier: string; provider: string } | null;
+  is_used: boolean; used_at: string | null; used_by: string | null;
+}
+
+function DrawHistory({ lineUserId }: { lineUserId: string }) {
+  const [draws,    setDraws]    = useState<DrawRecord[]>([]);
+  const [loading,  setLoading]  = useState(true);
+  const [redeeming, setRedeeming] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ id: string; type: "ok" | "err"; text: string } | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const res  = await fetch(`/api/reward/history?lineUserId=${encodeURIComponent(lineUserId)}`);
+    const data = await res.json();
+    setDraws(data.history ?? []);
+    setLoading(false);
+  }, [lineUserId]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const redeem = async (drawId: string) => {
+    setRedeeming(drawId);
+    try {
+      const res  = await fetch("/api/admin/coupon/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ drawId, staffName: "admin", adminOverride: true }),
+      });
+      const data = await res.json();
+      setMsg({
+        id: drawId,
+        type: data.success ? "ok" : "err",
+        text: data.success ? "核銷成功"
+          : data.error === "already_redeemed" ? "已核銷"
+          : data.error === "expired"          ? "已失效"
+          : data.error ?? "核銷失敗",
+      });
+      if (data.success) load();
+    } catch {
+      setMsg({ id: drawId, type: "err", text: "網路錯誤" });
+    } finally {
+      setRedeeming(null);
+    }
+  };
+
+  if (loading) return <div className="py-3 text-center text-xs text-gray-400">載入中…</div>;
+  if (!draws.length) return <div className="py-3 text-center text-xs text-gray-400">尚無抽獎紀錄</div>;
+
+  const TIER_BADGE: Record<string, string> = {
+    S: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    A: "bg-blue-100 text-blue-700 border-blue-200",
+    B: "bg-gray-100 text-gray-600 border-gray-200",
+  };
+
+  return (
+    <div className="space-y-2">
+      {draws.map(d => (
+        <div key={d.id} className="flex items-center gap-2 bg-white rounded-xl border border-gray-100 px-3 py-2">
+          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${TIER_BADGE[d.rewards?.tier ?? "B"]}`}>
+            {d.rewards?.tier ?? "?"}
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-gray-700 truncate">{d.rewards?.name ?? d.reward_id}</p>
+            <p className="text-[10px] text-gray-400">{d.draw_date}</p>
+          </div>
+          {msg?.id === d.id && (
+            <span className={`text-[10px] font-bold shrink-0 ${msg.type === "ok" ? "text-green-600" : "text-red-500"}`}>
+              {msg.text}
+            </span>
+          )}
+          {d.is_used ? (
+            <span className="text-[9px] font-bold text-orange-500 border border-orange-200 bg-orange-50 rounded px-1.5 py-0.5 shrink-0">
+              已核銷
+            </span>
+          ) : (
+            <button
+              onClick={() => redeem(d.id)}
+              disabled={redeeming === d.id}
+              className="text-[10px] font-bold text-emerald-700 border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 rounded px-2 py-0.5 shrink-0 transition-colors disabled:opacity-50"
+            >
+              {redeeming === d.id ? "…" : "核銷"}
+            </button>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
@@ -276,8 +370,128 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
               {busy === "reset" ? <RefreshCcw size={10} className="animate-spin" /> : <RotateCcw size={10} />} 全部重置
             </Button>
           </div>
+
+          {user.draw_count > 0 && (
+            <div>
+              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">
+                抽獎紀錄 · 核銷 ({user.draw_count} 筆)
+              </p>
+              <DrawHistory lineUserId={user.line_user_id} />
+            </div>
+          )}
         </div>
       )}
+    </div>
+  );
+}
+
+// ── 核銷 PIN 設定 ──────────────────────────────────────────────────────────
+function PinSettings() {
+  const [currentPin, setCurrentPin] = useState("");
+  const [newPin,     setNewPin]     = useState("");
+  const [showPin,    setShowPin]    = useState(false);
+  const [loading,    setLoading]    = useState(true);
+  const [saving,     setSaving]     = useState(false);
+  const [msg,        setMsg]        = useState<{ type: "ok" | "err"; text: string } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/admin/settings/pin")
+      .then(r => r.json())
+      .then(d => { setCurrentPin(d.pin ?? ""); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const save = async () => {
+    if (!newPin.trim() || newPin.trim().length < 4) {
+      setMsg({ type: "err", text: "PIN 至少需要 4 位數" });
+      return;
+    }
+    setSaving(true);
+    setMsg(null);
+    try {
+      const res  = await fetch("/api/admin/settings/pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: newPin.trim() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCurrentPin(newPin.trim());
+        setNewPin("");
+        setMsg({ type: "ok", text: "PIN 已更新" });
+      } else {
+        setMsg({ type: "err", text: data.error ?? "更新失敗" });
+      }
+    } catch {
+      setMsg({ type: "err", text: "網路錯誤" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4 max-w-sm">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <KeyRound size={16} className="text-[#1A2B4A]" />
+          <h3 className="font-bold text-sm text-[#1A2B4A]">核銷密碼管理</h3>
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">目前 PIN</p>
+          {loading ? (
+            <div className="h-10 bg-gray-100 rounded-xl animate-pulse" />
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 flex items-center font-mono text-sm tracking-widest">
+                {showPin ? currentPin : "●".repeat(currentPin.length || 4)}
+              </div>
+              <button
+                onClick={() => setShowPin(v => !v)}
+                className="text-gray-400 hover:text-gray-600 p-2"
+              >
+                {showPin ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">設定新 PIN</p>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={newPin}
+            onChange={e => { setNewPin(e.target.value); setMsg(null); }}
+            placeholder="輸入新密碼（4 位以上）"
+            className="w-full h-10 border border-gray-200 rounded-xl px-3 font-mono text-sm tracking-widest focus:outline-none focus:border-[#1A2B4A]"
+          />
+        </div>
+
+        {msg && (
+          <div className={`flex items-center gap-2 text-xs px-3 py-2 rounded-lg ${msg.type === "ok" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}>
+            {msg.type === "ok" ? <CheckCircle size={12} /> : <AlertCircle size={12} />}
+            {msg.text}
+          </div>
+        )}
+
+        <button
+          onClick={save}
+          disabled={saving || !newPin.trim()}
+          className="w-full h-10 bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 disabled:opacity-50 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+        >
+          {saving ? <RefreshCcw size={13} className="animate-spin" /> : <CheckCircle size={13} />}
+          儲存 PIN
+        </button>
+      </div>
+
+      <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-[11px] text-amber-700 space-y-1">
+        <p className="font-bold">使用說明</p>
+        <p>· 店員在客人手機上點擊「向店員核銷」</p>
+        <p>· 跳出密碼框後由店員輸入此 PIN 確認核銷</p>
+        <p>· 修改 PIN 即時生效，無需重新部署</p>
+      </div>
     </div>
   );
 }
@@ -330,7 +544,7 @@ export default function AdminPage() {
   const [loginError, setLoginError]     = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
-  const [activeTab, setActiveTab]   = useState<"users" | "configs" | "stats">("users");
+  const [activeTab, setActiveTab]   = useState<"users" | "configs" | "stats" | "settings">("users");
   const [users, setUsers]           = useState<AdminUser[]>([]);
   const [configs, setConfigs]       = useState<StampConfig[]>([]);
   const [stats, setStats]           = useState<DashboardStats | null>(null);
@@ -416,9 +630,10 @@ export default function AdminPage() {
   );
 
   const TAB_ITEMS = [
-    { id: "users"   as const, icon: <Users size={18} />,     label: "使用者" },
-    { id: "configs" as const, icon: <QrCode size={18} />,    label: "QR 點位" },
-    { id: "stats"   as const, icon: <BarChart3 size={18} />, label: "統計" },
+    { id: "users"    as const, icon: <Users size={18} />,     label: "使用者" },
+    { id: "configs"  as const, icon: <QrCode size={18} />,    label: "QR 點位" },
+    { id: "stats"    as const, icon: <BarChart3 size={18} />, label: "統計" },
+    { id: "settings" as const, icon: <KeyRound size={18} />,  label: "設定" },
   ];
 
   return (
@@ -553,6 +768,14 @@ export default function AdminPage() {
                 ))}
               </div>
             </Card>
+          </div>
+        )}
+
+        {/* 設定 */}
+        {activeTab === "settings" && (
+          <div>
+            <h2 className="text-sm font-bold text-gray-700 mb-4">系統設定</h2>
+            <PinSettings />
           </div>
         )}
 
