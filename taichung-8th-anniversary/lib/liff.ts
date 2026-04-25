@@ -38,6 +38,7 @@ export function loginWithLiff(): void {
  */
 export async function scanQrCode(): Promise<string | null> {
   if (!initialized) return null;
+  if (!liff.isInClient()) return null;
   if (!liff.scanCodeV2) return null;
   try {
     const result = await liff.scanCodeV2();
