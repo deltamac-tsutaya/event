@@ -180,11 +180,6 @@ export default function PrintPage() {
               <Layers size={15} /> 文宣設計稿
             </Button>
           </Link>
-          <Link href="/admin/print/flyer">
-            <Button variant="outline" className="gap-2 h-11 px-5 rounded-full border-[#1A2B4A]/30 text-[#1A2B4A]">
-              A5 文宣
-            </Button>
-          </Link>
           <Button
             onClick={() => window.print()}
             className="bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 gap-2 h-11 px-6 rounded-full"
