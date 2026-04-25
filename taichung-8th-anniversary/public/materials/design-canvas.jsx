@@ -50,6 +50,14 @@ if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
     '  background:transparent;color:rgba(60,50,40,.7);display:flex;align-items:center;justify-content:center}',
     '.dc-expand:hover{background:rgba(0,0,0,.06);color:#2a251f}',
     '[data-dc-slot]:hover .dc-expand{opacity:1}',
+    /* ── print: artboard-only output ── */
+    '@media print{@page{margin:0}html,body{background:white!important}' +
+    'body>*:not([data-dc-focus-overlay]){display:none!important}' +
+    '[data-dc-focus-overlay]{background:white!important;backdrop-filter:none!important}' +
+    '[data-dc-print-hide]{display:none!important}' +
+    '[data-dc-focus-center]{position:fixed!important;top:0!important;left:0!important;display:block!important;transform:none!important}' +
+    '[data-dc-focus-scale-wrap]{width:var(--dc-art-w)!important;height:var(--dc-art-h)!important}' +
+    '[data-dc-focus-card-inner]{transform:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}}',
   ].join('\n');
   document.head.appendChild(s);
 }
@@ -524,16 +532,21 @@ function DCFocusOverlay({ entry, sectionMeta, sectionOrder }) {
     </button>
   );
 
+  const handlePrint = (e) => {
+    e.stopPropagation();
+    window.print();
+  };
+
   // Portal to body so position:fixed is the real viewport regardless of any
   // transform on DesignCanvas's ancestors (including the canvas zoom itself).
   return ReactDOM.createPortal(
-    <div onClick={() => ctx.setFocus(null)}
+    <div data-dc-focus-overlay onClick={() => ctx.setFocus(null)}
       onWheel={(e) => e.preventDefault()}
       style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(24,20,16,.6)', backdropFilter: 'blur(14px)',
         fontFamily: DC.font, color: '#fff' }}>
 
-      {/* top bar: section dropdown (left) · close (right) */}
-      <div onClick={(e) => e.stopPropagation()}
+      {/* top bar: section dropdown (left) · print + close (right) */}
+      <div data-dc-print-hide onClick={(e) => e.stopPropagation()}
         style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 72, display: 'flex', alignItems: 'flex-start', padding: '16px 20px 0', gap: 16 }}>
         <div style={{ position: 'relative' }}>
           <button onClick={() => setDd((o) => !o)}
@@ -560,6 +573,20 @@ function DCFocusOverlay({ entry, sectionMeta, sectionOrder }) {
           )}
         </div>
         <div style={{ flex: 1 }} />
+        {/* Print button */}
+        <button onClick={handlePrint} title="列印此頁"
+          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.12)')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+          style={{ border: 'none', background: 'transparent', color: 'rgba(255,255,255,.85)', padding: '6px 12px',
+            borderRadius: 8, cursor: 'pointer', fontSize: 13, fontFamily: 'inherit', fontWeight: 500,
+            display: 'flex', alignItems: 'center', gap: 6, transition: 'background .12s' }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+            <rect x="6" y="14" width="12" height="8"/>
+          </svg>
+          列印
+        </button>
         <button onClick={() => ctx.setFocus(null)}
           onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.12)')}
           onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
@@ -567,28 +594,29 @@ function DCFocusOverlay({ entry, sectionMeta, sectionOrder }) {
             borderRadius: 16, fontSize: 20, cursor: 'pointer', lineHeight: 1, transition: 'background .12s' }}>×</button>
       </div>
 
-      {/* card centered, label + index below — only the card itself stops
-          propagation so any backdrop click (including the margins around
-          the card) exits focus */}
-      <div
+      {/* card centered, label + index below */}
+      <div data-dc-focus-center
         style={{ position: 'absolute', top: 64, bottom: 56, left: 100, right: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
-        <div onClick={(e) => e.stopPropagation()} style={{ width: width * scale, height: height * scale, position: 'relative' }}>
-          <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left', background: '#fff', borderRadius: 2, overflow: 'hidden',
-            boxShadow: '0 20px 80px rgba(0,0,0,.4)' }}>
+        <div data-dc-focus-scale-wrap onClick={(e) => e.stopPropagation()}
+          style={{ width: width * scale, height: height * scale, position: 'relative',
+            '--dc-art-w': `${width}px`, '--dc-art-h': `${height}px` }}>
+          <div data-dc-focus-card-inner
+            style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left', background: '#fff', borderRadius: 2, overflow: 'hidden',
+              boxShadow: '0 20px 80px rgba(0,0,0,.4)' }}>
             {children || <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb' }}>{aid}</div>}
           </div>
         </div>
-        <div onClick={(e) => e.stopPropagation()} style={{ fontSize: 14, fontWeight: 500, opacity: .85, textAlign: 'center' }}>
+        <div data-dc-print-hide onClick={(e) => e.stopPropagation()} style={{ fontSize: 14, fontWeight: 500, opacity: .85, textAlign: 'center' }}>
           {(sec.labels || {})[aid] ?? artboard.props.label}
           <span style={{ opacity: .5, marginLeft: 10, fontVariantNumeric: 'tabular-nums' }}>{idx + 1} / {peers.length}</span>
         </div>
       </div>
 
-      <Arrow dir="left" onClick={() => go(-1)} />
-      <Arrow dir="right" onClick={() => go(1)} />
+      <div data-dc-print-hide><Arrow dir="left" onClick={() => go(-1)} /></div>
+      <div data-dc-print-hide><Arrow dir="right" onClick={() => go(1)} /></div>
 
       {/* dots */}
-      <div onClick={(e) => e.stopPropagation()}
+      <div data-dc-print-hide onClick={(e) => e.stopPropagation()}
         style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8 }}>
         {peers.map((p, i) => (
           <button key={p} onClick={() => ctx.setFocus(`${sectionId}/${p}`)}

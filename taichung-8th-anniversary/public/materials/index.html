@@ -118,16 +118,6 @@ function App() {
           </DCSection>
         )}
 
-        {S('richmenu') && (
-          <DCSection id="richmenu" title="08 · LINE 圖文選單 ── 2500×1686px (顯示 32%)">
-            <DCArtboard id="rm" label="LINE Rich Menu · 2500×1686" width={800} height={540}>
-              <div style={{ width: 2500, height: 1686, transform: 'scale(0.32)', transformOrigin: 'top left' }}>
-                <RichMenu />
-              </div>
-            </DCArtboard>
-          </DCSection>
-        )}
-
       </DesignCanvas>
 
       <TweaksPanel title="Nexus Life · 物料檢視">
@@ -135,7 +125,7 @@ function App() {
         <TweakRadio
           label="分區"
           value={tweaks.section}
-          options={['all','poster','stand-main','stand-egg','counter','table','richmenu']}
+          options={['all','poster','stand-main','stand-egg','counter','table']}
           onChange={(v) => setTweak('section', v)}
         />
       </TweaksPanel>
