@@ -18,7 +18,7 @@ export default function MaterialsPage() {
         <span className="text-[10px] text-gray-400 ml-1">Nexus Life · 8TH 活動物料組</span>
       </header>
       <iframe
-        src="/materials/"
+        src="/materials/index.html"
         className="flex-1 w-full border-0"
         title="Nexus Life Materials"
         allow="clipboard-write"
