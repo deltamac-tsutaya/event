@@ -45,12 +45,15 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 }/*EDITMODE-END*/;
 
 function PrintAllPage({ w, h, children }) {
-  const s = Math.min(794 / w, 1123 / h);
+  // A4 at 96 dpi: 210mm = 793.7px ≈ 794, 297mm = 1122.5px ≈ 1123
+  const A4W = 793.7, A4H = 1122.5;
+  const s = Math.min(A4W / w, A4H / h);
   return (
     <div className="dc-print-page">
-      <div style={{ width: w * s, height: h * s, position: 'relative', overflow: 'hidden' }}>
+      {/* sized wrapper so the flexbox center point is correct */}
+      <div style={{ width: w * s, height: h * s, flexShrink: 0, position: 'relative' }}>
         <div style={{ width: w, height: h, transform: `scale(${s})`, transformOrigin: 'top left',
-          position: 'absolute', top: 0, left: 0 }}>
+          position: 'absolute', top: 0, left: 0, overflow: 'hidden' }}>
           {children}
         </div>
       </div>
