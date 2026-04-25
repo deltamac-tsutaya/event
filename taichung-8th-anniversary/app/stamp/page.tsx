@@ -4,9 +4,9 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import QrScanner from "@/components/QrScanner";
+import ScanResultOverlay from "@/components/ScanResultOverlay";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
-import { showStampSuccess } from "@/components/ui-state/SuccessToast";
 import { Button } from "@/components/ui/button";
 import { Sparkles, CheckCircle2, Ticket } from "lucide-react";
 
@@ -85,6 +85,7 @@ function StampPageContent() {
   const [status, setStatus] = useState<ScanStatus>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [lastStampId, setLastStampId] = useState("");
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const totalStamps = progress?.totalStamps ?? 0;
 
@@ -113,11 +114,9 @@ function StampPageContent() {
 
         if (data.success) {
           setLastStampId(data.stampId ?? stampId);
-          setStatus("success");
-          showStampSuccess(data.stampId ?? stampId);
           await refetch();
-          // 不轉頁，2 秒後回到 idle 供繼續掃描
-          setTimeout(() => setStatus("idle"), 2000);
+          setStatus("idle");
+          setShowOverlay(true);
         } else if (data.reason === "already_stamped") {
           setStatus("already_stamped");
         } else {
@@ -143,15 +142,6 @@ function StampPageContent() {
     setStatus("idle");
     setErrorMsg("");
     setLastStampId("");
-  };
-
-  const getAchievementMeta = (id: string) => {
-    const meta: Record<string, { icon: string; title: string; copy: string }> = {
-      "A": { icon: "🐿️", title: "你找到了松鼠", copy: "牠觀察你的時間比你想像的還久。" },
-      "B": { icon: "🐦", title: "你讓自己慢下來", copy: "小鳥才現身。" },
-      "C": { icon: "🦌", title: "這不是告示牌", copy: "是小鹿留給觀察者的訊息。" },
-    };
-    return meta[id];
   };
 
   if (loading) {
@@ -268,37 +258,6 @@ function StampPageContent() {
           </div>
         )}
 
-        {status === "success" && (
-          <div className="flex flex-col items-center gap-6 py-10 text-center animate-in fade-in zoom-in duration-500">
-            {["A", "B", "C"].includes(lastStampId) ? (
-              <>
-                <div className="relative">
-                  <div className="absolute inset-0 bg-yellow-400/20 blur-3xl rounded-full animate-pulse" />
-                  <div className="relative size-28 bg-white rounded-full flex items-center justify-center text-5xl shadow-xl border-4 border-[#C9A84C]">
-                    {getAchievementMeta(lastStampId)?.icon}
-                  </div>
-                </div>
-                <div className="space-y-2 px-6">
-                  <p className="text-[10px] font-bold tracking-widest text-[#C9A84C] uppercase">Achievement Unlocked</p>
-                  <h2 className="text-xl font-bold text-[#1A2B4A]">{getAchievementMeta(lastStampId)?.title}</h2>
-                  <p className="text-sm text-[#8A6F5C] italic leading-relaxed">「{getAchievementMeta(lastStampId)?.copy}」</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="rounded-full bg-[#EEE9E2] p-8 shadow-inner">
-                  <span className="font-mono text-5xl font-bold text-[#1A2B4A] leading-none tracking-tighter">
-                    {lastStampId}
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xl font-bold text-[#1A2B4A]">蓋章成功</p>
-                  <p className="text-sm text-gray-500 italic">探索 Nexus Life 的第 {totalStamps} 個印記</p>
-                </div>
-              </>
-            )}
-          </div>
-        )}
 
         {status === "already_stamped" && (
           <div className="flex flex-col items-center gap-4 py-8 text-center">
@@ -329,6 +288,17 @@ function StampPageContent() {
         )}
 
       </main>
+
+      {showOverlay && lastStampId && (
+        <ScanResultOverlay
+          stampId={lastStampId}
+          totalStamps={totalStamps}
+          onClose={() => {
+            setShowOverlay(false);
+            setLastStampId("");
+          }}
+        />
+      )}
     </div>
   );
 }

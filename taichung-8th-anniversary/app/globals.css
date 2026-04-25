@@ -258,3 +258,18 @@
   animation: skeleton-shimmer 1.4s ease infinite;
   border-radius: 0.5rem;
 }
+
+/* ── Scan success particle burst ──────────────────── */
+@keyframes particle-out {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: particle-out 0.7s ease-out forwards;
+}
