@@ -13,213 +13,257 @@ interface StampConfig {
   area_name?: string;
 }
 
-const NAVY = "#1A2B4A";
-const GOLD = "#C9A84C";
-const CREAM = "#F5F2ED";
+// ── Brand atoms (ported from atoms.jsx) ───────────────────────────────────────
 
-const STAMP_META: Record<string, { kw: string; floor: string; phrase: string }> = {
-  "01": { kw: "無限", floor: "2F", phrase: "從這裡走出去，8 與 ∞ 同時開始。" },
-  "02": { kw: "陶杯", floor: "2F", phrase: "手溫傳過陶杯，8 年的 ∞ 就在掌心。" },
-  "03": { kw: "風",   floor: "3F", phrase: "露台吹來 ∞ 的風，繞了 8 個年頭才停。" },
-  "04": { kw: "橡實", floor: "3F", phrase: "一顆橡實用 8 年 ∞ 生長，長成整片森林。" },
-  "05": { kw: "書",   floor: "3F", phrase: "8 層書牆向 ∞ 展開，每格都是新世界。" },
-  "06": { kw: "咖啡", floor: "2F", phrase: "一杯咖啡，8 年的 ∞ 日常，從未厭倦。" },
-  "07": { kw: "光點", floor: "3F", phrase: "光從天井 ∞ 落，你離第 8 枚只剩一步。" },
-  "08": { kw: "花朵", floor: "1F", phrase: "8 年 ∞ 循環，每天都有一朵花記住你。" },
-  A:    { kw: "松鼠", floor: "★", phrase: "牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。" },
-  B:    { kw: "小鳥", floor: "★", phrase: "這個位子空著。小鳥只停在不趕路的人身邊。" },
-  C:    { kw: "小鹿", floor: "★", phrase: "電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。" },
+const BRAND = {
+  bg:       '#F5F2ED',
+  warm:     '#EEE9E2',
+  surface:  '#FDFAF6',
+  navy:     '#1A2B4A',
+  brown:    '#8A6F5C',
+  accent:   '#3B82C4',
+  border:   'rgba(138,111,92,0.18)',
+  divider:  'rgba(138,111,92,0.28)',
+  textSub:  '#8A6F5C',
+  textMuted:'rgba(26,43,74,0.45)',
+  textFaint:'rgba(26,43,74,0.28)',
 };
 
-const STAMP_ICON: Record<string, string> = {
-  "01": "/materials/assets/stamps/endless.svg",
-  "02": "/materials/assets/stamps/drum.svg",
-  "03": "/materials/assets/stamps/wind.svg",
-  "04": "/materials/assets/stamps/acorn.svg",
-  "05": "/materials/assets/stamps/book.svg",
-  "06": "/materials/assets/stamps/coffee.svg",
-  "07": "/materials/assets/stamps/flare.svg",
-  "08": "/materials/assets/stamps/flower.svg",
-  A:    "/materials/assets/stamps/squirrel.svg",
-  B:    "/materials/assets/stamps/bird.svg",
-  C:    "/materials/assets/stamps/deer.svg",
+function NexusField({ watermarkChar = '8', density = 44 }: { watermarkChar?: string; density?: number }) {
+  return (
+    <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' }}
+      preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id={`gp-${watermarkChar}-${density}`} x="0" y="0" width={density} height={density} patternUnits="userSpaceOnUse">
+          <path d={`M ${density} 0 L 0 0 0 ${density}`} fill="none" stroke="rgba(138,111,92,0.07)" strokeWidth="0.5"/>
+          <circle cx="0" cy="0" r="0.7" fill="rgba(26,43,74,0.06)"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#gp-${watermarkChar}-${density})`}/>
+      <text x="50%" y="52%" textAnchor="middle" dominantBaseline="middle"
+        fontFamily="'Cormorant Garamond','Noto Serif TC',serif"
+        fontSize="680" fontWeight="600"
+        fill="rgba(26,43,74,0.04)"
+        style={{ userSelect: 'none', letterSpacing: '-0.05em' }}>
+        {watermarkChar}
+      </text>
+    </svg>
+  );
+}
+
+function CoBrand({ scale = 1 }: { scale?: number }) {
+  const filter = 'brightness(0) saturate(100%) invert(12%) sepia(35%) saturate(700%) hue-rotate(190deg) brightness(90%)';
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10 * scale }}>
+      <img src="/tsutaya-logo.svg" alt="TSUTAYA BOOKSTORE"
+        style={{ height: 13 * scale, width: 'auto', display: 'block', filter, opacity: 0.75 }} />
+      <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 14,
+        color: 'rgba(138,111,92,0.6)', fontWeight: 400 }}>×</span>
+      <img src="/wired-tokyo-logo.svg" alt="WIRED TOKYO"
+        style={{ height: 15 * scale, width: 'auto', display: 'block', filter, opacity: 0.75 }} />
+    </div>
+  );
+}
+
+function MonoLabel({ children, color = BRAND.textSub, size = 9 }: {
+  children: React.ReactNode; color?: string; size?: number;
+}) {
+  return (
+    <span style={{ fontFamily: "'DM Mono','monospace'", fontSize: size,
+      letterSpacing: '0.22em', textTransform: 'uppercase' as const, color, fontWeight: 500 }}>
+      {children}
+    </span>
+  );
+}
+
+function Rule({ width = '2.5rem', color = BRAND.divider }: { width?: string; color?: string }) {
+  return <div style={{ width, height: 1, background: color }} />;
+}
+
+function NexusLogoScale({ size = 1 }: { size?: number }) {
+  const fs = 96 * size;
+  return (
+    <div style={{ display: 'inline-flex', alignItems: 'baseline', gap: 0 }}>
+      <span style={{ fontFamily: "'Cormorant Garamond',serif",
+        fontSize: fs, fontWeight: 600, color: BRAND.navy,
+        letterSpacing: '-0.025em', lineHeight: 1 }}>Nexus</span>
+      <span style={{ fontFamily: "'Cormorant Garamond',serif",
+        fontSize: fs * 0.78, color: BRAND.accent, fontWeight: 300,
+        letterSpacing: '-0.05em', lineHeight: 1,
+        position: 'relative' as const, top: 2 * size, margin: `0 ${4 * size}px` }}>∞</span>
+      <span style={{ fontFamily: "'Cormorant Garamond',serif",
+        fontSize: fs * 0.52, fontWeight: 300, fontStyle: 'italic', color: BRAND.navy,
+        letterSpacing: '0.06em', lineHeight: 1,
+        position: 'relative' as const, top: -6 * size, opacity: 0.82 }}>Life</span>
+    </div>
+  );
+}
+
+function CropMarks() {
+  const color = 'rgba(138,111,92,0.3)';
+  const len = 10, inset = 4;
+  const s = (pos: object) => ({ position: 'absolute' as const, ...pos, background: color, pointerEvents: 'none' as const });
+  return (
+    <>
+      <div style={s({ top: inset, left: inset, width: len, height: 0.75 })} />
+      <div style={s({ top: inset, left: inset, width: 0.75, height: len })} />
+      <div style={s({ top: inset, right: inset, width: len, height: 0.75 })} />
+      <div style={s({ top: inset, right: inset, width: 0.75, height: len })} />
+      <div style={s({ bottom: inset, left: inset, width: len, height: 0.75 })} />
+      <div style={s({ bottom: inset, left: inset, width: 0.75, height: len })} />
+      <div style={s({ bottom: inset, right: inset, width: len, height: 0.75 })} />
+      <div style={s({ bottom: inset, right: inset, width: 0.75, height: len })} />
+    </>
+  );
+}
+
+// ── Stamp data (ported from design-stands.jsx) ────────────────────────────────
+
+const STAMP_META: Record<string, { kw: string; phrase: string; floor: string; icon: string; seed: number }> = {
+  '01': { kw: '無限', floor: '2F', seed: 101, icon: '/materials/assets/stamps/endless.svg',  phrase: '從這裡走出去，8 與 ∞ 同時開始。' },
+  '02': { kw: '陶杯', floor: '2F', seed: 108, icon: '/materials/assets/stamps/drum.svg',     phrase: '手溫傳過陶杯，8 年的 ∞ 就在掌心。' },
+  '03': { kw: '風',   floor: '3F', seed: 115, icon: '/materials/assets/stamps/wind.svg',     phrase: '露台吹來 ∞ 的風，繞了 8 個年頭才停。' },
+  '04': { kw: '橡實', floor: '3F', seed: 122, icon: '/materials/assets/stamps/acorn.svg',    phrase: '一顆橡實用 8 年 ∞ 生長，長成整片森林。' },
+  '05': { kw: '書',   floor: '3F', seed: 129, icon: '/materials/assets/stamps/book.svg',     phrase: '8 層書牆向 ∞ 展開，每格都是新世界。' },
+  '06': { kw: '咖啡', floor: '2F', seed: 136, icon: '/materials/assets/stamps/coffee.svg',   phrase: '一杯咖啡，8 年的 ∞ 日常，從未厭倦。' },
+  '07': { kw: '光點', floor: '3F', seed: 143, icon: '/materials/assets/stamps/flare.svg',    phrase: '光從天井 ∞ 落，你離第 8 枚只剩一步。' },
+  '08': { kw: '花朵', floor: '1F', seed: 150, icon: '/materials/assets/stamps/flower.svg',   phrase: '8 年 ∞ 循環，每天都有一朵花記住你。' },
+  A:    { kw: '松鼠', floor: '★', seed: 901, icon: '/materials/assets/stamps/squirrel.svg', phrase: '牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。' },
+  B:    { kw: '小鳥', floor: '★', seed: 914, icon: '/materials/assets/stamps/bird.svg',     phrase: '這個位子空著。小鳥只停在不趕路的人身邊。' },
+  C:    { kw: '小鹿', floor: '★', seed: 927, icon: '/materials/assets/stamps/deer.svg',     phrase: '電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。' },
 };
 
-const ICON_FILTER = "brightness(0) saturate(100%) invert(12%) sepia(35%) saturate(700%) hue-rotate(190deg) brightness(90%) opacity(0.75)";
+// ── StampStand (exact port of design-stands.jsx StampStand) ──────────────────
 
-function QRCard({ config }: { config: StampConfig }) {
-  const base = typeof window !== "undefined" ? window.location.origin : "";
+function StampStand({ config, egg = false }: { config: StampConfig; egg?: boolean }) {
+  const W = 378, H = 567;
+  const base = typeof window !== 'undefined' ? window.location.origin : '';
   const stampUrl = `${base}/stamp?id=${config.uuid}`;
-  const isHidden = ["A", "B", "C"].includes(config.stamp_id);
-  const meta = STAMP_META[config.stamp_id] ?? { kw: config.stamp_id, floor: "—", phrase: "" };
-  const iconSrc = STAMP_ICON[config.stamp_id];
-  const pid = `${config.stamp_id}-${config.variant_id}`.replace(/[^a-z0-9-]/gi, "");
+  const p = STAMP_META[config.stamp_id];
+  if (!p) return null;
 
   return (
-    <div className="flex flex-col items-center">
-      {/* ── Card body: 100×150mm ── */}
-      <div className="relative overflow-hidden flex flex-col"
-        style={{ width: "100mm", height: "150mm", background: CREAM }}>
+    <div style={{
+      position: 'relative', width: W, height: H, overflow: 'hidden',
+      background: BRAND.bg,
+      fontFamily: "'DM Sans','Noto Sans TC',sans-serif",
+    }}>
+      <NexusField watermarkChar={egg ? '∞' : config.stamp_id} density={44} />
+      <CropMarks />
 
-        {/* Dot grid + number watermark */}
-        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-          preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <pattern id={pid} x="0" y="0" width="11.3" height="11.3" patternUnits="userSpaceOnUse">
-              <path d="M 11.3 0 L 0 0 0 11.3" fill="none" stroke="rgba(138,111,92,0.07)" strokeWidth="0.5"/>
-              <circle cx="0" cy="0" r="0.7" fill="rgba(26,43,74,0.06)"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill={`url(#${pid})`}/>
-          <text x="50%" y="52%" textAnchor="middle" dominantBaseline="middle"
-            fontFamily="serif" fontSize="250" fontWeight="600"
-            fill="rgba(26,43,74,0.04)" style={{ userSelect: "none", pointerEvents: "none" }}>
-            {isHidden ? "∞" : config.stamp_id}
-          </text>
-        </svg>
+      {/* ── Header (co-brand + floor code) ── */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0,
+        padding: '16px 22px 12px',
+        borderBottom: `1px solid ${BRAND.border}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: 'rgba(253,250,246,0.85)',
+      }}>
+        <CoBrand scale={0.85} />
+        <MonoLabel color={egg ? BRAND.brown : BRAND.accent} size={14}>
+          {egg ? `EGG / ${config.stamp_id}` : `${p.floor} · ${config.stamp_id}`}
+        </MonoLabel>
+      </div>
 
-        {/* ── Top navy band ── */}
-        <div className="relative overflow-hidden shrink-0" style={{ height: "42mm", background: NAVY }}>
-          {/* "8" / "∞" backdrop */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-            <span className="font-black"
-              style={{ fontSize: "90mm", lineHeight: 1, color: `${GOLD}07`, transform: "translateY(5mm)" }}>
-              {isHidden ? "∞" : "8"}
-            </span>
-          </div>
-          {/* Inner gold border */}
-          <div className="absolute inset-[2.5mm]" style={{ border: `0.5px solid ${GOLD}28` }} />
-          {/* Corner ∞ */}
-          {(["top-[2mm] left-[2mm]", "top-[2mm] right-[2mm]", "bottom-[2mm] left-[2mm]", "bottom-[2mm] right-[2mm]"] as const).map((p, i) => (
-            <span key={i} className={`absolute ${p} font-serif leading-none`}
-              style={{ fontSize: "8px", color: `${GOLD}45` }}>∞</span>
-          ))}
+      {/* ── QR block (top half) ── */}
+      <div style={{
+        position: 'absolute', top: 60, left: 22, right: 22,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
+      }}>
+        <MonoLabel color={BRAND.textMuted} size={14}>
+          {egg ? '★ HIDDEN STAMP' : 'SCAN TO COLLECT'}
+        </MonoLabel>
 
-          <div className="relative z-10 h-full flex flex-col px-[4mm] pt-[3.5mm] pb-[3mm]">
-            {/* Brand row */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-[1.5mm]">
-                <img src="/tsutaya-logo.svg" alt="TSUTAYA"
-                  style={{ height: "6px", opacity: 0.65, filter: "invert(1)" }} />
-                <span className="font-mono" style={{ fontSize: "5px", color: "rgba(255,255,255,0.28)" }}>×</span>
-                <img src="/wired-tokyo-logo.svg" alt="WIRED"
-                  style={{ height: "7px", opacity: 0.55, filter: "invert(1)" }} />
-              </div>
-              <span className="font-mono"
-                style={{ fontSize: "5.5px", color: `${GOLD}90`, letterSpacing: "0.18em" }}>
-                {isHidden ? `EGG / ${config.stamp_id}` : `${meta.floor} · ${config.stamp_id}`}
-              </span>
-            </div>
-
-            {/* Number badge + wordmark */}
-            <div className="flex-1 flex flex-col items-center justify-center gap-[1.5mm]">
-              <div className="flex items-center justify-center rounded-full"
-                style={{ width: "12mm", height: "12mm", border: `0.8px solid ${GOLD}55`, background: `${GOLD}15` }}>
-                <span className="font-black text-white"
-                  style={{ fontSize: isHidden ? "9px" : "7px" }}>
-                  {isHidden ? "★" : config.stamp_id}
-                </span>
-              </div>
-              <div className="text-center">
-                <p className="font-black text-white"
-                  style={{ fontSize: "7.5px", letterSpacing: "0.08em", lineHeight: 1 }}>Nexus Life</p>
-                <p className="font-mono"
-                  style={{ fontSize: "4px", color: `${GOLD}75`, letterSpacing: "0.3em", marginTop: "1mm" }}>
-                  8TH ANNIVERSARY
-                </p>
-              </div>
-            </div>
-          </div>
+        <div style={{
+          background: BRAND.surface, border: `1px solid ${BRAND.border}`,
+          borderRadius: 8, padding: 10,
+        }}>
+          <QRCode value={stampUrl} size={170} fgColor={BRAND.navy} bgColor={BRAND.surface}
+            level="M" viewBox="0 0 170 170" style={{ display: 'block' }} />
         </div>
 
-        {/* Gold gradient separator */}
-        <div className="h-px shrink-0"
-          style={{ background: `linear-gradient(90deg, transparent, ${GOLD}70, transparent)` }} />
-
-        {/* ── QR section ── */}
-        <div className="flex flex-col items-center px-[5mm] pt-[3.5mm] pb-[2mm] gap-[2mm] shrink-0">
-          <span className="font-mono"
-            style={{ fontSize: "4.5px", letterSpacing: "0.3em", color: "rgba(26,43,74,0.38)" }}>
-            {isHidden ? "★  HIDDEN  STAMP" : "SCAN  TO  COLLECT"}
-          </span>
-          <div style={{ background: "#FDFAF6", border: "1px solid rgba(138,111,92,0.18)", borderRadius: "2mm", padding: "2mm" }}>
-            <QRCode value={stampUrl} size={128} fgColor={NAVY} bgColor="#FDFAF6" level="M"
-              viewBox="0 0 128 128" style={{ width: "22mm", height: "22mm", display: "block" }} />
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: BRAND.navy,
+            letterSpacing: '0.02em', lineHeight: 1.3 }}>
+            {config.area_name}
           </div>
-          <span className="font-mono text-center"
-            style={{ fontSize: "4px", color: "rgba(26,43,74,0.28)", letterSpacing: "0.06em" }}>
-            {meta.floor === "★" ? `★  ${config.area_name}` : `${meta.floor} · ${config.area_name}`}
-          </span>
-        </div>
-
-        {/* ∞ divider */}
-        <div className="flex items-center gap-[2mm] px-[5mm] shrink-0">
-          <div className="flex-1 h-px" style={{ background: `${GOLD}40` }} />
-          <span className="font-serif" style={{ fontSize: "7px", color: `${GOLD}65` }}>∞</span>
-          <div className="flex-1 h-px" style={{ background: `${GOLD}40` }} />
-        </div>
-
-        {/* ── Stamp content section ── */}
-        <div className="relative flex-1 flex flex-col justify-between px-[5mm] pt-[2.5mm] pb-[2mm]">
-          {/* Icon + keyword + phrase */}
-          <div className="flex items-start gap-[3mm]">
-            <div className="flex items-center justify-center rounded-full shrink-0"
-              style={{ width: "11mm", height: "11mm", border: "1px solid rgba(138,111,92,0.2)", background: "#EEE9E2" }}>
-              <img src={iconSrc} alt={meta.kw}
-                style={{ width: "7mm", height: "7mm", objectFit: "contain", filter: ICON_FILTER }} />
-            </div>
-            <div>
-              <p className="font-bold tracking-[0.2em] uppercase"
-                style={{ fontSize: "5.5px", color: GOLD }}>{meta.kw}</p>
-              <p className="font-bold leading-[1.85]"
-                style={{ fontSize: "6.5px", color: NAVY }}>{meta.phrase}</p>
-            </div>
+          <div style={{ marginTop: 4, fontSize: 14, color: BRAND.brown,
+            fontFamily: "'DM Mono',monospace", letterSpacing: '0.12em' }}>
+            用 LINE 掃描
           </div>
-
-          {/* Area name */}
-          <div>
-            <p className="font-mono"
-              style={{ fontSize: "4px", color: `${NAVY}45`, letterSpacing: "0.2em", marginBottom: "0.8mm" }}>
-              STAMP POINT
-            </p>
-            <p className="font-bold" style={{ fontSize: "7px", color: NAVY }}>{config.area_name}</p>
-          </div>
-        </div>
-
-        {/* ── Bottom strip ── */}
-        <div className="flex items-center justify-between px-[5mm] py-[2mm] shrink-0"
-          style={{ borderTop: `0.5px solid ${GOLD}30`, background: `${NAVY}06` }}>
-          <p style={{ fontSize: "4px", color: `${NAVY}38` }}>用 LINE 掃描現場 QR Code 集印</p>
-          <img src={iconSrc} alt={meta.kw}
-            style={{ width: "5mm", height: "5mm", objectFit: "contain",
-              filter: "brightness(0) saturate(100%) invert(12%) sepia(35%) saturate(700%) hue-rotate(190deg) brightness(90%) opacity(0.35)" }} />
         </div>
       </div>
 
-      {/* Out-of-card label (screen only) */}
-      <div className="print:hidden mt-1 space-y-0.5" style={{ width: "100mm" }}>
-        <div className="flex items-center justify-between px-0.5">
-          <p className="text-[9px] font-bold text-gray-700 leading-tight">{config.area_name}</p>
-          {isHidden && (
-            <span className="text-[7px] font-mono bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">hidden</span>
-          )}
+      {/* ── Divider: rules + large stamp number ── */}
+      <div style={{
+        position: 'absolute', top: 340, left: 36, right: 36,
+        display: 'flex', alignItems: 'center', gap: 10,
+      }}>
+        <div style={{ flex: 1, height: 1, background: BRAND.border }} />
+        <div style={{
+          fontFamily: "'Cormorant Garamond','Noto Serif TC',serif",
+          fontSize: 72, fontWeight: 600, lineHeight: 0.7,
+          color: egg ? 'rgba(138,111,92,0.18)' : 'rgba(26,43,74,0.16)',
+          letterSpacing: '-0.04em', userSelect: 'none' as const,
+          padding: '0 4px',
+        }}>
+          {config.stamp_id}
         </div>
-        <p className="text-[7px] font-mono text-gray-300 px-0.5 leading-tight truncate">{config.uuid}</p>
+        <div style={{ flex: 1, height: 1, background: BRAND.border }} />
+      </div>
+
+      {/* ── Icon + keyword + phrase ── */}
+      <div style={{
+        position: 'absolute', top: 394, left: 22, right: 22,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <img src={p.icon} alt={p.kw}
+            style={{ width: 52, height: 52, objectFit: 'contain',
+              filter: egg
+                ? 'brightness(0) saturate(100%) invert(40%) sepia(15%) saturate(500%) hue-rotate(10deg) opacity(0.65)'
+                : 'brightness(0) saturate(100%) invert(12%) sepia(35%) saturate(700%) hue-rotate(190deg) brightness(90%) opacity(0.8)',
+            }} />
+          <div style={{
+            fontFamily: "'Cormorant Garamond','Noto Serif TC',serif",
+            fontSize: p.kw.length > 3 ? 40 : 52,
+            fontWeight: 600, lineHeight: 1, color: BRAND.navy, letterSpacing: '0.1em',
+          }}>
+            {p.kw}
+          </div>
+        </div>
+
+        <Rule width="32px" color={egg ? BRAND.divider : 'rgba(59,130,196,0.4)'} />
+
+        <p style={{
+          fontSize: 14, lineHeight: 1.75, color: BRAND.textSub, fontWeight: 400,
+          fontStyle: egg ? 'italic' : 'normal', letterSpacing: '0.03em',
+          margin: 0, textAlign: 'center', maxWidth: 280,
+        }}>
+          {p.phrase}
+        </p>
+      </div>
+
+      {/* ── NexusLogo bottom-right ── */}
+      <div style={{ position: 'absolute', bottom: 18, right: 22 }}>
+        <NexusLogoScale size={0.28} />
       </div>
     </div>
   );
 }
 
+// ── Main page ─────────────────────────────────────────────────────────────────
+
 export default function MaterialsPage() {
-  const [tab, setTab] = useState<"design" | "qr">("design");
+  const [tab, setTab] = useState<'design' | 'qr'>('design');
   const [configs, setConfigs] = useState<StampConfig[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
-    if (tab !== "qr" || fetched) return;
+    if (tab !== 'qr' || fetched) return;
     setLoading(true);
-    fetch("/api/admin/configs?all=true")
+    fetch('/api/admin/configs?all=true')
       .then(r => r.json())
       .then(d => {
         if (d.success) {
@@ -235,7 +279,7 @@ export default function MaterialsPage() {
       .finally(() => { setLoading(false); setFetched(true); });
   }, [tab, fetched]);
 
-  // 2-up per A4 page (matches stand print layout)
+  // 2-up per A4 page (378×567px ≈ 100×150mm, two side-by-side fit A4)
   const pairs: StampConfig[][] = [];
   for (let i = 0; i < configs.length; i += 2) pairs.push(configs.slice(i, i + 2));
 
@@ -254,24 +298,24 @@ export default function MaterialsPage() {
 
         <div className="ml-4 flex items-center gap-1 bg-gray-100 rounded-full p-0.5">
           <button
-            onClick={() => setTab("design")}
+            onClick={() => setTab('design')}
             className={`px-4 py-1 rounded-full text-xs font-medium transition-all ${
-              tab === "design" ? "bg-white text-[#1A2B4A] shadow-sm" : "text-gray-500 hover:text-gray-700"
+              tab === 'design' ? 'bg-white text-[#1A2B4A] shadow-sm' : 'text-gray-500 hover:text-gray-700'
             }`}
           >
             設計稿
           </button>
           <button
-            onClick={() => setTab("qr")}
+            onClick={() => setTab('qr')}
             className={`px-4 py-1 rounded-full text-xs font-medium transition-all ${
-              tab === "qr" ? "bg-white text-[#1A2B4A] shadow-sm" : "text-gray-500 hover:text-gray-700"
+              tab === 'qr' ? 'bg-white text-[#1A2B4A] shadow-sm' : 'text-gray-500 hover:text-gray-700'
             }`}
           >
             QR 批次列印
           </button>
         </div>
 
-        {tab === "qr" && configs.length > 0 && (
+        {tab === 'qr' && configs.length > 0 && (
           <Button
             onClick={() => window.print()}
             className="ml-auto bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 gap-2 h-8 px-4 rounded-full text-xs"
@@ -282,7 +326,7 @@ export default function MaterialsPage() {
       </header>
 
       {/* ── 設計稿 tab ── */}
-      {tab === "design" && (
+      {tab === 'design' && (
         <iframe
           src="/materials/index.html"
           className="flex-1 w-full border-0"
@@ -292,7 +336,7 @@ export default function MaterialsPage() {
       )}
 
       {/* ── QR 批次列印 tab ── */}
-      {tab === "qr" && (
+      {tab === 'qr' && (
         <div className="flex-1 overflow-auto bg-gray-50">
           {loading && (
             <div className="flex items-center justify-center h-40">
@@ -302,33 +346,47 @@ export default function MaterialsPage() {
 
           {!loading && configs.length > 0 && (
             <>
-              {/* Screen info bar */}
-              <div className="print:hidden max-w-5xl mx-auto mt-4 mb-2 px-6 flex items-center gap-4">
+              {/* Screen info */}
+              <div className="print:hidden max-w-5xl mx-auto mt-4 mb-3 px-6 flex items-center gap-4 flex-wrap">
                 <p className="text-xs text-gray-400">
                   共 {configs.length} 張 · {pairs.length} 頁 · 每頁 2 張（A4 直向）
                 </p>
-                <div className="flex items-start gap-2 text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-100">
-                  <Info size={12} className="mt-0.5 shrink-0" />
-                  <span>框外的區域名稱與 UUID 僅供店員核對用。</span>
+                <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-100">
+                  <Info size={12} className="shrink-0" />
+                  <span>框外 UUID 僅供店員核對用。</span>
                 </div>
               </div>
 
-              {/* Screen preview: wrap grid */}
-              <div className="print:hidden max-w-5xl mx-auto px-6 pb-10">
-                <div className="flex flex-wrap gap-6 justify-center">
-                  {configs.map(c => <QRCard key={c.uuid} config={c} />)}
+              {/* Screen preview */}
+              <div className="print:hidden max-w-5xl mx-auto px-6 pb-12">
+                <div className="flex flex-wrap gap-8 justify-center">
+                  {configs.map(c => {
+                    const egg = ['A', 'B', 'C'].includes(c.stamp_id);
+                    return (
+                      <div key={c.uuid} className="flex flex-col items-center gap-1">
+                        <div style={{ transform: 'scale(0.5)', transformOrigin: 'top center',
+                          marginBottom: -(567 * 0.5) + 'px' }}>
+                          <StampStand config={c} egg={egg} />
+                        </div>
+                        <p className="text-[9px] font-bold text-gray-600 mt-1">{c.area_name}</p>
+                        <p className="text-[7px] font-mono text-gray-300 truncate max-w-[100px]">{c.uuid}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Print output: 2-up per A4 page */}
+              {/* Print output: 2-up per A4 */}
               {pairs.map((pair, idx) => (
                 <div key={idx} className="hidden print:flex print:break-after-page"
                   style={{
-                    gap: "5mm", padding: "10mm",
-                    width: "210mm", height: "297mm",
-                    boxSizing: "border-box", alignItems: "flex-start",
+                    gap: '5mm', padding: '10mm',
+                    width: '210mm', height: '297mm',
+                    boxSizing: 'border-box', alignItems: 'flex-start',
                   }}>
-                  {pair.map(c => <QRCard key={c.uuid} config={c} />)}
+                  {pair.map(c => (
+                    <StampStand key={c.uuid} config={c} egg={['A', 'B', 'C'].includes(c.stamp_id)} />
+                  ))}
                 </div>
               ))}
             </>
@@ -337,6 +395,7 @@ export default function MaterialsPage() {
       )}
 
       <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;700&display=swap');
         @media print {
           body { background: white !important; margin: 0; padding: 0; }
           @page { size: A4 portrait; margin: 0; }
