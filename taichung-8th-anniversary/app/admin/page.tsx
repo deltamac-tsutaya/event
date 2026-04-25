@@ -464,7 +464,7 @@ function QRModal({ config, onClose }: { config: StampConfig; onClose: () => void
           </div>
           <p className="text-[9px] font-mono text-gray-300 text-center break-all max-w-full px-2">{config.uuid}</p>
           <div className="w-full space-y-2">
-            <Link href="/admin/print" className="block">
+            <Link href="/admin/print/materials" className="block">
               <Button className="w-full h-11 bg-[#1A2B4A] gap-2 rounded-xl font-bold">
                 <Printer size={16} /> 前往批次列印
               </Button>
@@ -646,25 +646,14 @@ export default function AdminPage() {
 
         {/* 快速工具 */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          <Link href="/admin/print" className="block">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 flex items-center gap-4 hover:shadow-md hover:border-[#1A2B4A]/20 transition-all group">
-              <div className="p-3 rounded-xl bg-[#1A2B4A]/5 text-[#1A2B4A] group-hover:bg-[#1A2B4A] group-hover:text-white transition-colors shrink-0">
-                <Printer size={20} />
-              </div>
-              <div>
-                <p className="font-bold text-sm text-gray-800">印製 QR Code</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">A4 批次列印 · 立牌 · 桌卡</p>
-              </div>
-            </div>
-          </Link>
           <Link href="/admin/print/materials" className="block">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 flex items-center gap-4 hover:shadow-md hover:border-[#C9A84C]/40 transition-all group">
               <div className="p-3 rounded-xl bg-[#C9A84C]/10 text-[#C9A84C] group-hover:bg-[#C9A84C] group-hover:text-white transition-colors shrink-0">
                 <Layers size={20} />
               </div>
               <div>
-                <p className="font-bold text-sm text-gray-800">文宣設計稿</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">海報 · 立牌 · 桌卡 · LINE</p>
+                <p className="font-bold text-sm text-gray-800">文宣 &amp; 列印</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">設計稿 · QR 批次列印</p>
               </div>
             </div>
           </Link>
