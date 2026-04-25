@@ -2,10 +2,28 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
 // POST /api/admin/coupon/redeem
-// body: { drawId: string, staffName?: string }
+// body: { drawId, pin?, adminOverride? }
+// PIN is verified server-side against REDEEM_PIN env var.
+// adminOverride:true skips PIN (used by admin panel which is Firebase-auth-gated).
 export async function POST(request: NextRequest) {
-  const { drawId, staffName } = await request.json();
+  const { drawId, pin, staffName, adminOverride } = await request.json();
   if (!drawId) return NextResponse.json({ success: false, error: "drawId required" }, { status: 400 });
+
+  // PIN verification
+  if (!adminOverride) {
+    const { data: setting } = await supabaseAdmin
+      .from("app_settings")
+      .select("value")
+      .eq("id", "redeem_pin")
+      .single();
+    const correctPin = setting?.value ?? process.env.REDEEM_PIN;
+    if (!correctPin) {
+      return NextResponse.json({ success: false, error: "REDEEM_PIN not configured" }, { status: 500 });
+    }
+    if (!pin || String(pin) !== String(correctPin)) {
+      return NextResponse.json({ success: false, error: "wrong_pin" }, { status: 403 });
+    }
+  }
 
   // Fetch the draw record
   const { data: draw, error: fetchError } = await supabaseAdmin

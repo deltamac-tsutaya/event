@@ -78,7 +78,7 @@ function RedeemContent({ firebaseUser }: { firebaseUser: User }) {
       const res  = await fetch("/api/admin/coupon/redeem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ drawId: coupon.draw.id, staffName: staffName || firebaseUser.email }),
+        body: JSON.stringify({ drawId: coupon.draw.id, staffName: staffName || firebaseUser.email, adminOverride: true }),
       });
       const data = await res.json();
       if (data.success) {
