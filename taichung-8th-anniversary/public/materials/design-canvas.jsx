@@ -52,8 +52,10 @@ if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
     '[data-dc-slot]:hover .dc-expand{opacity:1}',
     /* batch layout: keep off-screen but rendered so QR codes generate */
     '#dc-print-all{position:fixed;left:-20000px;top:0;pointer-events:none;overflow:hidden}',
+    /* force A4 portrait with zero margins for all prints */
+    '@page{size:A4 portrait;margin:0}',
     /* ── print: artboard-only output ── */
-    '@media print{@page{margin:0}html,body{background:white!important}' +
+    '@media print{html,body{background:white!important}' +
     'body>*:not([data-dc-focus-overlay]){display:none!important}' +
     '[data-dc-focus-overlay]{background:white!important;backdrop-filter:none!important}' +
     '[data-dc-print-hide]{display:none!important}' +
@@ -62,8 +64,8 @@ if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
     '[data-dc-focus-card-inner]{transform:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}' +
     /* batch print overrides */
     'body.dc-batch-printing [data-dc-focus-overlay]{display:none!important}' +
-    'body.dc-batch-printing #dc-print-all{position:static!important;left:auto!important;display:block!important;width:794px!important;overflow:visible!important}' +
-    '.dc-print-page{width:794px;height:1123px;page-break-after:always;break-after:page;overflow:hidden;background:white;display:flex;align-items:center;justify-content:center}}',
+    'body.dc-batch-printing #dc-print-all{position:static!important;left:auto!important;display:block!important;width:210mm!important;overflow:visible!important}' +
+    '.dc-print-page{width:210mm;height:297mm;page-break-after:always;break-after:page;overflow:hidden;background:white;display:flex;align-items:center;justify-content:center}}',
   ].join('\n');
   document.head.appendChild(s);
 }
