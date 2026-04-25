@@ -27,19 +27,19 @@ const STAMP_LOCATIONS = [
 
 const REWARD_TIERS = [
   {
-    tier: "S", label: "S 級獎項", color: "text-yellow-700 bg-yellow-50 border-yellow-200",
-    examples: ["WIRED TOKYO 雙人套餐", "TSUTAYA 精選書籍禮盒"],
-    note: "數量稀少，每日限量發放，優先以加碼獎券抽出。",
+    tier: "∞", label: "∞ INFINITY DAY 加碼大獎", color: "text-yellow-800 bg-yellow-50 border-yellow-300",
+    examples: ["和牛牛排雙人套餐 × 8 份（限量）"],
+    note: "集印加碼獎券累積越多，抽中機率越高。05/24（日）20:00 活動現場公開抽出，共 8 份。",
   },
   {
     tier: "A", label: "A 級獎項", color: "text-blue-700 bg-blue-50 border-blue-200",
     examples: ["WIRED TOKYO 飲品兌換券", "TSUTAYA 選書禮券"],
-    note: "中等機率，每日有固定上限。",
+    note: "中等機率，每日有固定上限。集滿 8 枚印章後每日可抽，共 14 項獎品，100% 中獎。",
   },
   {
     tier: "B", label: "B 級獎項", color: "text-gray-600 bg-gray-50 border-gray-200",
     examples: ["活動特製書籤", "TSUTAYA 折扣碼"],
-    note: "基本獎項，無每日上限，保底兜底。",
+    note: "基本獎項，無每日上限，保底兜底。所有人至少抽到 B 級（100% 中獎）。",
   },
 ];
 
@@ -197,7 +197,7 @@ export default function ManualPage() {
             <BookOpen size={18} className="text-[#1A2B4A]" />
             <h1 className="font-bold text-[#1A2B4A] text-sm">活動操作手冊</h1>
           </div>
-          <span className="ml-auto text-[10px] font-mono text-gray-400">Nexus Life 8th · 2026/04/23–05/13</span>
+          <span className="ml-auto text-[10px] font-mono text-gray-400">Nexus Life 8th · 2026/04/25–05/24</span>
         </div>
       </header>
 
@@ -227,11 +227,11 @@ export default function ManualPage() {
               <div className="grid grid-cols-2 gap-3 text-sm">
                 {[
                   ["活動名稱", "Nexus Life｜無限日常 ∞ 連結生活"],
-                  ["活動期間", "2026/04/23（三）— 2026/05/13（三）"],
+                  ["活動期間", "2026/04/25（六）— 2026/05/24（日）"],
                   ["主辦品牌", "TSUTAYA BOOKSTORE × WIRED TOKYO 台中市政店"],
                   ["集章點位", "8 個主要點位 + 3 個隱藏點位"],
                   ["抽獎資格", "集滿 8 枚印章，每日可抽一次"],
-                  ["獎項等級", "S / A / B 三級，由系統依機率隨機抽出"],
+                  ["獎項等級", "∞ 加碼大獎 / A / B，每日抽一次，14 項獎品 100% 中獎"],
                 ].map(([k, v]) => (
                   <div key={k} className="space-y-0.5">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{k}</p>
@@ -242,7 +242,7 @@ export default function ManualPage() {
               <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3 flex gap-2">
                 <Info size={14} className="text-amber-600 shrink-0 mt-0.5" />
                 <p className="text-xs text-amber-700 leading-relaxed">
-                  同一印章點位每人每次活動只能掃描一次。每日抽獎資格跨日重置，但需重新達到集印條件（已集滿者每日均可抽）。
+                  同一印章點位每人每次活動只能掃描一次。每日抽獎資格跨日重置，已集滿 8 枚者每日均可抽。∞ INFINITY DAY 加碼大獎於 05/24（日）20:00 現場抽出。
                 </p>
               </div>
             </div>
