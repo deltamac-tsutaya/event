@@ -97,73 +97,101 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
     setTimeout(() => setMessage(null), 3000);
   };
 
+  const call = async (url: string, method: string, body: object) => {
+    const r = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!r.ok && r.headers.get("content-type")?.includes("text/html")) {
+      throw new Error(`HTTP ${r.status}`);
+    }
+    return r.json() as Promise<{ success: boolean; error?: string; reward?: { name: string } }>;
+  };
+
   const resetUser = async () => {
     if (!confirm(`確定重置「${user.display_name}」的所有紀錄？`)) return;
     setBusy("reset");
-    const res = await fetch("/api/admin/user/reset", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id }),
-    }).then(r => r.json());
-    setBusy(null);
-    res.success ? flash("ok", "重置成功") : flash("err", res.error);
-    onRefresh();
+    try {
+      const res = await call("/api/admin/user/reset", "POST", { userId: user.id });
+      res.success ? flash("ok", "重置成功") : flash("err", res.error ?? "重置失敗");
+    } catch (e) {
+      flash("err", e instanceof Error ? e.message : "網路錯誤");
+    } finally {
+      setBusy(null);
+      onRefresh();
+    }
   };
 
   const addStamp = async (stampId: string) => {
     setBusy(`add-${stampId}`);
-    const res = await fetch("/api/admin/user/stamp", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id, stampId }),
-    }).then(r => r.json());
-    setBusy(null);
-    res.success ? flash("ok", `新增 ${stampId}`) : flash("err", res.error === "already_stamped" ? `${stampId} 已存在` : res.error);
-    onRefresh();
+    try {
+      const res = await call("/api/admin/user/stamp", "POST", { userId: user.id, stampId });
+      res.success
+        ? flash("ok", `新增 ${stampId}`)
+        : flash("err", res.error === "already_stamped" ? `${stampId} 已存在` : (res.error ?? "新增失敗"));
+    } catch (e) {
+      flash("err", e instanceof Error ? e.message : "網路錯誤");
+    } finally {
+      setBusy(null);
+      onRefresh();
+    }
   };
 
   const removeStamp = async (stampId: string) => {
     setBusy(`del-${stampId}`);
-    const res = await fetch("/api/admin/user/stamp", {
-      method: "DELETE", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id, stampId }),
-    }).then(r => r.json());
-    setBusy(null);
-    res.success ? flash("ok", `移除 ${stampId}`) : flash("err", res.error);
-    onRefresh();
+    try {
+      const res = await call("/api/admin/user/stamp", "DELETE", { userId: user.id, stampId });
+      res.success ? flash("ok", `移除 ${stampId}`) : flash("err", res.error ?? "移除失敗");
+    } catch (e) {
+      flash("err", e instanceof Error ? e.message : "網路錯誤");
+    } finally {
+      setBusy(null);
+      onRefresh();
+    }
   };
 
   const fillAllStamps = async () => {
     setBusy("fill");
-    for (const id of ["01","02","03","04","05","06","07","08"]) {
-      await fetch("/api/admin/user/stamp", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, stampId: id }),
-      });
+    try {
+      let added = 0;
+      for (const id of ["01","02","03","04","05","06","07","08"]) {
+        const res = await call("/api/admin/user/stamp", "POST", { userId: user.id, stampId: id });
+        if (res.success) added++;
+      }
+      flash("ok", added > 0 ? `已補 ${added} 枚印章` : "8 枚印章已全部存在");
+    } catch (e) {
+      flash("err", e instanceof Error ? e.message : "網路錯誤");
+    } finally {
+      setBusy(null);
+      onRefresh();
     }
-    setBusy(null);
-    flash("ok", "已補齊 8 枚主印章");
-    onRefresh();
   };
 
   const forceDraw = async () => {
     setBusy("draw");
-    const res = await fetch("/api/admin/user/draw", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id }),
-    }).then(r => r.json());
-    setBusy(null);
-    res.success ? flash("ok", `抽到：${res.reward.name}`) : flash("err", res.error);
-    onRefresh();
+    try {
+      const res = await call("/api/admin/user/draw", "POST", { userId: user.id });
+      res.success ? flash("ok", `抽到：${res.reward?.name}`) : flash("err", res.error ?? "抽獎失敗");
+    } catch (e) {
+      flash("err", e instanceof Error ? e.message : "網路錯誤");
+    } finally {
+      setBusy(null);
+      onRefresh();
+    }
   };
 
   const pushCoupon = async () => {
     if (user.draw_count === 0) { flash("err", "此用戶尚無抽獎紀錄"); return; }
     setBusy("push");
-    const res = await fetch("/api/admin/user/push-coupon", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id }),
-    }).then(r => r.json());
-    setBusy(null);
-    res.success ? flash("ok", "LINE 訊息已發送") : flash("err", res.error ?? "發送失敗");
+    try {
+      const res = await call("/api/admin/user/push-coupon", "POST", { userId: user.id });
+      res.success ? flash("ok", "LINE 訊息已發送") : flash("err", res.error ?? "發送失敗");
+    } catch (e) {
+      flash("err", e instanceof Error ? e.message : "網路錯誤");
+    } finally {
+      setBusy(null);
+    }
   };
 
   return (
