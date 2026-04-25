@@ -148,7 +148,7 @@ function PosterA4({ tweaks }) {
           </div>
         </div>
         <div style={{ flexShrink: 0, textAlign: 'center' }}>
-          <QRBlock size={88} color='#F5EDD6' bg='#1A1205' seed={999} />
+          <QRBlock size={88} color='#F5EDD6' bg='#1A1205' url="https://liff.line.me/2009815115-CHcrof7l" seed={999} />
           <div style={{ marginTop: 6, fontFamily: "'DM Mono',monospace", fontSize: 11,
             color: 'rgba(196,162,74,0.45)', letterSpacing: '0.14em' }}>SCAN TO JOIN</div>
         </div>

@@ -56,12 +56,14 @@ if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
     '@page{size:A4 portrait;margin:0}',
     /* ── print: artboard-only output ── */
     '@media print{html,body{background:white!important}' +
+    '*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}' +
     'body>*:not([data-dc-focus-overlay]){display:none!important}' +
     '[data-dc-focus-overlay]{background:white!important;backdrop-filter:none!important}' +
     '[data-dc-print-hide]{display:none!important}' +
-    '[data-dc-focus-center]{position:fixed!important;top:0!important;left:0!important;display:block!important;transform:none!important}' +
-    '[data-dc-focus-scale-wrap]{width:var(--dc-art-w)!important;height:var(--dc-art-h)!important}' +
-    '[data-dc-focus-card-inner]{transform:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}' +
+    /* scale artboard to fit A4, centered — printScale set via JS before window.print() */
+    '[data-dc-focus-center]{position:fixed!important;top:0!important;left:0!important;width:210mm!important;height:297mm!important;display:flex!important;align-items:center!important;justify-content:center!important;transform:none!important}' +
+    '[data-dc-focus-scale-wrap]{width:calc(var(--dc-art-w) * var(--dc-art-print-scale,1))!important;height:calc(var(--dc-art-h) * var(--dc-art-print-scale,1))!important;position:relative!important}' +
+    '[data-dc-focus-card-inner]{transform:scale(var(--dc-art-print-scale,1))!important;transform-origin:top left!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}' +
     /* batch print overrides */
     'body.dc-batch-printing [data-dc-focus-overlay]{display:none!important}' +
     'body.dc-batch-printing #dc-print-all{position:static!important;left:auto!important;display:block!important;width:210mm!important;overflow:visible!important}' +
@@ -542,7 +544,11 @@ function DCFocusOverlay({ entry, sectionMeta, sectionOrder }) {
 
   const handlePrint = (e) => {
     e.stopPropagation();
+    // Compute scale to fit artboard on A4 (794×1123 px at 96dpi = 210×297mm)
+    const printScale = Math.min(794 / width, 1123 / height);
+    document.documentElement.style.setProperty('--dc-art-print-scale', printScale);
     window.print();
+    document.documentElement.style.removeProperty('--dc-art-print-scale');
   };
 
   // Portal to body so position:fixed is the real viewport regardless of any
