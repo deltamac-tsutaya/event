@@ -44,6 +44,49 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "section": "all"
 }/*EDITMODE-END*/;
 
+function PrintAllPage({ w, h, children }) {
+  const s = Math.min(794 / w, 1123 / h);
+  return (
+    <div className="dc-print-page">
+      <div style={{ width: w * s, height: h * s, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ width: w, height: h, transform: `scale(${s})`, transformOrigin: 'top left',
+          position: 'absolute', top: 0, left: 0 }}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PrintAllLayout({ tweaks, urlMap }) {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const stampUrl = (n) => urlMap[n] ? `${origin}/stamp?id=${urlMap[n]}` : '';
+
+  const elRef = React.useRef(null);
+  if (!elRef.current) {
+    const el = document.createElement('div');
+    el.id = 'dc-print-all';
+    document.body.appendChild(el);
+    elRef.current = el;
+  }
+  React.useEffect(() => () => { if (elRef.current) elRef.current.remove(); }, []);
+
+  return ReactDOM.createPortal(
+    <>
+      <PrintAllPage w={794} h={1123}><PosterA4 tweaks={tweaks} /></PrintAllPage>
+      {STAMP_POINTS_MAIN.map(p => (
+        <PrintAllPage key={p.n} w={378} h={567}><StampStand p={{...p, url: stampUrl(p.n)}} /></PrintAllPage>
+      ))}
+      {STAMP_POINTS_EGG.map(p => (
+        <PrintAllPage key={p.n} w={378} h={567}><StampStand p={{...p, url: stampUrl(p.n)}} egg /></PrintAllPage>
+      ))}
+      <PrintAllPage w={794} h={1123}><CounterA4 tweaks={tweaks} /></PrintAllPage>
+      <PrintAllPage w={397} h={559}><TableA6 tweaks={tweaks} /></PrintAllPage>
+    </>,
+    elRef.current,
+  );
+}
+
 function App() {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [urlMap, setUrlMap] = React.useState({});
@@ -63,6 +106,14 @@ function App() {
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const stampUrl = (n) => urlMap[n] ? `${origin}/stamp?id=${urlMap[n]}` : '';
+
+  const triggerPrintAll = React.useCallback(() => {
+    document.body.classList.add('dc-batch-printing');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      window.print();
+      document.body.classList.remove('dc-batch-printing');
+    }));
+  }, []);
 
   const showAll = tweaks.section === 'all';
   const S = (k) => showAll || tweaks.section === k;
@@ -128,7 +179,11 @@ function App() {
           options={['all','poster','stand-main','stand-egg','counter','table']}
           onChange={(v) => setTweak('section', v)}
         />
+        <TweakSection label="列印" />
+        <TweakButton label="全部列印 A4 (14 頁)" onClick={triggerPrintAll} />
       </TweaksPanel>
+
+      <PrintAllLayout tweaks={tweaks} urlMap={urlMap} />
     </>
   );
 }

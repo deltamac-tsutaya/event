@@ -50,6 +50,8 @@ if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
     '  background:transparent;color:rgba(60,50,40,.7);display:flex;align-items:center;justify-content:center}',
     '.dc-expand:hover{background:rgba(0,0,0,.06);color:#2a251f}',
     '[data-dc-slot]:hover .dc-expand{opacity:1}',
+    /* batch layout: keep off-screen but rendered so QR codes generate */
+    '#dc-print-all{position:fixed;left:-20000px;top:0;pointer-events:none;overflow:hidden}',
     /* ── print: artboard-only output ── */
     '@media print{@page{margin:0}html,body{background:white!important}' +
     'body>*:not([data-dc-focus-overlay]){display:none!important}' +
@@ -57,7 +59,11 @@ if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
     '[data-dc-print-hide]{display:none!important}' +
     '[data-dc-focus-center]{position:fixed!important;top:0!important;left:0!important;display:block!important;transform:none!important}' +
     '[data-dc-focus-scale-wrap]{width:var(--dc-art-w)!important;height:var(--dc-art-h)!important}' +
-    '[data-dc-focus-card-inner]{transform:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}}',
+    '[data-dc-focus-card-inner]{transform:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}' +
+    /* batch print overrides */
+    'body.dc-batch-printing [data-dc-focus-overlay]{display:none!important}' +
+    'body.dc-batch-printing #dc-print-all{position:static!important;left:auto!important;display:block!important;width:794px!important;overflow:visible!important}' +
+    '.dc-print-page{width:794px;height:1123px;page-break-after:always;break-after:page;overflow:hidden;background:white;display:flex;align-items:center;justify-content:center}}',
   ].join('\n');
   document.head.appendChild(s);
 }
