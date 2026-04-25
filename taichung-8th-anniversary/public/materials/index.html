@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nexus Life — 活動物料組｜台中市政店 8 週年</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Mono:wght@400;500&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="atoms.jsx"></script>
+<script type="text/babel" src="design-poster.jsx"></script>
+<script type="text/babel" src="design-stands.jsx"></script>
+<script type="text/babel" src="design-counter.jsx"></script>
+<script type="text/babel" src="design-table.jsx"></script>
+<script type="text/babel" src="design-richmenu.jsx"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; background: #E8E4DC; font-family: 'DM Sans', 'Noto Sans TC', sans-serif; }
+  @keyframes scan {
+    0%   { top: -2px; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  @keyframes infDraw {
+    0%, 100% { stroke-dashoffset: 0; }
+    50% { stroke-dashoffset: 600; }
+  }
+  [data-dc-artboard-content] { font-family: 'DM Sans', 'Noto Sans TC', sans-serif; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#4A9EFF",
+  "showCropMarks": false,
+  "section": "all"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const showAll = tweaks.section === 'all';
+  const S = (k) => showAll || tweaks.section === k;
+
+  return (
+    <>
+      <DesignCanvas title="Nexus Life · 8TH 活動物料組" subtitle="TSUTAYA × WIRED TOKYO · 台中市政店 · 2026.04.25 – 05.24">
+
+        {S('poster') && (
+          <DCSection id="poster" title="01 · 活動主視覺海報 ── 印刷 A4 + 電子看板 1080×1920">
+            <DCArtboard id="p-a4" label="A4 印刷海報 · 210×297mm" width={794} height={1123}>
+              <PosterA4 tweaks={tweaks} />
+            </DCArtboard>
+            <DCArtboard id="p-digital" label="電子看板 · 1080×1920 (50%)" width={540} height={960}>
+              <PosterDigital tweaks={tweaks} />
+            </DCArtboard>
+          </DCSection>
+        )}
+
+        {S('stand-main') && (
+          <DCSection id="stand-main" title="02 · 集印點位立牌 + QR ── 主路徑 01–08 ｜ 10×15cm 護貝直式">
+            {STAMP_POINTS_MAIN.map(p => (
+              <DCArtboard key={p.n} id={`sm-${p.n}`} label={`${p.n} · ${p.loc}`} width={378} height={567}>
+                <StampStand p={p} />
+              </DCArtboard>
+            ))}
+          </DCSection>
+        )}
+
+        {S('stand-egg') && (
+          <DCSection id="stand-egg" title="03 · 集印點位立牌 + QR ── 彩蛋 A · B · C ｜ 10×15cm 護貝直式">
+            {STAMP_POINTS_EGG.map(p => (
+              <DCArtboard key={p.n} id={`se-${p.n}`} label={`${p.n} · ${p.loc}`} width={378} height={567}>
+                <StampStand p={p} egg />
+              </DCArtboard>
+            ))}
+          </DCSection>
+        )}
+
+        {S('counter') && (
+          <DCSection id="counter" title="06 · 櫃檯活動說明 ── A4 立卡">
+            <DCArtboard id="c-a4" label="櫃檯 A4 立卡 · 210×297mm" width={794} height={1123}>
+              <CounterA4 tweaks={tweaks} />
+            </DCArtboard>
+          </DCSection>
+        )}
+
+        {S('table') && (
+          <DCSection id="table" title="07 · 餐廳桌卡 ── A6 平放">
+            <DCArtboard id="t-a6" label="A6 桌卡 · 105×148mm" width={397} height={559}>
+              <TableA6 tweaks={tweaks} />
+            </DCArtboard>
+          </DCSection>
+        )}
+
+        {S('richmenu') && (
+          <DCSection id="richmenu" title="08 · LINE 圖文選單 ── 2500×1686px (顯示 32%)">
+            <DCArtboard id="rm" label="LINE Rich Menu · 2500×1686" width={800} height={540}>
+              <div style={{ width: 2500, height: 1686, transform: 'scale(0.32)', transformOrigin: 'top left' }}>
+                <RichMenu />
+              </div>
+            </DCArtboard>
+          </DCSection>
+        )}
+
+      </DesignCanvas>
+
+      <TweaksPanel title="Nexus Life · 物料檢視">
+        <TweakSection label="檢視" />
+        <TweakRadio
+          label="分區"
+          value={tweaks.section}
+          options={['all','poster','stand-main','stand-egg','counter','table','richmenu']}
+          onChange={(v) => setTweak('section', v)}
+        />
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

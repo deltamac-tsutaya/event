@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { type User, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getFirebaseAuth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -11,8 +11,8 @@ import QRCode from "react-qr-code";
 import {
   LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
   BarChart3, ShieldCheck, Search, RotateCcw, Plus,
-  ChevronDown, ChevronUp, Zap, Settings2, CheckCircle, AlertCircle,
-  X, Printer, Image, FileText, ChevronRight, Send, BadgeCheck,
+  ChevronDown, ChevronUp, Zap, CheckCircle, AlertCircle,
+  X, Printer, FileText, Send, Layers,
   KeyRound, Eye, EyeOff,
 } from "lucide-react";
 
@@ -30,62 +30,6 @@ interface DashboardStats {
 }
 
 const STAMP_IDS = ["01","02","03","04","05","06","07","08","A","B","C"];
-
-// ── 工具下拉選單 ───────────────────────────────────────────────────────────
-function ToolsMenu() {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handle(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    }
-    document.addEventListener("mousedown", handle);
-    return () => document.removeEventListener("mousedown", handle);
-  }, []);
-
-  const items = [
-    { href: "/admin/redeem",        icon: <BadgeCheck size={15} />, label: "優惠券核銷站",       sub: "掃描 QR 核銷券" },
-    { href: "/admin/print",         icon: <Printer size={15} />,    label: "列印 QR Code",       sub: "A4 批次列印" },
-    { href: "/admin/print/stand",   icon: <FileText size={15} />,   label: "集印點立牌（文字）", sub: "10×15 cm × 11 張" },
-    { href: "/admin/print/flyer",   icon: <FileText size={15} />,   label: "活動主視覺海報",     sub: "A4 直向" },
-    { href: "/admin/print/counter", icon: <FileText size={15} />,   label: "櫃檯說明立卡",       sub: "A4 × 1 張" },
-    { href: "/admin/print/table",   icon: <FileText size={15} />,   label: "餐廳桌卡",           sub: "A6 平放" },
-    { href: "/admin/print/board",   icon: <FileText size={15} />,   label: "獎項板 ／ 樓層指引", sub: "A4 × 2 張" },
-    { href: "/admin/manual",        icon: <FileText size={15} />,   label: "活動操作手冊",       sub: "員工操作指引" },
-  ];
-
-  return (
-    <div ref={ref} className="relative">
-      <Button
-        variant="outline"
-        onClick={() => setOpen(v => !v)}
-        className="h-9 gap-1.5 rounded-full px-3 text-xs border-[#1A2B4A]/20 text-[#1A2B4A]"
-      >
-        <Settings2 size={14} />
-        <span className="hidden sm:inline">工具</span>
-        <ChevronDown size={12} className={`transition-transform ${open ? "rotate-180" : ""}`} />
-      </Button>
-
-      {open && (
-        <div className="absolute right-0 top-11 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
-          {items.map(item => (
-            <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
-              <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors group">
-                <span className="text-[#1A2B4A]/60 group-hover:text-[#1A2B4A]">{item.icon}</span>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-800">{item.label}</p>
-                  <p className="text-[10px] text-gray-400">{item.sub}</p>
-                </div>
-                <ChevronRight size={12} className="text-gray-300 group-hover:text-gray-500" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ── 抽獎紀錄（含核銷） ────────────────────────────────────────────────────────
 interface DrawRecord {
@@ -666,7 +610,6 @@ export default function AdminPage() {
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
-            <ToolsMenu />
             <Button variant="ghost" size="icon" onClick={fetchAllData} disabled={loading} className="rounded-full w-9 h-9">
               <RefreshCcw size={15} className={loading ? "animate-spin" : ""} />
             </Button>
@@ -699,6 +642,43 @@ export default function AdminPage() {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* 快速工具 */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <Link href="/admin/print" className="block">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 flex items-center gap-4 hover:shadow-md hover:border-[#1A2B4A]/20 transition-all group">
+              <div className="p-3 rounded-xl bg-[#1A2B4A]/5 text-[#1A2B4A] group-hover:bg-[#1A2B4A] group-hover:text-white transition-colors shrink-0">
+                <Printer size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-sm text-gray-800">印製 QR Code</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">A4 批次列印 · 立牌 · 桌卡</p>
+              </div>
+            </div>
+          </Link>
+          <Link href="/admin/print/materials" className="block">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 flex items-center gap-4 hover:shadow-md hover:border-[#C9A84C]/40 transition-all group">
+              <div className="p-3 rounded-xl bg-[#C9A84C]/10 text-[#C9A84C] group-hover:bg-[#C9A84C] group-hover:text-white transition-colors shrink-0">
+                <Layers size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-sm text-gray-800">文宣設計稿</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">海報 · 立牌 · 桌卡 · LINE</p>
+              </div>
+            </div>
+          </Link>
+          <Link href="/admin/manual" className="block">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 flex items-center gap-4 hover:shadow-md hover:border-[#1A2B4A]/20 transition-all group">
+              <div className="p-3 rounded-xl bg-[#1A2B4A]/5 text-[#1A2B4A] group-hover:bg-[#1A2B4A] group-hover:text-white transition-colors shrink-0">
+                <FileText size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-sm text-gray-800">活動操作手冊</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">員工操作指引 · 核銷說明</p>
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* 使用者 */}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Printer, ChevronLeft, Info } from "lucide-react";
+import { Printer, ChevronLeft, Info, Layers } from "lucide-react";
 import Link from "next/link";
 import QRCode from "react-qr-code";
 import { StampIcon } from "@/components/StampIcon";
@@ -175,6 +175,11 @@ export default function PrintPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Link href="/admin/print/materials">
+            <Button variant="outline" className="gap-2 h-11 px-5 rounded-full border-[#C9A84C]/50 text-[#C9A84C]">
+              <Layers size={15} /> 文宣設計稿
+            </Button>
+          </Link>
           <Link href="/admin/print/flyer">
             <Button variant="outline" className="gap-2 h-11 px-5 rounded-full border-[#1A2B4A]/30 text-[#1A2B4A]">
               A5 文宣
