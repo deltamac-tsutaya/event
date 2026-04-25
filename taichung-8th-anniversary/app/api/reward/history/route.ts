@@ -23,27 +23,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ history: [] });
   }
 
-  // Fetch draw history with reward info, ordered by created_at desc
-  const { data: history, error: historyError } = await supabaseAdmin
+  // Fetch draw records (without auto-join — draws.reward_id has no FK constraint)
+  const { data: draws, error: historyError } = await supabaseAdmin
     .from("draws")
-    .select(
-      `
-      id,
-      draw_date,
-      created_at,
-      reward_id,
-      rewards (
-        id,
-        tier,
-        provider,
-        name,
-        conditions,
-        validity_days,
-        probability,
-        daily_limit
-      )
-    `
-    )
+    .select("id, draw_date, created_at, reward_id")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -54,5 +37,33 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ history: history ?? [] });
+  if (!draws || draws.length === 0) {
+    return NextResponse.json({ history: [] });
+  }
+
+  // Fetch reward details for the unique reward IDs found in draws
+  const rewardIds = [...new Set(draws.map((d) => d.reward_id))];
+  const { data: rewards, error: rewardsError } = await supabaseAdmin
+    .from("rewards")
+    .select("id, tier, provider, name, conditions, validity_days, probability, daily_limit")
+    .in("id", rewardIds);
+
+  if (rewardsError) {
+    return NextResponse.json(
+      { error: "Failed to fetch rewards", detail: rewardsError.message },
+      { status: 500 }
+    );
+  }
+
+  const rewardMap = Object.fromEntries((rewards ?? []).map((r) => [r.id, r]));
+
+  const history = draws.map((d) => ({
+    id: d.id,
+    draw_date: d.draw_date,
+    created_at: d.created_at,
+    reward_id: d.reward_id,
+    rewards: rewardMap[d.reward_id] ?? null,
+  }));
+
+  return NextResponse.json({ history });
 }

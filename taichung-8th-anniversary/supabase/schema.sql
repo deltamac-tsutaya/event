@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS public.stamps (
 CREATE TABLE IF NOT EXISTS public.draws (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
-    reward_id TEXT NOT NULL,
+    reward_id TEXT NOT NULL REFERENCES public.rewards(id),
     draw_date DATE NOT NULL, -- YYYY-MM-DD
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
