@@ -296,7 +296,7 @@ function MainContent() {
         {state === "D" && lastReward && (
           <div className="space-y-6 animate-in zoom-in-95 duration-500 ease-out">
             <RewardCard reward={lastReward} />
-            <Button className="h-14 w-full rounded-full bg-gradient-to-r from-[#1A2B4A] to-[#2B5CE6] font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
+            <Button className="h-14 w-full rounded-full bg-gradient-to-r from-[#1A2B4A] to-[#2B5CE6] font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all" onClick={() => router.push('/coupons')}>
               查看我的獎券
             </Button>
           </div>
@@ -316,7 +316,7 @@ function MainContent() {
             </div>
             <Button
               className="h-14 w-full rounded-full font-bold border-2 border-[#1A2B4A]/10 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 hover:border-[#1A2B4A]/30 transition-all flex items-center justify-center gap-2 group"
-              onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}
+              onClick={() => router.push('/coupons')}
             >
               <Ticket size={18} className="group-hover:-rotate-12 transition-transform" />
               查看優惠券匣
@@ -328,7 +328,7 @@ function MainContent() {
         {state === "F" && (
           <PageCard className="p-10 text-center shadow-xl border-none space-y-6 bg-gray-50">
              <h2 className="text-2xl font-bold text-[#1A2B4A]">感謝 30 天的相伴</h2>
-             <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => window.open('https://line.me/R/ch/1432061434/coupon/')}>
+             <Button className="h-14 w-full rounded-full bg-[#1A2B4A] font-bold" onClick={() => router.push('/coupons')}>
                 查看我的獎券
              </Button>
           </PageCard>

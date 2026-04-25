@@ -47,7 +47,7 @@ function buildCouponMessage(reward: Reward): object {
             type: "button",
             style: "primary",
             color: "#1A2B4A",
-            action: { type: "uri", label: "查看我的獎券", uri: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://taichung-8th-anniversary.vercel.app"}/rewards` },
+            action: { type: "uri", label: "查看我的獎券", uri: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://taichung-8th-anniversary.vercel.app"}/coupons` },
           },
         ],
       },
