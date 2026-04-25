@@ -141,12 +141,9 @@ function App() {
       <DesignCanvas title="Nexus Life · 8TH 活動物料組" subtitle="TSUTAYA × WIRED TOKYO · 台中市政店 · 2026.04.25 – 05.24">
 
         {S('poster') && (
-          <DCSection id="poster" title="01 · 活動主視覺海報 ── 印刷 A4 + 電子看板 1080×1920">
+          <DCSection id="poster" title="01 · 活動主視覺海報 ── 印刷 A4 · 210×297mm">
             <DCArtboard id="p-a4" label="A4 印刷海報 · 210×297mm" width={794} height={1123}>
               <PosterA4 tweaks={tweaks} />
-            </DCArtboard>
-            <DCArtboard id="p-digital" label="電子看板 · 1080×1920 (50%)" width={540} height={960}>
-              <PosterDigital tweaks={tweaks} />
             </DCArtboard>
           </DCSection>
         )}
