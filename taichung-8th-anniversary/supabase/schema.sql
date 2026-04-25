@@ -34,7 +34,10 @@ CREATE TABLE IF NOT EXISTS public.draws (
     user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
     reward_id TEXT NOT NULL REFERENCES public.rewards(id),
     draw_date DATE NOT NULL, -- YYYY-MM-DD
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    is_used BOOLEAN DEFAULT FALSE,
+    used_at TIMESTAMPTZ DEFAULT NULL,
+    used_by TEXT DEFAULT NULL        -- staff name / identifier
 );
 
 -- 5. Rewards Table (Dynamic reward management)

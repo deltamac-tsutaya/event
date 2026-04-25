@@ -24,11 +24,15 @@ export default function CouponsPage() {
   }, [user]);
 
   const validCoupons   = history.filter((h) => {
+    if (!h.rewards) return false;
+    if (h.is_used) return false;
     const expiry = new Date(h.draw_date);
     expiry.setDate(expiry.getDate() + h.rewards.validity_days);
     return new Date() <= expiry;
   });
+  const redeemedCoupons = history.filter((h) => h.is_used);
   const expiredCoupons = history.filter((h) => {
+    if (!h.rewards || h.is_used) return false;
     const expiry = new Date(h.draw_date);
     expiry.setDate(expiry.getDate() + h.rewards.validity_days);
     return new Date() > expiry;
@@ -48,7 +52,7 @@ export default function CouponsPage() {
         </div>
         {!userLoading && history.length > 0 && (
           <span className="ml-auto text-xs font-bold text-[#C9A84C] bg-[#C9A84C]/10 rounded-full px-2 py-0.5">
-            {history.length} 張
+            {validCoupons.length} 張有效
           </span>
         )}
       </header>
@@ -82,23 +86,62 @@ export default function CouponsPage() {
             <h2 className="text-xs font-bold uppercase tracking-widest text-[#1A2B4A]/50">
               有效優惠券 · {validCoupons.length} 張
             </h2>
+            <p className="text-[11px] text-gray-400 -mt-1">點擊「展開核銷 QR Code」出示給店員掃描</p>
             <div className="space-y-3">
-              {validCoupons.map((h, i) => (
-                <CouponCard key={h.id ?? i} reward={h.rewards} drawDate={h.draw_date} />
+              {validCoupons.map((h) => (
+                <CouponCard
+                  key={h.id}
+                  drawId={h.id}
+                  reward={h.rewards}
+                  drawDate={h.draw_date}
+                  isUsed={h.is_used}
+                  usedAt={h.used_at}
+                  usedBy={h.used_by}
+                />
               ))}
             </div>
           </section>
         )}
 
-        {/* 已失效優惠券 */}
+        {/* 已核銷 */}
+        {!fetching && user && redeemedCoupons.length > 0 && (
+          <section className="space-y-3">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-orange-400">
+              已核銷 · {redeemedCoupons.length} 張
+            </h2>
+            <div className="space-y-3">
+              {redeemedCoupons.map((h) => (
+                <CouponCard
+                  key={h.id}
+                  drawId={h.id}
+                  reward={h.rewards}
+                  drawDate={h.draw_date}
+                  isUsed={h.is_used}
+                  usedAt={h.used_at}
+                  usedBy={h.used_by}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 已失效 */}
         {!fetching && user && expiredCoupons.length > 0 && (
           <section className="space-y-3">
             <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400">
               已失效 · {expiredCoupons.length} 張
             </h2>
             <div className="space-y-3">
-              {expiredCoupons.map((h, i) => (
-                <CouponCard key={h.id ?? i} reward={h.rewards} drawDate={h.draw_date} />
+              {expiredCoupons.map((h) => (
+                <CouponCard
+                  key={h.id}
+                  drawId={h.id}
+                  reward={h.rewards}
+                  drawDate={h.draw_date}
+                  isUsed={h.is_used}
+                  usedAt={h.used_at}
+                  usedBy={h.used_by}
+                />
               ))}
             </div>
           </section>

@@ -12,7 +12,7 @@ import {
   LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
   BarChart3, ShieldCheck, Search, RotateCcw, Plus,
   ChevronDown, ChevronUp, Zap, Settings2, CheckCircle, AlertCircle,
-  X, Printer, Image, FileText, ChevronRight, Send,
+  X, Printer, Image, FileText, ChevronRight, Send, BadgeCheck,
 } from "lucide-react";
 
 // ── 型別 ──────────────────────────────────────────────────────────────────
@@ -44,13 +44,14 @@ function ToolsMenu() {
   }, []);
 
   const items = [
-    { href: "/admin/print",         icon: <Printer size={15} />,  label: "列印 QR Code",        sub: "A4 批次列印" },
-    { href: "/admin/print/stand",   icon: <FileText size={15} />, label: "集印點立牌（文字）",   sub: "10×15 cm × 11 張" },
-    { href: "/admin/print/flyer",   icon: <FileText size={15} />, label: "活動主視覺海報",       sub: "A4 直向" },
-    { href: "/admin/print/counter", icon: <FileText size={15} />, label: "櫃檯說明立卡",         sub: "A4 × 1 張" },
-    { href: "/admin/print/table",   icon: <FileText size={15} />, label: "餐廳桌卡",             sub: "A6 平放" },
-    { href: "/admin/print/board",   icon: <FileText size={15} />, label: "獎項板 ／ 樓層指引",   sub: "A4 × 2 張" },
-    { href: "/admin/manual",        icon: <FileText size={15} />, label: "活動操作手冊",         sub: "員工操作指引" },
+    { href: "/admin/redeem",        icon: <BadgeCheck size={15} />, label: "優惠券核銷站",       sub: "掃描 QR 核銷券" },
+    { href: "/admin/print",         icon: <Printer size={15} />,    label: "列印 QR Code",       sub: "A4 批次列印" },
+    { href: "/admin/print/stand",   icon: <FileText size={15} />,   label: "集印點立牌（文字）", sub: "10×15 cm × 11 張" },
+    { href: "/admin/print/flyer",   icon: <FileText size={15} />,   label: "活動主視覺海報",     sub: "A4 直向" },
+    { href: "/admin/print/counter", icon: <FileText size={15} />,   label: "櫃檯說明立卡",       sub: "A4 × 1 張" },
+    { href: "/admin/print/table",   icon: <FileText size={15} />,   label: "餐廳桌卡",           sub: "A6 平放" },
+    { href: "/admin/print/board",   icon: <FileText size={15} />,   label: "獎項板 ／ 樓層指引", sub: "A4 × 2 張" },
+    { href: "/admin/manual",        icon: <FileText size={15} />,   label: "活動操作手冊",       sub: "員工操作指引" },
   ];
 
   return (
@@ -81,6 +82,98 @@ function ToolsMenu() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// ── 抽獎紀錄（含核銷） ────────────────────────────────────────────────────────
+interface DrawRecord {
+  id: string; draw_date: string; reward_id: string;
+  rewards: { name: string; tier: string; provider: string } | null;
+  is_used: boolean; used_at: string | null; used_by: string | null;
+}
+
+function DrawHistory({ lineUserId }: { lineUserId: string }) {
+  const [draws,    setDraws]    = useState<DrawRecord[]>([]);
+  const [loading,  setLoading]  = useState(true);
+  const [redeeming, setRedeeming] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ id: string; type: "ok" | "err"; text: string } | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const res  = await fetch(`/api/reward/history?lineUserId=${encodeURIComponent(lineUserId)}`);
+    const data = await res.json();
+    setDraws(data.history ?? []);
+    setLoading(false);
+  }, [lineUserId]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const redeem = async (drawId: string) => {
+    setRedeeming(drawId);
+    try {
+      const res  = await fetch("/api/admin/coupon/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ drawId, staffName: "admin" }),
+      });
+      const data = await res.json();
+      setMsg({
+        id: drawId,
+        type: data.success ? "ok" : "err",
+        text: data.success ? "核銷成功"
+          : data.error === "already_redeemed" ? "已核銷"
+          : data.error === "expired"          ? "已失效"
+          : data.error ?? "核銷失敗",
+      });
+      if (data.success) load();
+    } catch {
+      setMsg({ id: drawId, type: "err", text: "網路錯誤" });
+    } finally {
+      setRedeeming(null);
+    }
+  };
+
+  if (loading) return <div className="py-3 text-center text-xs text-gray-400">載入中…</div>;
+  if (!draws.length) return <div className="py-3 text-center text-xs text-gray-400">尚無抽獎紀錄</div>;
+
+  const TIER_BADGE: Record<string, string> = {
+    S: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    A: "bg-blue-100 text-blue-700 border-blue-200",
+    B: "bg-gray-100 text-gray-600 border-gray-200",
+  };
+
+  return (
+    <div className="space-y-2">
+      {draws.map(d => (
+        <div key={d.id} className="flex items-center gap-2 bg-white rounded-xl border border-gray-100 px-3 py-2">
+          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${TIER_BADGE[d.rewards?.tier ?? "B"]}`}>
+            {d.rewards?.tier ?? "?"}
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-gray-700 truncate">{d.rewards?.name ?? d.reward_id}</p>
+            <p className="text-[10px] text-gray-400">{d.draw_date}</p>
+          </div>
+          {msg?.id === d.id && (
+            <span className={`text-[10px] font-bold shrink-0 ${msg.type === "ok" ? "text-green-600" : "text-red-500"}`}>
+              {msg.text}
+            </span>
+          )}
+          {d.is_used ? (
+            <span className="text-[9px] font-bold text-orange-500 border border-orange-200 bg-orange-50 rounded px-1.5 py-0.5 shrink-0">
+              已核銷
+            </span>
+          ) : (
+            <button
+              onClick={() => redeem(d.id)}
+              disabled={redeeming === d.id}
+              className="text-[10px] font-bold text-emerald-700 border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 rounded px-2 py-0.5 shrink-0 transition-colors disabled:opacity-50"
+            >
+              {redeeming === d.id ? "…" : "核銷"}
+            </button>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
@@ -276,6 +369,15 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
               {busy === "reset" ? <RefreshCcw size={10} className="animate-spin" /> : <RotateCcw size={10} />} 全部重置
             </Button>
           </div>
+
+          {user.draw_count > 0 && (
+            <div>
+              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">
+                抽獎紀錄 · 核銷 ({user.draw_count} 筆)
+              </p>
+              <DrawHistory lineUserId={user.line_user_id} />
+            </div>
+          )}
         </div>
       )}
     </div>

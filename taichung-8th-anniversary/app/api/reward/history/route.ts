@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   // Fetch draw records (without auto-join — draws.reward_id has no FK constraint)
   const { data: draws, error: historyError } = await supabaseAdmin
     .from("draws")
-    .select("id, draw_date, created_at, reward_id")
+    .select("id, draw_date, created_at, reward_id, is_used, used_at, used_by")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -63,6 +63,9 @@ export async function GET(request: NextRequest) {
     created_at: d.created_at,
     reward_id: d.reward_id,
     rewards: rewardMap[d.reward_id] ?? null,
+    is_used: d.is_used ?? false,
+    used_at: d.used_at ?? null,
+    used_by: d.used_by ?? null,
   }));
 
   return NextResponse.json({ history });
