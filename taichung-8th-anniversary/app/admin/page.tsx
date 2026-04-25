@@ -50,7 +50,6 @@ function ToolsMenu() {
     { href: "/admin/print/counter", icon: <FileText size={15} />, label: "櫃檯說明立卡",         sub: "A4 × 1 張" },
     { href: "/admin/print/table",   icon: <FileText size={15} />, label: "餐廳桌卡",             sub: "A6 平放" },
     { href: "/admin/print/board",   icon: <FileText size={15} />, label: "獎項板 ／ 樓層指引",   sub: "A4 × 2 張" },
-    { href: "/admin/social",        icon: <Image size={15} />,    label: "社群媒體文宣",         sub: "IG / FB / LINE" },
     { href: "/admin/manual",        icon: <FileText size={15} />, label: "活動操作手冊",         sub: "員工操作指引" },
   ];
 
