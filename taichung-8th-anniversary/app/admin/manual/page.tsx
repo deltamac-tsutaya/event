@@ -25,21 +25,55 @@ const STAMP_LOCATIONS = [
   { id: "C",  floor: "—",  area: "電梯告示",        element: "墨鏡-小鹿",  hint: "彩蛋點：電梯告示位置，往往被忽略的角落。", hidden: true },
 ];
 
-const REWARD_TIERS = [
+interface Prize { no: number; shop: "WIRED TOKYO" | "TSUTAYA BOOKSTORE"; name: string; rules: string[]; }
+interface RewardTier { tier: string; label: string; color: string; note: string; prizes: Prize[]; }
+
+const REWARD_TIERS: RewardTier[] = [
   {
-    tier: "∞", label: "∞ INFINITY DAY 加碼大獎", color: "text-yellow-800 bg-yellow-50 border-yellow-300",
-    examples: ["和牛牛排雙人套餐 × 8 份（限量）"],
-    note: "集印加碼獎券累積越多，抽中機率越高。05/24（日）20:00 活動現場公開抽出，共 8 份。",
+    tier: "S", label: "S 級獎項", color: "text-yellow-800 bg-yellow-50 border-yellow-300",
+    note: "共 2 種，有效期至 2026/5/30。",
+    prizes: [
+      { no: 1, shop: "WIRED TOKYO", name: "雙人套餐 188 元抵用券",
+        rules: ["憑券於 WIRED TOKYO 台中市政店點購雙人套餐，現折 188 元。","每份套餐限用 1 張。","限內用，不得外帶。","結帳時出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 2, shop: "TSUTAYA BOOKSTORE", name: "88 元現金抵用券",
+        rules: ["於 TSUTAYA BOOKSTORE 台中市政店結帳時出示券碼，折抵消費 88 元。","不限品項，不設最低消費門檻。","單筆交易限用 1 張。","無法與其他優惠券、折扣等活動合併使用。"] },
+    ],
   },
   {
     tier: "A", label: "A 級獎項", color: "text-blue-700 bg-blue-50 border-blue-200",
-    examples: ["WIRED TOKYO 飲品兌換券", "TSUTAYA 選書禮券"],
-    note: "中等機率，每日有固定上限。集滿 8 枚印章後每日可抽，共 14 項獎品，100% 中獎。",
+    note: "共 4 種體驗券，有效期至 2026/5/30。",
+    prizes: [
+      { no: 3, shop: "WIRED TOKYO", name: "法式巧克力香蕉聖代 體驗券",
+        rules: ["憑券於 WIRED TOKYO 台中市政店兌換法式巧克力香蕉聖代 1 份（原價 230 元）。","需搭配任一餐點或飲品同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 4, shop: "WIRED TOKYO", name: "松露薯條 體驗券",
+        rules: ["憑券於 WIRED TOKYO 台中市政店兌換松露薯條 1 份（原價 360 元）。","需搭配任一餐點或飲品同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 5, shop: "TSUTAYA BOOKSTORE", name: "伯爵茶巴斯克 體驗券",
+        rules: ["憑券於 WIRED TOKYO 台中市政店兌換伯爵茶巴斯克 1 份（原價 220 元）。","需搭配任一餐點或飲品同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 6, shop: "TSUTAYA BOOKSTORE", name: "WIRED 招牌水果茶 體驗券",
+        rules: ["憑券於 WIRED TOKYO 台中市政店兌換招牌水果茶（熱／冰）1 杯（原價 180 元）。","需搭配任一餐點或飲品同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+    ],
   },
   {
     tier: "B", label: "B 級獎項", color: "text-gray-600 bg-gray-50 border-gray-200",
-    examples: ["活動特製書籤", "TSUTAYA 折扣碼"],
-    note: "基本獎項，無每日上限，保底兜底。所有人至少抽到 B 級（100% 中獎）。",
+    note: "共 8 種，保底獎項，100% 中獎，有效期至 2026/5/30。",
+    prizes: [
+      { no: 7, shop: "WIRED TOKYO", name: "雙人套餐 88 折",
+        rules: ["憑券於 WIRED TOKYO 台中市政店點購雙人套餐，套餐總金額享 88 折。","每份套餐限用 1 張。","限內用，結帳時出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 8, shop: "WIRED TOKYO", name: "Brunch 套餐 88 折",
+        rules: ["憑券於 WIRED TOKYO 台中市政店點購 Brunch 套餐，套餐總金額享 88 折。","限 Brunch 供應時段使用。","每份套餐限用 1 張。","限內用，點餐時出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 9, shop: "WIRED TOKYO", name: "草莓煉乳抹茶法式吐司 加碼體驗券",
+        rules: ["憑券加購草莓煉乳抹茶法式吐司 1 份，優惠價 288 元（原價 360 元）。","需搭配任一餐點同桌消費。","單筆消費限用 1 張。","限內用，點餐時出示券碼由店員確認。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 10, shop: "WIRED TOKYO", name: "外帶飲品 買一送一",
+        rules: ["憑券外帶飲品買一送一，贈品限同品項且價格相同或較低者。","單筆消費限用 1 張。","點餐時出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 11, shop: "TSUTAYA BOOKSTORE", name: "文具雜貨 88 折",
+        rules: ["於 TSUTAYA BOOKSTORE 台中市政店選購文具雜貨，單筆結帳享 88 折。","特價品及指定品牌除外。","單筆交易限用 1 張。","結帳前出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 12, shop: "TSUTAYA BOOKSTORE", name: "書籍雜誌 88 折",
+        rules: ["於 TSUTAYA BOOKSTORE 台中市政店選購書籍與雜誌，單筆結帳享 88 折。","限正價商品。","單筆交易限用 1 張。","結帳前出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 13, shop: "TSUTAYA BOOKSTORE", name: "88 元抵用券",
+        rules: ["於 TSUTAYA BOOKSTORE 或 WIRED TOKYO 台中市政店，單筆消費滿 888 元現折 88 元。","書店與餐廳消費皆可使用。","單筆交易限用 1 張。","結帳前出示券碼，由店員掃碼核銷。","無法與其他優惠券、折扣等活動合併使用。"] },
+      { no: 14, shop: "TSUTAYA BOOKSTORE", name: "8% off",
+        rules: ["於 TSUTAYA BOOKSTORE 或 WIRED TOKYO 台中市政店單筆消費享 92 折。","不限品項，不設最低消費門檻。","單筆交易限用 1 張。","無法與其他優惠券、折扣等活動合併使用。"] },
+    ],
   },
 ];
 
@@ -130,6 +164,33 @@ const FAQS = [
 ];
 
 // ── 元件 ──────────────────────────────────────────────────────────────────
+
+function PrizeRow({ prize }: { prize: Prize }) {
+  const [open, setOpen] = useState(false);
+  const isWired = prize.shop === "WIRED TOKYO";
+  return (
+    <div className="rounded-xl bg-white/70 border border-white/80 overflow-hidden">
+      <button onClick={() => setOpen(v => !v)} className="w-full flex items-center gap-2 px-3 py-2.5 text-left hover:bg-white/80 transition-colors">
+        <span className="text-[9px] font-mono text-gray-400 w-5 shrink-0">#{prize.no}</span>
+        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${isWired ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}>
+          {isWired ? "WIRED" : "TSUTAYA"}
+        </span>
+        <span className="text-xs font-semibold text-gray-800 flex-1 leading-tight">{prize.name}</span>
+        {open ? <ChevronDown size={12} className="shrink-0 text-gray-400" /> : <ChevronRight size={12} className="shrink-0 text-gray-400" />}
+      </button>
+      {open && (
+        <div className="px-3 pb-3 space-y-1 border-t border-white/60">
+          {prize.rules.map((rule, i) => (
+            <div key={i} className="flex items-start gap-1.5 text-[11px] text-gray-600 mt-1">
+              <span className="text-gray-300 shrink-0">·</span>
+              <span className="leading-relaxed">{rule}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function Section({ id, icon, title, children }: {
   id: string; icon: React.ReactNode; title: string; children: React.ReactNode;
@@ -231,7 +292,7 @@ export default function ManualPage() {
                   ["主辦品牌", "TSUTAYA BOOKSTORE × WIRED TOKYO 台中市政店"],
                   ["集章點位", "8 個主要點位 + 3 個隱藏點位"],
                   ["抽獎資格", "集滿 8 枚印章，每日可抽一次"],
-                  ["獎項等級", "∞ 加碼大獎 / A / B，每日抽一次，14 項獎品 100% 中獎"],
+                  ["獎項等級", "S / A / B 三級，共 14 種獎品，100% 中獎，有效期至 2026/5/30"],
                 ].map(([k, v]) => (
                   <div key={k} className="space-y-0.5">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{k}</p>
@@ -242,7 +303,7 @@ export default function ManualPage() {
               <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3 flex gap-2">
                 <Info size={14} className="text-amber-600 shrink-0 mt-0.5" />
                 <p className="text-xs text-amber-700 leading-relaxed">
-                  同一印章點位每人每次活動只能掃描一次。每日抽獎資格跨日重置，已集滿 8 枚者每日均可抽。∞ INFINITY DAY 加碼大獎於 05/24（日）20:00 現場抽出。
+                  同一印章點位每人每次活動只能掃描一次。每日抽獎資格跨日重置，已集滿 8 枚者每日均可抽。所有獎項有效期統一至 2026/5/30，核銷時請確認有效期。
                 </p>
               </div>
             </div>
@@ -346,15 +407,13 @@ export default function ManualPage() {
             <div className="space-y-3">
               {REWARD_TIERS.map(rt => (
                 <div key={rt.tier} className={`rounded-2xl border p-5 ${rt.color}`}>
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-2 mb-1">
                     <span className="text-base font-black">{rt.label}</span>
                   </div>
-                  <p className="text-xs mb-2 opacity-80">{rt.note}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {rt.examples.map(e => (
-                      <span key={e} className="text-[10px] font-medium px-2 py-1 rounded-full bg-white/60 border border-current/20">
-                        {e}
-                      </span>
+                  <p className="text-xs mb-3 opacity-75">{rt.note}</p>
+                  <div className="space-y-1.5">
+                    {rt.prizes.map(prize => (
+                      <PrizeRow key={prize.no} prize={prize} />
                     ))}
                   </div>
                 </div>
