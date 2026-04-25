@@ -61,6 +61,21 @@ function PrintAllPage({ w, h, children }) {
   );
 }
 
+function PrintAllPageDuo({ w, h, children }) {
+  // Two copies side-by-side stacked — A6 (105×148mm) × 2 fits perfectly on A4 portrait
+  const A4W = 793.7, A4H = 1122.5;
+  const s = Math.min(A4W / w, (A4H / 2) / h);
+  const wrap = { width: w * s, height: h * s, flexShrink: 0, position: 'relative' };
+  const inner = { width: w, height: h, transform: `scale(${s})`, transformOrigin: 'top left',
+    position: 'absolute', top: 0, left: 0, overflow: 'hidden' };
+  return (
+    <div className="dc-print-page" style={{ flexDirection: 'column' }}>
+      <div style={wrap}><div style={inner}>{React.cloneElement(children)}</div></div>
+      <div style={wrap}><div style={inner}>{React.cloneElement(children)}</div></div>
+    </div>
+  );
+}
+
 function PrintAllLayout({ tweaks, urlMap }) {
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const stampUrl = (n) => urlMap[n] ? `${origin}/stamp?id=${urlMap[n]}` : '';
@@ -84,7 +99,7 @@ function PrintAllLayout({ tweaks, urlMap }) {
         <PrintAllPage key={p.n} w={378} h={567}><StampStand p={{...p, url: stampUrl(p.n)}} egg /></PrintAllPage>
       ))}
       <PrintAllPage w={794} h={1123}><CounterA4 tweaks={tweaks} /></PrintAllPage>
-      <PrintAllPage w={397} h={559}><TableA6 tweaks={tweaks} /></PrintAllPage>
+      <PrintAllPageDuo w={397} h={559}><TableA6 tweaks={tweaks} /></PrintAllPageDuo>
     </>,
     elRef.current,
   );
@@ -126,12 +141,9 @@ function App() {
       <DesignCanvas title="Nexus Life · 8TH 活動物料組" subtitle="TSUTAYA × WIRED TOKYO · 台中市政店 · 2026.04.25 – 05.24">
 
         {S('poster') && (
-          <DCSection id="poster" title="01 · 活動主視覺海報 ── 印刷 A4 + 電子看板 1080×1920">
+          <DCSection id="poster" title="01 · 活動主視覺海報 ── 印刷 A4 · 210×297mm">
             <DCArtboard id="p-a4" label="A4 印刷海報 · 210×297mm" width={794} height={1123}>
               <PosterA4 tweaks={tweaks} />
-            </DCArtboard>
-            <DCArtboard id="p-digital" label="電子看板 · 1080×1920 (50%)" width={540} height={960}>
-              <PosterDigital tweaks={tweaks} />
             </DCArtboard>
           </DCSection>
         )}
