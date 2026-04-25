@@ -9,6 +9,7 @@
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.js"></script>
 <script type="text/babel" src="design-canvas.jsx"></script>
 <script type="text/babel" src="tweaks-panel.jsx"></script>
 <script type="text/babel" src="atoms.jsx"></script>
@@ -43,8 +44,77 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "section": "all"
 }/*EDITMODE-END*/;
 
+function PrintAllPage({ w, h, children }) {
+  const s = Math.min(794 / w, 1123 / h);
+  return (
+    <div className="dc-print-page">
+      <div style={{ width: w * s, height: h * s, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ width: w, height: h, transform: `scale(${s})`, transformOrigin: 'top left',
+          position: 'absolute', top: 0, left: 0 }}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PrintAllLayout({ tweaks, urlMap }) {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const stampUrl = (n) => urlMap[n] ? `${origin}/stamp?id=${urlMap[n]}` : '';
+
+  const elRef = React.useRef(null);
+  if (!elRef.current) {
+    const el = document.createElement('div');
+    el.id = 'dc-print-all';
+    document.body.appendChild(el);
+    elRef.current = el;
+  }
+  React.useEffect(() => () => { if (elRef.current) elRef.current.remove(); }, []);
+
+  return ReactDOM.createPortal(
+    <>
+      <PrintAllPage w={794} h={1123}><PosterA4 tweaks={tweaks} /></PrintAllPage>
+      {STAMP_POINTS_MAIN.map(p => (
+        <PrintAllPage key={p.n} w={378} h={567}><StampStand p={{...p, url: stampUrl(p.n)}} /></PrintAllPage>
+      ))}
+      {STAMP_POINTS_EGG.map(p => (
+        <PrintAllPage key={p.n} w={378} h={567}><StampStand p={{...p, url: stampUrl(p.n)}} egg /></PrintAllPage>
+      ))}
+      <PrintAllPage w={794} h={1123}><CounterA4 tweaks={tweaks} /></PrintAllPage>
+      <PrintAllPage w={397} h={559}><TableA6 tweaks={tweaks} /></PrintAllPage>
+    </>,
+    elRef.current,
+  );
+}
+
 function App() {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [urlMap, setUrlMap] = React.useState({});
+
+  React.useEffect(() => {
+    fetch('/api/admin/configs')
+      .then(r => r.json())
+      .then(d => {
+        if (d.success) {
+          const map = {};
+          d.configs.forEach(c => { map[c.stamp_id] = c.uuid; });
+          setUrlMap(map);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const stampUrl = (n) => urlMap[n] ? `${origin}/stamp?id=${urlMap[n]}` : '';
+
+  const triggerPrintAll = React.useCallback(() => {
+    document.body.classList.add('dc-batch-printing');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      window.print();
+      document.body.classList.remove('dc-batch-printing');
+    }));
+  }, []);
+
   const showAll = tweaks.section === 'all';
   const S = (k) => showAll || tweaks.section === k;
 
@@ -67,7 +137,7 @@ function App() {
           <DCSection id="stand-main" title="02 · 集印點位立牌 + QR ── 主路徑 01–08 ｜ 10×15cm 護貝直式">
             {STAMP_POINTS_MAIN.map(p => (
               <DCArtboard key={p.n} id={`sm-${p.n}`} label={`${p.n} · ${p.loc}`} width={378} height={567}>
-                <StampStand p={p} />
+                <StampStand p={{...p, url: stampUrl(p.n)}} />
               </DCArtboard>
             ))}
           </DCSection>
@@ -77,7 +147,7 @@ function App() {
           <DCSection id="stand-egg" title="03 · 集印點位立牌 + QR ── 彩蛋 A · B · C ｜ 10×15cm 護貝直式">
             {STAMP_POINTS_EGG.map(p => (
               <DCArtboard key={p.n} id={`se-${p.n}`} label={`${p.n} · ${p.loc}`} width={378} height={567}>
-                <StampStand p={p} egg />
+                <StampStand p={{...p, url: stampUrl(p.n)}} egg />
               </DCArtboard>
             ))}
           </DCSection>
@@ -99,16 +169,6 @@ function App() {
           </DCSection>
         )}
 
-        {S('richmenu') && (
-          <DCSection id="richmenu" title="08 · LINE 圖文選單 ── 2500×1686px (顯示 32%)">
-            <DCArtboard id="rm" label="LINE Rich Menu · 2500×1686" width={800} height={540}>
-              <div style={{ width: 2500, height: 1686, transform: 'scale(0.32)', transformOrigin: 'top left' }}>
-                <RichMenu />
-              </div>
-            </DCArtboard>
-          </DCSection>
-        )}
-
       </DesignCanvas>
 
       <TweaksPanel title="Nexus Life · 物料檢視">
@@ -116,10 +176,14 @@ function App() {
         <TweakRadio
           label="分區"
           value={tweaks.section}
-          options={['all','poster','stand-main','stand-egg','counter','table','richmenu']}
+          options={['all','poster','stand-main','stand-egg','counter','table']}
           onChange={(v) => setTweak('section', v)}
         />
+        <TweakSection label="列印" />
+        <TweakButton label="全部列印 A4 (14 頁)" onClick={triggerPrintAll} />
       </TweaksPanel>
+
+      <PrintAllLayout tweaks={tweaks} urlMap={urlMap} />
     </>
   );
 }
