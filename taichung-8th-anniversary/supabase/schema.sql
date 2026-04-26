@@ -19,13 +19,14 @@ CREATE TABLE IF NOT EXISTS public.stamp_configs (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. Stamps Table (Collection records)
+-- 3. Stamps Table (Collection records — resets daily)
 CREATE TABLE IF NOT EXISTS public.stamps (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
     stamp_id TEXT NOT NULL,
+    stamp_date DATE NOT NULL DEFAULT CURRENT_DATE, -- Taipei date; enables daily reset
     collected_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(user_id, stamp_id) -- Prevent duplicate stamps for the same point
+    UNIQUE(user_id, stamp_id, stamp_date) -- One stamp per point per day
 );
 
 -- 4. Draws Table (Reward records)
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS public.rewards (
 
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_stamps_user_id ON public.stamps(user_id);
+CREATE INDEX IF NOT EXISTS idx_stamps_date ON public.stamps(stamp_date);
 CREATE INDEX IF NOT EXISTS idx_draws_user_id ON public.draws(user_id);
 CREATE INDEX IF NOT EXISTS idx_draws_date ON public.draws(draw_date);
 CREATE INDEX IF NOT EXISTS idx_stamp_configs_id_active ON public.stamp_configs(stamp_id, is_active);

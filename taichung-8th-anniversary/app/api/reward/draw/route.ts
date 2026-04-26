@@ -36,7 +36,16 @@ export async function POST(request: NextRequest) {
   const { data: existingDraw } = await supabaseAdmin.from("draws").select("id").eq("user_id", user.id).eq("draw_date", today).maybeSingle();
   if (existingDraw) return NextResponse.json({ success: false, error: "Already drawn today" }, { status: 409 });
 
-  // 3. 獲取動態獎項池與今日發放統計
+  // 3. 驗證今日已集滿 8 枚主印章（每日重置機制）
+  const { data: todayStamps } = await supabaseAdmin
+    .from("stamps")
+    .select("stamp_id")
+    .eq("user_id", user.id)
+    .eq("stamp_date", today);
+  const todayMainCount = todayStamps?.filter(s => !["A", "B", "C"].includes(s.stamp_id)).length ?? 0;
+  if (todayMainCount < 8) return NextResponse.json({ success: false, error: "Not enough stamps today" }, { status: 403 });
+
+  // 4. 獲取動態獎項池與今日發放統計
   const { data: rewardsPool, error: rewardsError } = await supabaseAdmin.from("rewards").select("*");
   if (rewardsError || !rewardsPool) throw new Error("Failed to fetch rewards pool");
 
@@ -59,7 +68,7 @@ export async function POST(request: NextRequest) {
     return (counts[reward.id] || 0) < reward.daily_limit;
   });
 
-  // 4. 執行權重抽獎 (若無可用獎項，保底最後一個)
+  // 5. 執行權重抽獎 (若無可用獎項，保底最後一個)
   const selected = weightedRandom(availableRewards.length > 0 ? availableRewards : [rewardsPool[rewardsPool.length - 1]]);
 
   // 5. 寫入抽獎紀錄並「累積加碼獎券」

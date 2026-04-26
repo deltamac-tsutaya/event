@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
+const ACHIEVEMENT_IDS = ["A", "B", "C"];
+
+function getTaipeiDateString(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Taipei",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const { lineUserId, displayName, stampId } = body;
@@ -46,15 +55,16 @@ export async function POST(request: NextRequest) {
   }
 
   const realStampId = config.stamp_id;
+  const today = getTaipeiDateString();
 
-  // Insert stamp (UNIQUE(user_id, stamp_id) 防重複)
+  // Insert stamp (UNIQUE(user_id, stamp_id, stamp_date) 防當日重複)
   const { error: stampError } = await supabaseAdmin.from("stamps").insert({
     user_id: user.id,
     stamp_id: realStampId,
+    stamp_date: today,
   });
 
   if (stampError) {
-    // Postgres unique violation code: 23505
     if (stampError.code === "23505") {
       return NextResponse.json({ success: false, reason: "already_stamped" });
     }
@@ -64,11 +74,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Count total stamps
-  const { count, error: countError } = await supabaseAdmin
+  // Count today's main stamps (exclude hidden achievements)
+  const { data: todayStamps, error: countError } = await supabaseAdmin
     .from("stamps")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", user.id);
+    .select("stamp_id")
+    .eq("user_id", user.id)
+    .eq("stamp_date", today);
 
   if (countError) {
     return NextResponse.json(
@@ -77,5 +88,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ success: true, stampId: realStampId, totalStamps: count ?? 0 });
+  const totalStamps = todayStamps?.filter(s => !ACHIEVEMENT_IDS.includes(s.stamp_id)).length ?? 0;
+
+  return NextResponse.json({ success: true, stampId: realStampId, totalStamps });
 }
