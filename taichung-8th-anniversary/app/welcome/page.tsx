@@ -130,7 +130,7 @@ export default function WelcomePage() {
             活動期間
           </p>
           <p className="text-xs font-bold text-[#1A2B4A] mt-0.5">
-            2026 / 04 / 23 — 05 / 13
+            2026 / 04 / 25 — 05 / 24
           </p>
         </div>
 
