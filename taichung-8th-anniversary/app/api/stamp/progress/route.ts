@@ -41,11 +41,14 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  // Get all stamps
+  const today = getTaipeiDateString();
+
+  // Get today's stamps only (daily reset)
   const { data: stamps, error: stampsError } = await supabaseAdmin
     .from("stamps")
     .select("stamp_id, collected_at")
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .eq("stamp_date", today);
 
   if (stampsError) {
     return NextResponse.json(
@@ -54,8 +57,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // ── 過濾進度計數 ────────────────────────────────────────────────────────
-  // 排除 A, B, C 這類不計入主進度的成就點
+  // 排除 A, B, C 隱藏成就點，不計入每日 8 枚進度
   const achievementIds = ["A", "B", "C"];
   const mainStampsCount = stamps?.filter(s => !achievementIds.includes(s.stamp_id)).length ?? 0;
   
