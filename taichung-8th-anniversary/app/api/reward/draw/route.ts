@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { writeLog } from "@/lib/log";
 
 function getTaipeiDateString(): string {
   const now = new Date();
@@ -82,6 +83,13 @@ export async function POST(request: NextRequest) {
 
   // 關鍵邏輯：今日首次抽獎完成，加碼獎券 +1
   await supabaseAdmin.from("users").update({ tickets_count: (user.tickets_count || 0) + 1 }).eq("id", user.id);
+
+  writeLog({
+    event_type: "draw_completed",
+    user_id: user.id,
+    line_user_id: lineUserId,
+    detail: { reward_id: selected.id, reward_name: selected.name, tier: selected.tier, draw_date: today },
+  });
 
   // 發送 LINE 優惠券訊息（非同步，不影響抽獎回傳）
   import("@/lib/line-push")

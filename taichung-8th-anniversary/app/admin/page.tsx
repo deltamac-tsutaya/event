@@ -12,7 +12,7 @@ import {
   LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
   BarChart3, ShieldCheck, Search, RotateCcw, Plus,
   ChevronDown, ChevronUp, Zap, CheckCircle, AlertCircle,
-  X, Printer, FileText, Send, Layers,
+  X, Printer, FileText, Send, Layers, ScrollText, CalendarX,
   KeyRound, Eye, EyeOff,
 } from "lucide-react";
 
@@ -152,6 +152,20 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
     try {
       const res = await call("/api/admin/user/reset", "POST", { userId: user.id });
       res.success ? flash("ok", "重置成功") : flash("err", res.error ?? "重置失敗");
+    } catch (e) {
+      flash("err", e instanceof Error ? e.message : "網路錯誤");
+    } finally {
+      setBusy(null);
+      onRefresh();
+    }
+  };
+
+  const resetTodayStamps = async () => {
+    if (!confirm(`確定清除「${user.display_name}」今日印章？`)) return;
+    setBusy("reset-today");
+    try {
+      const res = await call("/api/admin/user/reset-today-stamps", "POST", { userId: user.id });
+      res.success ? flash("ok", "今日印章已清除") : flash("err", res.error ?? "重置失敗");
     } catch (e) {
       flash("err", e instanceof Error ? e.message : "網路錯誤");
     } finally {
@@ -308,6 +322,10 @@ function UserRow({ user, onRefresh }: { user: AdminUser; onRefresh: () => void }
             <Button size="sm" variant="outline" onClick={pushCoupon} disabled={!!busy}
               className="h-8 text-xs gap-1.5 rounded-full border-green-200 text-green-700 hover:bg-green-50">
               {busy === "push" ? <RefreshCcw size={10} className="animate-spin" /> : <Send size={10} />} 發送優惠券
+            </Button>
+            <Button size="sm" variant="outline" onClick={resetTodayStamps} disabled={!!busy}
+              className="h-8 text-xs gap-1.5 rounded-full border-amber-200 text-amber-700 hover:bg-amber-50">
+              {busy === "reset-today" ? <RefreshCcw size={10} className="animate-spin" /> : <CalendarX size={10} />} 重置今日印章
             </Button>
             <Button size="sm" variant="outline" onClick={resetUser} disabled={!!busy}
               className="h-8 text-xs gap-1.5 rounded-full border-red-200 text-red-600 hover:bg-red-50 ml-auto">
@@ -665,6 +683,17 @@ export default function AdminPage() {
               <div>
                 <p className="font-bold text-sm text-gray-800">活動操作手冊</p>
                 <p className="text-[10px] text-gray-400 mt-0.5">員工操作指引 · 核銷說明</p>
+              </div>
+            </div>
+          </Link>
+          <Link href="/admin/logs" className="block">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 flex items-center gap-4 hover:shadow-md hover:border-emerald-200 transition-all group">
+              <div className="p-3 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors shrink-0">
+                <ScrollText size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-sm text-gray-800">活動日誌</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">集章 · 抽獎 · 核銷紀錄</p>
               </div>
             </div>
           </Link>

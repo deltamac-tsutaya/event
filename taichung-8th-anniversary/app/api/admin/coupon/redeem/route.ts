@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { writeLog } from "@/lib/log";
 
 // POST /api/admin/coupon/redeem
 // body: { drawId, pin?, adminOverride? }
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
   // Fetch the draw record
   const { data: draw, error: fetchError } = await supabaseAdmin
     .from("draws")
-    .select("id, draw_date, is_used, reward_id")
+    .select("id, user_id, draw_date, is_used, reward_id")
     .eq("id", drawId)
     .single();
 
@@ -66,6 +67,18 @@ export async function POST(request: NextRequest) {
   if (updateError) {
     return NextResponse.json({ success: false, error: updateError.message }, { status: 500 });
   }
+
+  const { data: drawUser } = await supabaseAdmin
+    .from("users").select("id, line_user_id, display_name").eq("id", draw.user_id).single();
+
+  writeLog({
+    event_type: "coupon_redeemed",
+    user_id: draw.user_id,
+    line_user_id: drawUser?.line_user_id,
+    display_name: drawUser?.display_name,
+    detail: { draw_id: drawId, reward_id: draw.reward_id, used_by: staffName ?? "staff" },
+    actor: staffName ?? "staff",
+  });
 
   return NextResponse.json({ success: true });
 }
