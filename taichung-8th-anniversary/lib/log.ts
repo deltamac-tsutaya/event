@@ -15,14 +15,20 @@ export function writeLog(params: {
   detail?: Record<string, unknown>;
   actor?: string;
 }): void {
-  supabaseAdmin.from("activity_logs").insert({
-    log_date: getTaipeiDate(),
-    log_time: new Date().toISOString(),
-    event_type: params.event_type,
-    user_id: params.user_id ?? null,
-    line_user_id: params.line_user_id ?? null,
-    display_name: params.display_name ?? null,
-    detail: params.detail ?? {},
-    actor: params.actor ?? "system",
-  }).then(() => {}).catch(err => console.error("[log]", err));
+  void (async () => {
+    try {
+      await supabaseAdmin.from("activity_logs").insert({
+        log_date: getTaipeiDate(),
+        log_time: new Date().toISOString(),
+        event_type: params.event_type,
+        user_id: params.user_id ?? null,
+        line_user_id: params.line_user_id ?? null,
+        display_name: params.display_name ?? null,
+        detail: params.detail ?? {},
+        actor: params.actor ?? "system",
+      });
+    } catch (err) {
+      console.error("[log]", err);
+    }
+  })();
 }
