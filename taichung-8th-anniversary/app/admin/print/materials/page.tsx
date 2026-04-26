@@ -183,11 +183,7 @@ function StampStand({ config, egg = false }: { config: StampConfig; egg?: boolea
         </div>
 
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: BRAND.navy,
-            letterSpacing: '0.02em', lineHeight: 1.3 }}>
-            {config.area_name}
-          </div>
-          <div style={{ marginTop: 4, fontSize: 14, color: BRAND.brown,
+          <div style={{ fontSize: 14, color: BRAND.brown,
             fontFamily: "'DM Mono',monospace", letterSpacing: '0.12em' }}>
             用 LINE 掃描
           </div>
@@ -368,7 +364,6 @@ export default function MaterialsPage() {
                           marginBottom: -(567 * 0.5) + 'px' }}>
                           <StampStand config={c} egg={egg} />
                         </div>
-                        <p className="text-[9px] font-bold text-gray-600 mt-1">{c.area_name}</p>
                         <p className="text-[7px] font-mono text-gray-300 truncate max-w-[100px]">{c.uuid}</p>
                       </div>
                     );
