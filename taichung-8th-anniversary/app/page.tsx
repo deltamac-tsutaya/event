@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import { toast } from "sonner";
-import { Ticket, Sparkles } from "lucide-react";
+import { Ticket, Sparkles, ChevronDown } from "lucide-react";
 import type { Reward } from "@/lib/types";
 import { DynamicHero } from "@/components/DynamicHero";
 import SideDrawer from "@/components/SideDrawer";
@@ -42,7 +42,7 @@ function HeroSection({
         e.stopPropagation();
         onToggle();
       }}
-      className={`relative z-10 flex flex-col justify-end overflow-hidden w-full transition-[height] duration-700 ease-in-out cursor-pointer active:scale-[0.99] transition-transform ${
+      className={`relative z-10 flex flex-col justify-end overflow-hidden w-full transition-[height] duration-500 ease-in-out cursor-pointer active:scale-[0.995] ${
         compact ? "h-[42svh]" : "h-[100svh]"
       }`}
     >
@@ -69,7 +69,7 @@ function HeroSection({
         </div>
       )}
 
-      <div className="relative z-10 px-6 pb-8 flex flex-col gap-4">
+      <div className="relative z-10 px-6 pb-12 flex flex-col gap-4">
         <div className="flex items-center gap-2">
           <img src="/tsutaya-logo.svg" alt="TSUTAYA" className="h-4 w-auto opacity-80" />
           <span className="text-[#1A2B4A]/20 font-mono text-[10px]">×</span>
@@ -90,12 +90,12 @@ function HeroSection({
           </h1>
         </div>
 
-        {!compact && (
+        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${compact ? "max-h-0 opacity-0" : "max-h-40 opacity-100"}`}>
           <div className="mt-2 space-y-4">
-             <p className="text-sm text-[#1A2B4A]/70 font-medium">
-               找出店內 8 個印記，集滿抽獎，每天一次機會
-             </p>
-             <div className="flex items-center gap-3 text-[10px] font-mono text-[#8A6F5C]/60 tracking-widest">
+            <p className="text-sm text-[#1A2B4A]/70 font-medium">
+              找出店內 8 個印記，集滿抽獎，每天一次機會
+            </p>
+            <div className="flex items-center gap-3 text-[10px] font-mono text-[#8A6F5C]/60 tracking-widest">
               <span>2,922 Days</span>
               <span className="w-px h-3 bg-[#1A2B4A]/10" />
               <span>Est. 2018</span>
@@ -103,7 +103,12 @@ function HeroSection({
               <span className="text-[#2B5CE6]/80 font-bold">2026 / 04 / 25 — 05 / 24</span>
             </div>
           </div>
-        )}
+        </div>
+
+        <div className={`h-5 flex items-center justify-center gap-1.5 transition-opacity duration-500 ${compact ? "opacity-50" : "opacity-0"}`}>
+          <span className="text-[9px] font-bold tracking-widest text-[#1A2B4A]/60">點擊展開</span>
+          <ChevronDown size={10} className="text-[#1A2B4A]/50" />
+        </div>
       </div>
     </section>
   );
