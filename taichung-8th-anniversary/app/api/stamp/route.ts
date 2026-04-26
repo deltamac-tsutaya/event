@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { writeLog } from "@/lib/log";
 
 const ACHIEVEMENT_IDS = ["A", "B", "C"];
 
@@ -89,6 +90,14 @@ export async function POST(request: NextRequest) {
   }
 
   const totalStamps = todayStamps?.filter(s => !ACHIEVEMENT_IDS.includes(s.stamp_id)).length ?? 0;
+
+  writeLog({
+    event_type: "stamp_collected",
+    user_id: user.id,
+    line_user_id: lineUserId,
+    display_name: displayName,
+    detail: { stamp_id: realStampId, stamp_date: today, total_today: totalStamps },
+  });
 
   return NextResponse.json({ success: true, stampId: realStampId, totalStamps });
 }

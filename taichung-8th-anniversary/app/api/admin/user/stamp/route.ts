@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { writeLog } from "@/lib/log";
 
 function getTaipeiDateString(): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Taipei",
     year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());
+}
+
+async function getUser(userId: string) {
+  const { data } = await supabaseAdmin.from("users").select("line_user_id, display_name").eq("id", userId).single();
+  return data;
 }
 
 // 新增當日指定印章給使用者（忽略重複）
@@ -25,6 +31,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 
+  const user = await getUser(userId);
+  writeLog({
+    event_type: "admin_stamp_add",
+    user_id: userId,
+    line_user_id: user?.line_user_id,
+    display_name: user?.display_name,
+    detail: { stamp_id: stampId, stamp_date: today },
+  });
+
   return NextResponse.json({ success: true });
 }
 
@@ -42,6 +57,15 @@ export async function DELETE(request: NextRequest) {
     .eq("stamp_date", today);
 
   if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+
+  const user = await getUser(userId);
+  writeLog({
+    event_type: "admin_stamp_delete",
+    user_id: userId,
+    line_user_id: user?.line_user_id,
+    display_name: user?.display_name,
+    detail: { stamp_id: stampId, stamp_date: today },
+  });
 
   return NextResponse.json({ success: true });
 }
