@@ -60,8 +60,6 @@ export async function GET(request: NextRequest) {
   // 排除 A, B, C 隱藏成就點，不計入每日 8 枚進度
   const achievementIds = ["A", "B", "C"];
   const mainStampsCount = stamps?.filter(s => !achievementIds.includes(s.stamp_id)).length ?? 0;
-  
-  const today = getTaipeiDateString();
 
   // Check if already drawn today
   const { data: drawToday, error: drawError } = await supabaseAdmin
