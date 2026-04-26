@@ -8,9 +8,15 @@ export async function POST(request: NextRequest) {
 
   const { data: user } = await supabaseAdmin.from("users").select("line_user_id, display_name").eq("id", userId).single();
 
+  // Count before deleting (select count, then delete)
   const [{ count: stampsDeleted }, { count: drawsDeleted }] = await Promise.all([
-    supabaseAdmin.from("stamps").delete().eq("user_id", userId).select("*", { count: "exact", head: true }),
-    supabaseAdmin.from("draws").delete().eq("user_id", userId).select("*", { count: "exact", head: true }),
+    supabaseAdmin.from("stamps").select("*", { count: "exact", head: true }).eq("user_id", userId),
+    supabaseAdmin.from("draws").select("*", { count: "exact", head: true }).eq("user_id", userId),
+  ]);
+
+  await Promise.all([
+    supabaseAdmin.from("stamps").delete().eq("user_id", userId),
+    supabaseAdmin.from("draws").delete().eq("user_id", userId),
   ]);
   await supabaseAdmin.from("users").update({ tickets_count: 0 }).eq("id", userId);
 
