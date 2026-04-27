@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import { toast } from "sonner";
-import { Ticket, Sparkles, ChevronDown } from "lucide-react";
+import { Ticket, Sparkles, ChevronDown, Lock } from "lucide-react";
 import type { Reward } from "@/lib/types";
 import { DynamicHero } from "@/components/DynamicHero";
 import SideDrawer from "@/components/SideDrawer";
@@ -26,16 +26,18 @@ function isActivityEnded(): boolean {
 }
 
 // ── Hero Section ─────────────────────────────────────────────────────────
-function HeroSection({ 
-  compact, 
-  bitmask, 
+function HeroSection({
+  compact,
+  bitmask,
   onToggle,
-  user
-}: { 
-  compact: boolean; 
-  bitmask: number; 
-  onToggle: () => void; 
+  user,
+  infinityMode
+}: {
+  compact: boolean;
+  bitmask: number;
+  onToggle: () => void;
   user: any;
+  infinityMode?: boolean;
 }) {
   return (
     <section
@@ -47,7 +49,7 @@ function HeroSection({
         compact ? "h-[42svh]" : "h-[100svh]"
       }`}
     >
-      <DynamicHero bitmask={bitmask} compact={compact} />
+      <DynamicHero bitmask={bitmask} compact={compact} infinityMode={infinityMode} />
 
       {/* Side Drawer trigger at Top Left */}
       <div className="absolute top-6 left-6 z-20">
@@ -115,47 +117,130 @@ function HeroSection({
   );
 }
 
-// ── Infinity Day Section ─────────────────────────────────────────────────
-function InfinityDaySection({ tickets }: { tickets: number }) {
-  const totalPool = 1250 + tickets; 
+// ── Helper: Calculate time remaining to draw ──────────────────────────────
+function calcTimeLeft() {
+  const now = new Date();
+  const target = new Date("2026-05-24T20:00:00+08:00");
+  const diff = target.getTime() - now.getTime();
+
+  const totalSeconds = Math.max(0, Math.floor(diff / 1000));
+  return {
+    days: Math.floor(totalSeconds / 86400),
+    hours: Math.floor((totalSeconds % 86400) / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60),
+    seconds: totalSeconds % 60,
+    totalSeconds,
+  };
+}
+
+// ── TabButton Component ────────────────────────────────────────────────────
+function TabButton({
+  label,
+  active,
+  locked,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  locked: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={locked}
+      className={`flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
+        locked
+          ? "opacity-40 cursor-not-allowed bg-white/20 text-[#1A2B4A]/40"
+          : active
+          ? "bg-[#1A2B4A] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          : "bg-white/50 text-[#1A2B4A]/70 hover:bg-white/70 hover:text-[#1A2B4A]"
+      }`}
+    >
+      {locked && <Lock size={14} />}
+      {label}
+    </button>
+  );
+}
+
+// ── InfinityDayTab Component ──────────────────────────────────────────────
+function InfinityDayTab({ tickets }: { tickets: number }) {
+  const [timeLeft, setTimeLeft] = useState(calcTimeLeft());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calcTimeLeft());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const totalPool = 1250 + tickets;
   const userProb = ((tickets * (8 / totalPool)) * 100).toFixed(2);
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-[0_20px_40px_-15px_rgba(43,92,230,0.5)] transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(43,92,230,0.6)] hover:-translate-y-1">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#2B5CE6] text-white shadow-[0_20px_40px_-15px_rgba(43,92,230,0.5)]">
       <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 blur-3xl rounded-full" />
       <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-400/20 blur-2xl rounded-full" />
-      <div className="relative p-6 space-y-5">
+
+      <div className="relative p-8 space-y-6">
+        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-xl backdrop-blur-md shadow-inner border border-white/10">
-              <Sparkles size={18} className="text-yellow-300 animate-pulse" />
+              <Sparkles size={20} className="text-yellow-300 animate-pulse" />
             </div>
-            <span className="font-black tracking-widest text-sm uppercase">Infinity Day</span>
+            <span className="font-black tracking-widest text-lg uppercase">Infinity Day</span>
           </div>
           <div className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 font-bold tracking-wider">
             5/24 20:00 開獎
           </div>
         </div>
 
+        {/* Prize Info */}
         <div className="space-y-1">
           <p className="text-xs text-white/80 font-medium tracking-wide">抽出 8 份 WIRED TOKYO 雙人和牛牛排套餐</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 pt-2">
-          <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10 shadow-sm transition-transform hover:scale-[1.02]">
-            <p className="text-[10px] text-white/60 mb-1 font-bold tracking-wider">已累積券數</p>
+        {/* Countdown Grid */}
+        <div className="grid grid-cols-4 gap-2.5 pt-2">
+          {[
+            { label: "天", value: timeLeft.days },
+            { label: "小時", value: timeLeft.hours },
+            { label: "分", value: timeLeft.minutes },
+            { label: "秒", value: timeLeft.seconds },
+          ].map((item) => (
+            <div key={item.label} className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10 text-center">
+              <div className="text-2xl font-black font-mono tracking-tighter mb-1">
+                {String(item.value).padStart(2, "0")}
+              </div>
+              <p className="text-[9px] text-white/60 font-bold">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Tickets & Probability */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10">
+            <p className="text-[10px] text-white/60 mb-2 font-bold tracking-wider">已累積券數</p>
             <div className="flex items-baseline gap-1.5">
               <span className="text-3xl font-black font-serif tracking-tighter">{tickets}</span>
               <span className="text-[10px] font-bold opacity-60">張</span>
             </div>
           </div>
-          <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10 shadow-sm transition-transform hover:scale-[1.02]">
-            <p className="text-[10px] text-white/60 mb-1 font-bold tracking-wider">預估中獎機率</p>
+          <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10">
+            <p className="text-[10px] text-white/60 mb-2 font-bold tracking-wider">預估中獎機率</p>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-black font-serif tracking-tighter text-yellow-300 drop-shadow-sm">{userProb}</span>
+              <span className="text-3xl font-black font-serif tracking-tighter text-yellow-300">{userProb}</span>
               <span className="text-[10px] font-bold text-yellow-300/60">%</span>
             </div>
           </div>
+        </div>
+
+        {/* Instructions */}
+        <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10">
+          <p className="text-xs text-white/80 leading-relaxed">
+            <span className="font-bold">集章說明：</span>完成任一印章集點後，自動獲得 1 張獎券。集滿 8 個印章可立即參加抽獎！
+          </p>
         </div>
       </div>
     </div>
@@ -173,6 +258,9 @@ function MainContent() {
   const [lastReward, setLastReward] = useState<Reward | null>(null);
   const [userHeroExpanded, setUserHeroExpanded] = useState(false);
   const [selectedStampId, setSelectedStampId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"stamps" | "infinity">("stamps");
+
+  const infinityUnlocked = (progress?.ticketsCount ?? 0) > 0;
 
   const isLoading = userLoading || (!!user && progressLoading);
 
@@ -233,12 +321,31 @@ function MainContent() {
 
   return (
     <div className="flex min-h-svh flex-col bg-[#F5F2ED] pb-10">
-      <HeroSection 
-        compact={isCompact} 
-        bitmask={bitmask} 
-        onToggle={() => setUserHeroExpanded(!userHeroExpanded)} 
+      <HeroSection
+        compact={isCompact}
+        bitmask={bitmask}
+        onToggle={() => setUserHeroExpanded(!userHeroExpanded)}
         user={user}
+        infinityMode={activeTab === "infinity"}
       />
+
+      {/* Tab Bar */}
+      {user && state !== "F" && infinityUnlocked && (
+        <div className="relative z-20 -mt-6 mx-auto w-full max-w-2xl px-5 flex gap-3 justify-center pb-6">
+          <TabButton
+            label="集章探索"
+            active={activeTab === "stamps"}
+            locked={false}
+            onClick={() => setActiveTab("stamps")}
+          />
+          <TabButton
+            label="無限夥伴"
+            active={activeTab === "infinity"}
+            locked={false}
+            onClick={() => setActiveTab("infinity")}
+          />
+        </div>
+      )}
 
       <main className={`relative z-20 -mt-10 mx-auto w-full max-w-2xl px-5 space-y-6 transition-all duration-700 ${
         userHeroExpanded ? "opacity-0 pointer-events-none translate-y-10" : "opacity-100 translate-y-0"
@@ -257,23 +364,30 @@ function MainContent() {
           </PageCard>
         )}
 
-        {/* 集章格 — 永遠顯示於頁面頂部 */}
-        {user && state !== "F" && (
+        {/* Stamps View */}
+        {user && state !== "F" && activeTab === "stamps" && (
           <PageCard className="p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white space-y-6 bg-white/90 backdrop-blur-xl">
             <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} onStampClick={setSelectedStampId} />
-            
+
             <Link href="/stamp" className="block mt-4">
-              <Button 
+              <Button
                 variant={totalStamps >= 8 ? "outline" : "default"}
                 className={`h-14 w-full rounded-full text-lg font-bold shadow-sm transition-all duration-300 ${
-                  totalStamps >= 8 
-                    ? "border-2 border-[#1A2B4A]/20 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 hover:border-[#1A2B4A]/40" 
+                  totalStamps >= 8
+                    ? "border-2 border-[#1A2B4A]/20 text-[#1A2B4A] bg-transparent hover:bg-[#1A2B4A]/5 hover:border-[#1A2B4A]/40"
                     : "bg-[#1A2B4A] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                 }`}
               >
                 {totalStamps >= 8 ? "尋找無限夥伴" : "前往掃描 QR code"}
               </Button>
             </Link>
+          </PageCard>
+        )}
+
+        {/* Infinity Day View */}
+        {user && state !== "F" && activeTab === "infinity" && infinityUnlocked && (
+          <PageCard className="p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white bg-white/90 backdrop-blur-xl">
+            <InfinityDayTab tickets={progress?.ticketsCount ?? 0} />
           </PageCard>
         )}
 
@@ -339,10 +453,6 @@ function MainContent() {
                 查看我的獎券
              </Button>
           </PageCard>
-        )}
-
-        {user && state !== "F" && progress?.canDraw && (
-          <InfinityDaySection tickets={progress?.ticketsCount ?? 0} />
         )}
 
         {/* 底部導覽 */}
