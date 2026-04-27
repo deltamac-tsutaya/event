@@ -85,7 +85,7 @@ function HeroSection({
         </div>
       )}
 
-      <div className={`relative z-10 px-6 flex flex-col gap-4 transition-[padding] duration-300 ${hasTabBar ? "pb-24" : "pb-12"}`}>
+      <div className={`relative z-10 px-6 flex flex-col transition-[padding,gap] duration-300 ${infinityMode ? "pt-20 gap-2.5" : "gap-4"} ${hasTabBar ? "pb-24" : "pb-12"}`}>
         <div className="flex items-center gap-2">
           <img
             src="/tsutaya-logo.svg"
