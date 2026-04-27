@@ -197,11 +197,6 @@ function InfinityDayTab({ tickets }: { tickets: number }) {
           </div>
         </div>
 
-        {/* Prize Info */}
-        <div className="space-y-1">
-          <p className="text-xs text-white/80 font-medium tracking-wide">抽出 8 份 WIRED TOKYO 雙人和牛牛排套餐</p>
-        </div>
-
         {/* Countdown Grid */}
         <div className="grid grid-cols-4 gap-2.5 pt-2">
           {[
