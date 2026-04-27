@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ChevronLeft, Layers, Printer, Info } from "lucide-react";
+import { ChevronLeft, Layers, Printer, Info, Lock, Pencil, RotateCcw, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import QRCode from "react-qr-code";
 
@@ -128,19 +128,38 @@ const STAMP_META: Record<string, { kw: string; phrase: string; floor: string; ic
   '06': { kw: '咖啡', floor: '2F', seed: 136, icon: '/materials/assets/stamps/coffee.svg',   phrase: '一杯咖啡，8 年的 ∞ 日常，從未厭倦。' },
   '07': { kw: '光點', floor: '3F', seed: 143, icon: '/materials/assets/stamps/flare.svg',    phrase: '光從天井 ∞ 落，你離第 8 枚只剩一步。' },
   '08': { kw: '花朵', floor: '1F', seed: 150, icon: '/materials/assets/stamps/flower.svg',   phrase: '8 年 ∞ 循環，每天都有一朵花記住你。' },
-  A:    { kw: '松鼠', floor: '★', seed: 901, icon: '/materials/assets/stamps/squirrel.svg', phrase: '牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。' },
-  B:    { kw: '小鳥', floor: '★', seed: 914, icon: '/materials/assets/stamps/bird.svg',     phrase: '這個位子空著。小鳥只停在不趕路的人身邊。' },
-  C:    { kw: '小鹿', floor: '★', seed: 927, icon: '/materials/assets/stamps/deer.svg',     phrase: '電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。' },
+  A:    { kw: '松鼠', floor: '★', seed: 901, icon: '/materials/assets/stamps/squirrel-color.svg', phrase: '牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。' },
+  B:    { kw: '小鳥', floor: '★', seed: 914, icon: '/materials/assets/stamps/bird-color.svg',     phrase: '這個位子空著。小鳥只停在不趕路的人身邊。' },
+  C:    { kw: '小鹿', floor: '★', seed: 927, icon: '/materials/assets/stamps/deer-color.svg',     phrase: '電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。' },
 };
+
+// ── 編輯覆蓋（localStorage）────────────────────────────────────────────────
+
+type MetaEdit = Partial<{ phrase: string; kw: string; phraseSize: number }>;
+type EditsMap = Record<string, MetaEdit>;
+
+function loadEdits(): EditsMap {
+  if (typeof window === 'undefined') return {};
+  try { return JSON.parse(localStorage.getItem('materials_edits') ?? '{}'); } catch { return {}; }
+}
+function saveEdits(map: EditsMap) {
+  localStorage.setItem('materials_edits', JSON.stringify(map));
+}
+function getMeta(id: string, edits: EditsMap) {
+  return { ...STAMP_META[id], ...edits[id] };
+}
 
 // ── StampStand (exact port of design-stands.jsx StampStand) ──────────────────
 
-function StampStand({ config, egg = false }: { config: StampConfig; egg?: boolean }) {
+function StampStand({ config, egg = false, metaOverride }: {
+  config: StampConfig; egg?: boolean; metaOverride?: MetaEdit;
+}) {
   const W = 378, H = 567;
   const base = typeof window !== 'undefined' ? window.location.origin : '';
   const stampUrl = `${base}/stamp?id=${config.uuid}`;
-  const p = STAMP_META[config.stamp_id];
-  if (!p) return null;
+  const baseMeta = STAMP_META[config.stamp_id];
+  if (!baseMeta) return null;
+  const p = { ...baseMeta, ...metaOverride };
 
   return (
     <div style={{
@@ -217,7 +236,7 @@ function StampStand({ config, egg = false }: { config: StampConfig; egg?: boolea
           <img src={p.icon} alt={p.kw}
             style={{ width: 52, height: 52, objectFit: 'contain',
               filter: egg
-                ? 'brightness(0) saturate(100%) invert(40%) sepia(15%) saturate(500%) hue-rotate(10deg) opacity(0.65)'
+                ? 'none'
                 : 'brightness(0) saturate(100%) invert(12%) sepia(35%) saturate(700%) hue-rotate(190deg) brightness(90%) opacity(0.8)',
             }} />
           <div style={{
@@ -232,7 +251,7 @@ function StampStand({ config, egg = false }: { config: StampConfig; egg?: boolea
         <Rule width="32px" color={egg ? BRAND.divider : 'rgba(59,130,196,0.4)'} />
 
         <p style={{
-          fontSize: 14, lineHeight: 1.75, color: BRAND.textSub, fontWeight: 400,
+          fontSize: p.phraseSize ?? 14, lineHeight: 1.75, color: BRAND.textSub, fontWeight: 400,
           fontStyle: egg ? 'italic' : 'normal', letterSpacing: '0.03em',
           margin: 0, textAlign: 'center', maxWidth: 280,
         }}>
@@ -256,6 +275,16 @@ export default function MaterialsPage() {
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
 
+  const [superVerified, setSuperVerified] = useState(
+    () => typeof window !== 'undefined' && sessionStorage.getItem('super_admin_verified') === '1'
+  );
+  const [pinOpen, setPinOpen] = useState(false);
+  const [pin, setPin] = useState('');
+  const [pinError, setPinError] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [edits, setEdits] = useState<EditsMap>(loadEdits);
+  const [savedMsg, setSavedMsg] = useState(false);
+
   useEffect(() => {
     if (tab !== 'qr' || fetched) return;
     setLoading(true);
@@ -275,9 +304,32 @@ export default function MaterialsPage() {
       .finally(() => { setLoading(false); setFetched(true); });
   }, [tab, fetched]);
 
-  // 2-up per A4 page (378×567px ≈ 100×150mm, two side-by-side fit A4)
-  const pairs: StampConfig[][] = [];
-  for (let i = 0; i < configs.length; i += 2) pairs.push(configs.slice(i, i + 2));
+  const verifyPin = async () => {
+    const res = await fetch('/api/admin/rewards/verify', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin }),
+    }).then(r => r.json());
+    if (res.verified) {
+      sessionStorage.setItem('super_admin_verified', '1');
+      setSuperVerified(true);
+      setPinOpen(false);
+      setPin('');
+      setPinError('');
+    } else {
+      setPinError('授權碼錯誤');
+    }
+  };
+
+  const handleSave = useCallback(() => {
+    saveEdits(edits);
+    setSavedMsg(true);
+    setTimeout(() => setSavedMsg(false), 2000);
+  }, [edits]);
+
+  const handleReset = () => {
+    setEdits({});
+    saveEdits({});
+  };
 
   return (
     <div className="flex flex-col h-svh bg-white">
@@ -311,15 +363,89 @@ export default function MaterialsPage() {
           </button>
         </div>
 
-        {tab === 'qr' && configs.length > 0 && (
-          <Button
-            onClick={() => window.print()}
-            className="ml-auto bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 gap-2 h-8 px-4 rounded-full text-xs"
-          >
-            <Printer size={14} /> 列印全部 ({configs.length} 張)
-          </Button>
-        )}
+        <div className="ml-auto flex items-center gap-2">
+          {!superVerified ? (
+            <button
+              onClick={() => setPinOpen(v => !v)}
+              className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 border border-gray-200 rounded-full px-3 py-1.5 transition-colors"
+            >
+              <Lock size={11} /> 進階功能解鎖
+            </button>
+          ) : (
+            <>
+              {editMode && (
+                <>
+                  {savedMsg ? (
+                    <span className="flex items-center gap-1 text-xs text-emerald-600">
+                      <CheckCircle size={12} /> 已儲存
+                    </span>
+                  ) : (
+                    <button
+                      onClick={handleSave}
+                      className="text-xs text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 hover:bg-emerald-50 transition-colors"
+                    >
+                      儲存
+                    </button>
+                  )}
+                  <button
+                    onClick={handleReset}
+                    className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <RotateCcw size={11} /> 重設
+                  </button>
+                </>
+              )}
+              <button
+                onClick={() => setEditMode(v => !v)}
+                className={`flex items-center gap-1.5 text-xs rounded-full px-3 py-1.5 border transition-colors ${
+                  editMode
+                    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                    : 'text-gray-500 hover:text-gray-700 border-gray-200'
+                }`}
+              >
+                <Pencil size={11} /> {editMode ? '結束編輯' : '編輯文宣'}
+              </button>
+            </>
+          )}
+
+          {tab === 'qr' && configs.length > 0 && (
+            <Button
+              onClick={() => window.print()}
+              className="bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 gap-2 h-8 px-4 rounded-full text-xs"
+            >
+              <Printer size={14} /> 列印全部 ({configs.length} 張)
+            </Button>
+          )}
+        </div>
       </header>
+
+      {/* ── Inline PIN input ── */}
+      {pinOpen && !superVerified && (
+        <div className="print:hidden shrink-0 flex items-center gap-2 px-4 py-2 bg-amber-50 border-b border-amber-100">
+          <Lock size={12} className="text-amber-600 shrink-0" />
+          <span className="text-xs text-amber-700 shrink-0">輸入進階授權碼</span>
+          <input
+            value={pin}
+            onChange={e => { setPin(e.target.value); setPinError(''); }}
+            onKeyDown={e => e.key === 'Enter' && verifyPin()}
+            type="password" placeholder="授權碼" maxLength={6}
+            className="h-7 px-2 text-xs border rounded w-28 font-mono tracking-widest"
+          />
+          <button
+            onClick={verifyPin}
+            className="h-7 px-3 text-xs bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors"
+          >
+            確認授權
+          </button>
+          {pinError && <span className="text-xs text-red-500">{pinError}</span>}
+          <button
+            onClick={() => { setPinOpen(false); setPin(''); setPinError(''); }}
+            className="ml-auto text-xs text-gray-400 hover:text-gray-600"
+          >
+            取消
+          </button>
+        </div>
+      )}
 
       {/* ── 設計稿 tab ── */}
       {tab === 'design' && (
@@ -345,7 +471,7 @@ export default function MaterialsPage() {
               {/* Screen info */}
               <div className="print:hidden max-w-5xl mx-auto mt-4 mb-3 px-6 flex items-center gap-4 flex-wrap">
                 <p className="text-xs text-gray-400">
-                  共 {configs.length} 張 · {pairs.length} 頁 · 每頁 2 張（A4 直向）
+                  共 {configs.length} 張 · {configs.length} 頁 · 每頁 1 張置中（A4 直向）
                 </p>
                 <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-100">
                   <Info size={12} className="shrink-0" />
@@ -362,26 +488,57 @@ export default function MaterialsPage() {
                       <div key={c.uuid} className="flex flex-col items-center gap-1">
                         <div style={{ transform: 'scale(0.5)', transformOrigin: 'top center',
                           marginBottom: -(567 * 0.5) + 'px' }}>
-                          <StampStand config={c} egg={egg} />
+                          <StampStand config={c} egg={egg} metaOverride={edits[c.stamp_id]} />
                         </div>
                         <p className="text-[7px] font-mono text-gray-300 truncate max-w-[100px]">{c.uuid}</p>
+                        {editMode && superVerified && (
+                          <div className="w-[190px] bg-white border border-gray-200 rounded-xl p-3 space-y-2 mt-1">
+                            <div>
+                              <label className="text-[10px] text-gray-400 block mb-0.5">關鍵字</label>
+                              <input
+                                value={edits[c.stamp_id]?.kw ?? STAMP_META[c.stamp_id]?.kw ?? ''}
+                                onChange={e => setEdits(prev => ({ ...prev, [c.stamp_id]: { ...prev[c.stamp_id], kw: e.target.value } }))}
+                                className="w-full border rounded px-2 py-1 text-xs"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] text-gray-400 block mb-0.5">文案</label>
+                              <textarea
+                                value={edits[c.stamp_id]?.phrase ?? STAMP_META[c.stamp_id]?.phrase ?? ''}
+                                rows={3}
+                                onChange={e => setEdits(prev => ({ ...prev, [c.stamp_id]: { ...prev[c.stamp_id], phrase: e.target.value } }))}
+                                className="w-full border rounded px-2 py-1 text-xs resize-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] text-gray-400 block mb-0.5">字級 (px)</label>
+                              <input
+                                type="number" min={10} max={24}
+                                value={edits[c.stamp_id]?.phraseSize ?? 14}
+                                onChange={e => setEdits(prev => ({ ...prev, [c.stamp_id]: { ...prev[c.stamp_id], phraseSize: Number(e.target.value) } }))}
+                                className="w-full border rounded px-2 py-1 text-xs"
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Print output: 2-up per A4 */}
-              {pairs.map((pair, idx) => (
-                <div key={idx} className="hidden print:flex print:break-after-page"
+              {/* Print output: 1-up per A4, centered */}
+              {configs.map(c => (
+                <div key={c.uuid} className="print-page"
                   style={{
-                    gap: '5mm', padding: '10mm',
+                    display: 'none',
                     width: '210mm', height: '297mm',
-                    boxSizing: 'border-box', alignItems: 'flex-start',
+                    boxSizing: 'border-box',
+                    alignItems: 'center', justifyContent: 'center',
                   }}>
-                  {pair.map(c => (
-                    <StampStand key={c.uuid} config={c} egg={['A', 'B', 'C'].includes(c.stamp_id)} />
-                  ))}
+                  <div style={{ transform: 'scale(1.95)', transformOrigin: 'center center' }}>
+                    <StampStand config={c} egg={['A', 'B', 'C'].includes(c.stamp_id)} metaOverride={edits[c.stamp_id]} />
+                  </div>
                 </div>
               ))}
             </>
@@ -389,13 +546,6 @@ export default function MaterialsPage() {
         </div>
       )}
 
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;700&display=swap');
-        @media print {
-          body { background: white !important; margin: 0; padding: 0; }
-          @page { size: A4 portrait; margin: 0; }
-        }
-      `}</style>
     </div>
   );
 }
