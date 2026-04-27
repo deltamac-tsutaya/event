@@ -34,7 +34,7 @@ function buildCouponMessage(reward: Reward): object {
             spacing: "xs",
             contents: [
               { type: "text", text: `品牌：${providerLabel[reward.provider] ?? reward.provider}`, size: "xs", color: "#666666" },
-              { type: "text", text: `條件：${reward.conditions}`, size: "xs", color: "#666666", wrap: true },
+              { type: "text", text: `條件：${reward.conditions.replace(/<br\s*\/?>/gi, "\n")}`, size: "xs", color: "#666666", wrap: true },
             ],
           },
         ],
