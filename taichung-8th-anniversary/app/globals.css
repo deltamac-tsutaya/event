@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;600&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -282,4 +283,20 @@
 
 .animate-infinity-breathe {
   animation: infinity-breathe 4s ease-in-out infinite;
+}
+
+/* ── Print ───────────────────────────────────────────── */
+@page { size: A4 portrait; margin: 0; }
+
+@media print {
+  body { background: white !important; margin: 0; padding: 0; }
+
+  /* materials/page.tsx: reveal per-page wrappers and release overflow */
+  .print-page {
+    display: flex !important;
+    break-after: page;
+    page-break-after: always;
+  }
+  .h-svh        { height: auto     !important; }
+  .overflow-auto { overflow: visible !important; height: auto !important; }
 }
