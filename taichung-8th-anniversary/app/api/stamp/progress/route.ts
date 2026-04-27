@@ -38,10 +38,35 @@ export async function GET(request: NextRequest) {
       totalStamps: 0,
       canDraw: false,
       drawnToday: false,
+      ticketsCount: 0,
+      isFirstTime: false,
     });
   }
 
-  const today = getTaipeiDateString();
+  // Check if user is first-time: created today (in Taipei timezone)
+  const userCreatedDate = new Date(user.created_at);
+  const userCreatedDateStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Taipei",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(userCreatedDate);
+  const isFirstTime = userCreatedDateStr === today;
+
+  // If first time, automatically add stamp "01" for today
+  if (isFirstTime) {
+    const { error: insertError } = await supabaseAdmin
+      .from("stamps")
+      .insert({
+        user_id: user.id,
+        stamp_id: "01",
+        stamp_date: today,
+      });
+    // Ignore duplicate key error (in case it was already added)
+    if (insertError && !insertError.message.includes("duplicate")) {
+      console.error("Failed to insert first-time stamp:", insertError);
+    }
+  }
 
   // Get today's stamps only (daily reset)
   const { data: stamps, error: stampsError } = await supabaseAdmin
@@ -85,5 +110,6 @@ export async function GET(request: NextRequest) {
     canDraw,
     drawnToday,
     ticketsCount: user.tickets_count ?? 0,
+    isFirstTime,
   });
 }

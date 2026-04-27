@@ -17,6 +17,7 @@ import { Ticket, Sparkles, ChevronDown, Lock } from "lucide-react";
 import type { Reward } from "@/lib/types";
 import { DynamicHero } from "@/components/DynamicHero";
 import SideDrawer from "@/components/SideDrawer";
+import FirstStampOverlay from "@/components/FirstStampOverlay";
 
 // ── 活動期間常數 ─────────────────────────────────────────────────────────
 const ACTIVITY_END = new Date("2026-05-24T23:59:59+08:00");
@@ -259,8 +260,18 @@ function MainContent() {
   const [userHeroExpanded, setUserHeroExpanded] = useState(false);
   const [selectedStampId, setSelectedStampId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"stamps" | "infinity">("stamps");
+  const [showFirstStampOverlay, setShowFirstStampOverlay] = useState(false);
+  const [firstStampShown, setFirstStampShown] = useState(false);
 
   const infinityUnlocked = (progress?.ticketsCount ?? 0) > 0;
+
+  // Show first stamp overlay once when progress is loaded and isFirstTime is true
+  useEffect(() => {
+    if (progress && progress.isFirstTime && !firstStampShown) {
+      setShowFirstStampOverlay(true);
+      setFirstStampShown(true);
+    }
+  }, [progress, firstStampShown]);
 
   const isLoading = userLoading || (!!user && progressLoading);
 
@@ -478,6 +489,11 @@ function MainContent() {
           totalStamps={totalStamps}
           onClose={() => setSelectedStampId(null)}
         />
+      )}
+
+      {/* 首次參加贈禮彈窗 */}
+      {showFirstStampOverlay && (
+        <FirstStampOverlay onClose={() => setShowFirstStampOverlay(false)} />
       )}
 
       <Footer />
