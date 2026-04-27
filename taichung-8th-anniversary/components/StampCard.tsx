@@ -12,6 +12,7 @@ export interface StampItem {
 interface StampCardProps {
   stamps: StampItem[];
   totalStamps: number;
+  onStampClick?: (stampId: string) => void;
 }
 
 /**
@@ -83,7 +84,7 @@ export const STAMP_META: Record<
   },
 };
 
-export default function StampCard({ stamps, totalStamps }: StampCardProps) {
+export default function StampCard({ stamps, totalStamps, onStampClick }: StampCardProps) {
   const collectedIds = new Set(stamps.map((s) => s.stamp_id));
   
   // 分離主進度印章與隱藏印章
@@ -136,11 +137,12 @@ export default function StampCard({ stamps, totalStamps }: StampCardProps) {
             return (
               <div key={id} className="flex flex-col items-center gap-1.5 group">
                 <div
+                  onClick={() => collected && onStampClick?.(id)}
                   className={`
                     relative w-full aspect-square rounded-full flex items-center justify-center
                     transition-all duration-500 border-2
                     ${collected
-                      ? "bg-gradient-to-br from-white to-[#FDF8F0] border-[#C9A84C]/50 shadow-[0_4px_12px_rgba(201,168,76,0.25)] scale-[1.05]"
+                      ? "bg-gradient-to-br from-white to-[#FDF8F0] border-[#C9A84C]/50 shadow-[0_4px_12px_rgba(201,168,76,0.25)] scale-[1.05] cursor-pointer hover:scale-[1.12] active:scale-[0.98]"
                       : "bg-[#EDEBE5]/30 border-dashed border-[#B0AEAD]/30 opacity-50 grayscale"
                     }
                     ${isNew ? "animate-stamp-drop" : ""}
