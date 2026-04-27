@@ -273,3 +273,13 @@
   pointer-events: none;
   animation: particle-out 0.7s ease-out forwards;
 }
+
+/* ── Infinity Day animations ────────────────────────── */
+@keyframes infinity-breathe {
+  0%, 100% { transform: scale(1);    opacity: 0.75; }
+  50%       { transform: scale(1.06); opacity: 0.95; }
+}
+
+.animate-infinity-breathe {
+  animation: infinity-breathe 4s ease-in-out infinite;
+}
