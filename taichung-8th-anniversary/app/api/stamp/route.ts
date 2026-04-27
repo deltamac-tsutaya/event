@@ -40,7 +40,6 @@ export async function POST(request: NextRequest) {
   }
 
   // ── UUID 查表驗證 ────────────────────────────────────────────────────────
-  // 透過前端傳入的 UUID (此處變數仍命名為 stampId) 尋找對應且生效中的點位編號
   const { data: config, error: configError } = await supabaseAdmin
     .from("stamp_configs")
     .select("stamp_id")
@@ -58,7 +57,41 @@ export async function POST(request: NextRequest) {
   const realStampId = config.stamp_id;
   const today = getTaipeiDateString();
 
-  // Insert stamp (UNIQUE(user_id, stamp_id, stamp_date) 防當日重複)
+  // Find the most recent draw to determine current session boundary
+  const { data: latestDraw } = await supabaseAdmin
+    .from("draws")
+    .select("draw_date")
+    .eq("user_id", user.id)
+    .order("draw_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const lastDrawDate = latestDraw?.draw_date ?? null;
+  const drawnToday = lastDrawDate === today;
+
+  // Check for duplicate within current session
+  // - Never drew → check all stamps ever collected
+  // - Drew before today → check stamps after that draw date
+  // - Drew today → check today's stamps only (UNIQUE constraint also protects same-day)
+  let dupQuery = supabaseAdmin
+    .from("stamps")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("stamp_id", realStampId);
+
+  if (lastDrawDate && lastDrawDate < today) {
+    dupQuery = dupQuery.gt("stamp_date", lastDrawDate);
+  } else if (drawnToday) {
+    dupQuery = dupQuery.eq("stamp_date", today);
+  }
+
+  const { data: existingStamp } = await dupQuery.maybeSingle();
+
+  if (existingStamp) {
+    return NextResponse.json({ success: false, reason: "already_stamped" });
+  }
+
+  // Insert stamp
   const { error: stampError } = await supabaseAdmin.from("stamps").insert({
     user_id: user.id,
     stamp_id: realStampId,
@@ -66,6 +99,7 @@ export async function POST(request: NextRequest) {
   });
 
   if (stampError) {
+    // Fallback: catch DB-level unique constraint violation
     if (stampError.code === "23505") {
       return NextResponse.json({ success: false, reason: "already_stamped" });
     }
@@ -75,12 +109,19 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Count today's main stamps (exclude hidden achievements)
-  const { data: todayStamps, error: countError } = await supabaseAdmin
+  // Count current session's main stamps (for response)
+  let countQuery = supabaseAdmin
     .from("stamps")
     .select("stamp_id")
-    .eq("user_id", user.id)
-    .eq("stamp_date", today);
+    .eq("user_id", user.id);
+
+  if (lastDrawDate && lastDrawDate < today) {
+    countQuery = countQuery.gt("stamp_date", lastDrawDate);
+  } else if (drawnToday) {
+    countQuery = countQuery.eq("stamp_date", today);
+  }
+
+  const { data: sessionStamps, error: countError } = await countQuery;
 
   if (countError) {
     return NextResponse.json(
@@ -89,14 +130,14 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const totalStamps = todayStamps?.filter(s => !ACHIEVEMENT_IDS.includes(s.stamp_id)).length ?? 0;
+  const totalStamps = sessionStamps?.filter(s => !ACHIEVEMENT_IDS.includes(s.stamp_id)).length ?? 0;
 
   writeLog({
     event_type: "stamp_collected",
     user_id: user.id,
     line_user_id: lineUserId,
     display_name: displayName,
-    detail: { stamp_id: realStampId, stamp_date: today, total_today: totalStamps },
+    detail: { stamp_id: realStampId, stamp_date: today, total_session: totalStamps },
   });
 
   return NextResponse.json({ success: true, stampId: realStampId, totalStamps });
