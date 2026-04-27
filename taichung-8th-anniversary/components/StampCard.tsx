@@ -65,19 +65,19 @@ export const STAMP_META: Record<
   },
   A: {
     area: "夥伴",
-    element: "墨鏡-松鼠",
+    element: "∞松鼠",
     hint: "你找到了松鼠。牠觀察你的時間比你想像的還久。",
     isHidden: true,
   },
   B: {
     area: "野生小夥伴",
-    element: "墨鏡-小鳥",
+    element: "∞蜂鳥",
     hint: "你讓自己慢下來，小鳥才現身。",
     isHidden: true,
   },
   C: {
     area: "野生大夥伴",
-    element: "墨鏡-小鹿",
+    element: "∞麋鹿",
     hint: "這不是告示牌，是小鹿留給觀察者的訊息。",
     isHidden: true,
   },
