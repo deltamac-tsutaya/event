@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   // Find user
   const { data: user, error: userError } = await supabaseAdmin
     .from("users")
-    .select("id, tickets_count")
+    .select("id, tickets_count, created_at")
     .eq("line_user_id", lineUserId)
     .single();
 
@@ -43,14 +43,15 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  const today = getTaipeiDateString();
+
   // Check if user is first-time: created today (in Taipei timezone)
-  const userCreatedDate = new Date(user.created_at);
   const userCreatedDateStr = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Taipei",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).format(userCreatedDate);
+  }).format(new Date(user.created_at));
   const isFirstTime = userCreatedDateStr === today;
 
   // If first time, automatically add stamp "01" for today
