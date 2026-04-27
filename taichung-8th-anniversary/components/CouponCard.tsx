@@ -22,6 +22,7 @@ const TIER_STYLE: Record<string, { bg: string; text: string; label: string }> = 
 const PROVIDER_LABEL: Record<string, string> = {
   WIRED: "WIRED TOKYO",
   TSUTAYA: "TSUTAYA BOOKSTORE",
+  BOTH: "TSUTAYA BOOKSTORE & WIRED TOKYO",
 };
 
 function getExpiryDate(drawDate: string, days: number): string {
@@ -117,7 +118,12 @@ export default function CouponCard({ drawId, reward, drawDate, isUsed, usedAt, u
           <div className="flex-1 bg-white px-4 py-4 space-y-2.5">
             <div className="flex items-start justify-between gap-2">
               <div className="space-y-0.5">
-                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{provider}</p>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{provider}</p>
+                  <span className="text-[8px] font-bold text-[#1A2B4A] border border-[#1A2B4A]/30 rounded px-1 py-0.5 leading-none">
+                    限台中市政店
+                  </span>
+                </div>
                 <h3 className={`text-sm font-bold text-[#1A2B4A] leading-snug ${redeemed ? "line-through opacity-60" : ""}`}>
                   {reward.name}
                 </h3>
@@ -137,7 +143,7 @@ export default function CouponCard({ drawId, reward, drawDate, isUsed, usedAt, u
               )}
             </div>
 
-            <p className="text-[11px] text-gray-500 leading-relaxed">{reward.conditions}</p>
+            <p className="text-[11px] text-gray-500 leading-relaxed" dangerouslySetInnerHTML={{ __html: reward.conditions }} />
 
             {redeemed && redeemedAt && (
               <p className="text-[10px] text-orange-500">

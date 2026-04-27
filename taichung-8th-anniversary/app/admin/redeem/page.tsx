@@ -22,6 +22,7 @@ const TIER_COLOR: Record<string, string> = {
 const PROVIDER_LABEL: Record<string, string> = {
   WIRED: "WIRED TOKYO",
   TSUTAYA: "TSUTAYA BOOKSTORE",
+  BOTH: "TSUTAYA BOOKSTORE & WIRED TOKYO",
 };
 
 interface CouponInfo {
