@@ -10,7 +10,7 @@ import Link from "next/link";
 import QRCode from "react-qr-code";
 import {
   LogOut, RefreshCcw, Users, Trophy, Ticket, QrCode,
-  BarChart3, ShieldCheck, Search, RotateCcw, Plus,
+  BarChart3, ShieldCheck, Search, RotateCcw, Plus, Percent,
   ChevronDown, ChevronUp, Zap, CheckCircle, AlertCircle,
   X, Printer, FileText, Send, Layers, ScrollText, CalendarX,
   KeyRound, Eye, EyeOff, SlidersHorizontal,
@@ -469,7 +469,6 @@ function QRModal({ config, onClose }: { config: StampConfig; onClose: () => void
         <div className="bg-[#1A2B4A] text-white px-5 py-4 flex items-center justify-between">
           <div>
             <p className="font-bold text-sm leading-tight">點位 {config.stamp_id}</p>
-            <p className="text-[10px] opacity-60 mt-0.5">{config.area_name}</p>
           </div>
           <button onClick={onClose} className="text-white/60 hover:text-white p-1">
             <X size={20} />
@@ -643,19 +642,21 @@ export default function AdminPage() {
       <main className="mx-auto max-w-5xl px-4 py-5 sm:py-8 space-y-5">
 
         {/* 統計卡片 */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {[
-            { icon: <Users size={18} className="text-blue-600" />,    label: "總人數",   value: stats?.totalUsers ?? 0 },
-            { icon: <QrCode size={18} className="text-green-600" />,  label: "今日集印", value: stats?.todayStamps ?? 0 },
-            { icon: <Trophy size={18} className="text-orange-500" />, label: "今日抽獎", value: stats?.todayDraws ?? 0 },
-            { icon: <Ticket size={18} className="text-purple-600" />, label: "獎券池",   value: stats?.totalTickets ?? 0 },
-          ].map(({ icon, label, value }) => (
+            { icon: <Users size={18} className="text-blue-600" />,    label: "總人數",        text: (stats?.totalUsers ?? 0).toLocaleString() },
+            { icon: <QrCode size={18} className="text-green-600" />,  label: "今日集印",      text: (stats?.todayStamps ?? 0).toLocaleString() },
+            { icon: <Trophy size={18} className="text-orange-500" />, label: "今日抽獎",      text: (stats?.todayDraws ?? 0).toLocaleString() },
+            { icon: <Ticket size={18} className="text-purple-600" />, label: "獎券池",        text: (stats?.totalTickets ?? 0).toLocaleString() },
+            { icon: <Ticket size={18} className="text-indigo-500" />, label: "∞ 累積券數",    text: (stats?.totalTickets ?? 0).toLocaleString() },
+            { icon: <Percent size={18} className="text-amber-500" />, label: "∞ 中獎率",      text: stats?.totalTickets ? (8 / stats.totalTickets * 100).toFixed(1) + '%' : '—' },
+          ].map(({ icon, label, text }) => (
             <Card key={label} className="border-none shadow-sm">
               <CardContent className="p-4 flex items-center gap-3">
                 <div className="p-2 rounded-xl bg-gray-50 shrink-0">{icon}</div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">{label}</p>
-                  <p className="text-xl font-black text-gray-900 leading-none mt-0.5">{value.toLocaleString()}</p>
+                  <p className="text-xl font-black text-gray-900 leading-none mt-0.5">{text}</p>
                 </div>
               </CardContent>
             </Card>

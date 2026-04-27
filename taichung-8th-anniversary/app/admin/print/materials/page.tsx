@@ -370,13 +370,16 @@ export default function MaterialsPage() {
 
               {/* Print output: 1-up per A4, centered */}
               {configs.map(c => (
-                <div key={c.uuid} className="hidden print:flex print:break-after-page"
+                <div key={c.uuid} className="print-page"
                   style={{
+                    display: 'none',
                     width: '210mm', height: '297mm',
                     boxSizing: 'border-box',
                     alignItems: 'center', justifyContent: 'center',
                   }}>
-                  <StampStand config={c} egg={['A', 'B', 'C'].includes(c.stamp_id)} />
+                  <div style={{ transform: 'scale(1.95)', transformOrigin: 'center center' }}>
+                    <StampStand config={c} egg={['A', 'B', 'C'].includes(c.stamp_id)} />
+                  </div>
                 </div>
               ))}
             </>
@@ -384,13 +387,13 @@ export default function MaterialsPage() {
         </div>
       )}
 
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;700&display=swap');
+      <style dangerouslySetInnerHTML={{ __html: `
+        @page { size: A4 portrait; margin: 0; }
         @media print {
           body { background: white !important; margin: 0; padding: 0; }
-          @page { size: A4 portrait; margin: 0; }
+          .print-page { display: flex !important; break-after: page; page-break-after: always; }
         }
-      `}</style>
+      `}} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;700&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
