@@ -13,7 +13,7 @@ import {
   BarChart3, ShieldCheck, Search, RotateCcw, Plus,
   ChevronDown, ChevronUp, Zap, CheckCircle, AlertCircle,
   X, Printer, FileText, Send, Layers, ScrollText, CalendarX,
-  KeyRound, Eye, EyeOff,
+  KeyRound, Eye, EyeOff, SlidersHorizontal,
 } from "lucide-react";
 
 // ── 型別 ──────────────────────────────────────────────────────────────────
@@ -694,6 +694,20 @@ export default function AdminPage() {
               <div>
                 <p className="font-bold text-sm text-gray-800">活動日誌</p>
                 <p className="text-[10px] text-gray-400 mt-0.5">集章 · 抽獎 · 核銷紀錄</p>
+              </div>
+            </div>
+          </Link>
+          <Link href="/admin/rewards" className="block">
+            <div className="bg-white rounded-2xl border border-[#C9A84C]/30 shadow-sm px-5 py-4 flex items-center gap-4 hover:shadow-md hover:border-[#C9A84C]/60 transition-all group">
+              <div className="p-3 rounded-xl bg-[#C9A84C]/10 text-[#C9A84C] group-hover:bg-[#C9A84C] group-hover:text-white transition-colors shrink-0">
+                <SlidersHorizontal size={20} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <p className="font-bold text-sm text-gray-800">獎項機率</p>
+                  <span className="text-[8px] bg-[#C9A84C]/10 text-[#C9A84C] font-bold px-1.5 py-0.5 rounded-full border border-[#C9A84C]/20 leading-none">進階</span>
+                </div>
+                <p className="text-[10px] text-gray-400 mt-0.5">權重 · 每日上限調整</p>
               </div>
             </div>
           </Link>
