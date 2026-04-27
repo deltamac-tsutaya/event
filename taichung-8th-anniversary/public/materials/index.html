@@ -99,7 +99,8 @@ function PrintAllLayout({ tweaks, urlMap }) {
         <PrintAllPage key={p.n} w={378} h={567}><StampStand p={{...p, url: stampUrl(p.n)}} egg /></PrintAllPage>
       ))}
       <PrintAllPage w={794} h={1123}><CounterA4 tweaks={tweaks} /></PrintAllPage>
-      <PrintAllPageDuo w={397} h={559}><TableA6 tweaks={tweaks} /></PrintAllPageDuo>
+      <PrintAllPageDuo w={397} h={559}><TableA6Prize tweaks={tweaks} /></PrintAllPageDuo>
+      <PrintAllPageDuo w={397} h={559}><TableA6Guide tweaks={tweaks} /></PrintAllPageDuo>
     </>,
     elRef.current,
   );
@@ -178,8 +179,11 @@ function App() {
 
         {S('table') && (
           <DCSection id="table" title="07 · 餐廳桌卡 ── A6 平放">
-            <DCArtboard id="t-a6" label="A6 桌卡 · 105×148mm" width={397} height={559}>
-              <TableA6 tweaks={tweaks} />
+            <DCArtboard id="t-a6-prize" label="7a · 加碼大獎（深色）" width={397} height={559}>
+              <TableA6Prize tweaks={tweaks} />
+            </DCArtboard>
+            <DCArtboard id="t-a6-guide" label="7b · 活動說明（淺色）" width={397} height={559}>
+              <TableA6Guide tweaks={tweaks} />
             </DCArtboard>
           </DCSection>
         )}
