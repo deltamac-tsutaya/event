@@ -8,6 +8,7 @@ import StampCard from "@/components/StampCard";
 import RewardCard from "@/components/RewardCard";
 import StepFlow from "@/components/StepFlow";
 import LifeGantt from "@/components/LifeGantt";
+import ScanResultOverlay from "@/components/ScanResultOverlay";
 import { Button } from "@/components/ui/button";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
@@ -171,6 +172,7 @@ function MainContent() {
   const [drawLoading, setDrawLoading] = useState(false);
   const [lastReward, setLastReward] = useState<Reward | null>(null);
   const [userHeroExpanded, setUserHeroExpanded] = useState(false);
+  const [selectedStampId, setSelectedStampId] = useState<string | null>(null);
 
   const isLoading = userLoading || (!!user && progressLoading);
 
@@ -258,7 +260,7 @@ function MainContent() {
         {/* 集章格 — 永遠顯示於頁面頂部 */}
         {user && state !== "F" && (
           <PageCard className="p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white space-y-6 bg-white/90 backdrop-blur-xl">
-            <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} />
+            <StampCard stamps={progress?.stamps ?? []} totalStamps={totalStamps} onStampClick={setSelectedStampId} />
             
             <Link href="/stamp" className="block mt-4">
               <Button 
@@ -358,6 +360,16 @@ function MainContent() {
           </Link>
         </div>
       </main>
+
+      {/* 點擊印章查看詳情彈窗 */}
+      {selectedStampId && (
+        <ScanResultOverlay
+          stampId={selectedStampId}
+          totalStamps={totalStamps}
+          onClose={() => setSelectedStampId(null)}
+        />
+      )}
+
       <Footer />
     </div>
   );
