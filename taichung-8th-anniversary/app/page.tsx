@@ -240,7 +240,7 @@ function InfinityDayTab({ tickets }: { tickets: number }) {
         {/* Instructions */}
         <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10">
           <p className="text-xs text-white/80 leading-relaxed">
-            <span className="font-bold">集章說明：</span>完成任一印章集點後，自動獲得 1 張獎券。集滿 8 個印章可立即參加抽獎！
+            <span className="font-bold">加碼說明：</span>每日集滿 8 個印章並完成抽獎，可獲得 1 張加碼獎券。券數愈多，Infinity Day 中獎機率愈高！
           </p>
         </div>
       </div>
