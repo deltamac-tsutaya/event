@@ -128,9 +128,9 @@ const STAMP_META: Record<string, { kw: string; phrase: string; floor: string; ic
   '06': { kw: '咖啡', floor: '2F', seed: 136, icon: '/materials/assets/stamps/coffee.svg',   phrase: '一杯咖啡，8 年的 ∞ 日常，從未厭倦。' },
   '07': { kw: '光點', floor: '3F', seed: 143, icon: '/materials/assets/stamps/flare.svg',    phrase: '光從天井 ∞ 落，你離第 8 枚只剩一步。' },
   '08': { kw: '花朵', floor: '1F', seed: 150, icon: '/materials/assets/stamps/flower.svg',   phrase: '8 年 ∞ 循環，每天都有一朵花記住你。' },
-  A:    { kw: '松鼠', floor: '★', seed: 901, icon: '/materials/assets/stamps/squirrel.svg', phrase: '牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。' },
-  B:    { kw: '小鳥', floor: '★', seed: 914, icon: '/materials/assets/stamps/bird.svg',     phrase: '這個位子空著。小鳥只停在不趕路的人身邊。' },
-  C:    { kw: '小鹿', floor: '★', seed: 927, icon: '/materials/assets/stamps/deer.svg',     phrase: '電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。' },
+  A:    { kw: '松鼠', floor: '★', seed: 901, icon: '/materials/assets/stamps/squirrel-color.svg', phrase: '牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。' },
+  B:    { kw: '小鳥', floor: '★', seed: 914, icon: '/materials/assets/stamps/bird-color.svg',     phrase: '這個位子空著。小鳥只停在不趕路的人身邊。' },
+  C:    { kw: '小鹿', floor: '★', seed: 927, icon: '/materials/assets/stamps/deer-color.svg',     phrase: '電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。' },
 };
 
 // ── StampStand (exact port of design-stands.jsx StampStand) ──────────────────
@@ -217,7 +217,7 @@ function StampStand({ config, egg = false }: { config: StampConfig; egg?: boolea
           <img src={p.icon} alt={p.kw}
             style={{ width: 52, height: 52, objectFit: 'contain',
               filter: egg
-                ? 'brightness(0) saturate(100%) invert(40%) sepia(15%) saturate(500%) hue-rotate(10deg) opacity(0.65)'
+                ? 'none'
                 : 'brightness(0) saturate(100%) invert(12%) sepia(35%) saturate(700%) hue-rotate(190deg) brightness(90%) opacity(0.8)',
             }} />
           <div style={{
@@ -275,9 +275,6 @@ export default function MaterialsPage() {
       .finally(() => { setLoading(false); setFetched(true); });
   }, [tab, fetched]);
 
-  // 2-up per A4 page (378×567px ≈ 100×150mm, two side-by-side fit A4)
-  const pairs: StampConfig[][] = [];
-  for (let i = 0; i < configs.length; i += 2) pairs.push(configs.slice(i, i + 2));
 
   return (
     <div className="flex flex-col h-svh bg-white">
@@ -345,7 +342,7 @@ export default function MaterialsPage() {
               {/* Screen info */}
               <div className="print:hidden max-w-5xl mx-auto mt-4 mb-3 px-6 flex items-center gap-4 flex-wrap">
                 <p className="text-xs text-gray-400">
-                  共 {configs.length} 張 · {pairs.length} 頁 · 每頁 2 張（A4 直向）
+                  共 {configs.length} 張 · {configs.length} 頁 · 每頁 1 張置中（A4 直向）
                 </p>
                 <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-100">
                   <Info size={12} className="shrink-0" />
@@ -371,17 +368,15 @@ export default function MaterialsPage() {
                 </div>
               </div>
 
-              {/* Print output: 2-up per A4 */}
-              {pairs.map((pair, idx) => (
-                <div key={idx} className="hidden print:flex print:break-after-page"
+              {/* Print output: 1-up per A4, centered */}
+              {configs.map(c => (
+                <div key={c.uuid} className="hidden print:flex print:break-after-page"
                   style={{
-                    gap: '5mm', padding: '10mm',
                     width: '210mm', height: '297mm',
-                    boxSizing: 'border-box', alignItems: 'flex-start',
+                    boxSizing: 'border-box',
+                    alignItems: 'center', justifyContent: 'center',
                   }}>
-                  {pair.map(c => (
-                    <StampStand key={c.uuid} config={c} egg={['A', 'B', 'C'].includes(c.stamp_id)} />
-                  ))}
+                  <StampStand config={c} egg={['A', 'B', 'C'].includes(c.stamp_id)} />
                 </div>
               ))}
             </>

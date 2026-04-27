@@ -1,5 +1,7 @@
 /* ─── Design 6: Counter A4 — light theme ── */
 
+const LIFF_URL = 'https://liff.line.me/2009815115-CHcrof7l';
+
 function CounterA4({ tweaks }) {
   const W = 794, H = 1123;
   return (
@@ -93,7 +95,7 @@ function CounterA4({ tweaks }) {
           padding: '22px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
         }}>
           <MonoLabel color={BRAND.textMuted} size={14}>LINE 登入 · 開始集印</MonoLabel>
-          <QRBlock size={140} color={BRAND.navy} bg={BRAND.surface} seed={555} />
+          <QRBlock size={140} color={BRAND.navy} bg={BRAND.surface} url={LIFF_URL} />
           <div style={{ fontSize: 14, color: BRAND.brown, fontFamily: "'DM Mono',monospace",
             letterSpacing: '0.1em', textAlign: 'center' }}>SCAN TO JOIN</div>
         </div>
@@ -147,10 +149,9 @@ function CounterA4({ tweaks }) {
       <div style={{
         position: 'absolute', bottom: 30, left: 36, right: 36,
         borderTop: `1px solid ${BRAND.border}`, paddingTop: 12,
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        display: 'flex', justifyContent: 'center', alignItems: 'center',
       }}>
-        <MonoLabel color={BRAND.textMuted} size={14}>活動期間 2026 / 04 / 25 — 05 / 24</MonoLabel>
-        <MonoLabel color={BRAND.textMuted} size={14}>TSUTAYA BOOKSTORE × WIRED TOKYO · 台中市政店</MonoLabel>
+        <MonoLabel color={BRAND.textMuted} size={14}>活動期間 2026 / 04 / 25 — 05 / 24 · TSUTAYA BOOKSTORE × WIRED TOKYO · 台中市政店</MonoLabel>
       </div>
     </div>
   );
