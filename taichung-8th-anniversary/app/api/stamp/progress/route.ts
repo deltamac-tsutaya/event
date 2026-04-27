@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   // Find user
   const { data: user, error: userError } = await supabaseAdmin
     .from("users")
-    .select("id, tickets_count")
+    .select("id, tickets_count, created_at")
     .eq("line_user_id", lineUserId)
     .single();
 
@@ -38,17 +38,64 @@ export async function GET(request: NextRequest) {
       totalStamps: 0,
       canDraw: false,
       drawnToday: false,
+      ticketsCount: 0,
+      isFirstTime: false,
     });
   }
 
   const today = getTaipeiDateString();
 
-  // Get today's stamps only (daily reset)
-  const { data: stamps, error: stampsError } = await supabaseAdmin
+  // Check if user is first-time: created today (in Taipei timezone)
+  const userCreatedDateStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Taipei",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(user.created_at));
+  const isFirstTime = userCreatedDateStr === today;
+
+  // If first time, automatically add stamp "01" for today
+  if (isFirstTime) {
+    const { error: insertError } = await supabaseAdmin
+      .from("stamps")
+      .insert({
+        user_id: user.id,
+        stamp_id: "01",
+        stamp_date: today,
+      });
+    if (insertError && !insertError.message.includes("duplicate")) {
+      console.error("Failed to insert first-time stamp:", insertError);
+    }
+  }
+
+  // Find the most recent draw to determine current session boundary
+  const { data: latestDraw } = await supabaseAdmin
+    .from("draws")
+    .select("draw_date")
+    .eq("user_id", user.id)
+    .order("draw_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const lastDrawDate = latestDraw?.draw_date ?? null;
+  const drawnToday = lastDrawDate === today;
+
+  // Determine which stamps belong to the current session:
+  // - Never drew → show all stamps (carry-over since joining)
+  // - Drew before today → show stamps collected after that draw (new session)
+  // - Drew today → show today's stamps (let user see what they collected this session)
+  let stampsQuery = supabaseAdmin
     .from("stamps")
     .select("stamp_id, collected_at")
-    .eq("user_id", user.id)
-    .eq("stamp_date", today);
+    .eq("user_id", user.id);
+
+  if (lastDrawDate && lastDrawDate < today) {
+    stampsQuery = stampsQuery.gt("stamp_date", lastDrawDate);
+  } else if (drawnToday) {
+    stampsQuery = stampsQuery.eq("stamp_date", today);
+  }
+
+  const { data: stamps, error: stampsError } = await stampsQuery;
 
   if (stampsError) {
     return NextResponse.json(
@@ -57,33 +104,18 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // 排除 A, B, C 隱藏成就點，不計入每日 8 枚進度
+  // 排除 A, B, C 隱藏成就點，不計入 8 枚進度
   const achievementIds = ["A", "B", "C"];
   const mainStampsCount = stamps?.filter(s => !achievementIds.includes(s.stamp_id)).length ?? 0;
 
-  // Check if already drawn today
-  const { data: drawToday, error: drawError } = await supabaseAdmin
-    .from("draws")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("draw_date", today)
-    .maybeSingle();
-
-  if (drawError) {
-    return NextResponse.json(
-      { error: "Failed to check draw status", detail: drawError.message },
-      { status: 500 }
-    );
-  }
-
-  const drawnToday = !!drawToday;
   const canDraw = mainStampsCount >= 8 && !drawnToday;
 
   return NextResponse.json({
     stamps: stamps ?? [],
-    totalStamps: mainStampsCount, // 回傳過濾後的數量
+    totalStamps: mainStampsCount,
     canDraw,
     drawnToday,
     ticketsCount: user.tickets_count ?? 0,
+    isFirstTime,
   });
 }

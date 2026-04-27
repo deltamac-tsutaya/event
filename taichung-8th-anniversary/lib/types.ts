@@ -15,6 +15,7 @@ export interface StampProgress {
   canDraw: boolean;
   drawnToday: boolean;
   ticketsCount: number; // 加碼獎券累積數量
+  isFirstTime?: boolean; // 用户首次参加活动
 }
 
 export interface Reward {
