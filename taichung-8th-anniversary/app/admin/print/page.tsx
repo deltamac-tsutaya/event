@@ -104,8 +104,7 @@ function QRCard({ config }: { config: StampConfig }) {
 
       {/* ── 框外資訊（僅供店員核對）── */}
       <div className="w-full mt-1 px-0.5 space-y-0.5">
-        <div className="flex items-center justify-between">
-          <p className="text-[9px] font-bold text-gray-700 leading-tight">{config.area_name}</p>
+        <div className="flex items-center gap-2">
           {isHidden && (
             <span className="text-[7px] font-mono bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">hidden</span>
           )}
