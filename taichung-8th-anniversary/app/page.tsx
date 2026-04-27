@@ -139,23 +139,30 @@ function TabButton({
   label,
   active,
   locked,
+  variant = "default",
   onClick,
 }: {
   label: string;
   active: boolean;
   locked: boolean;
+  variant?: "default" | "infinity";
   onClick: () => void;
 }) {
+  const activeClasses =
+    variant === "infinity"
+      ? "bg-gradient-to-r from-[#C9A84C] to-[#E5C97D] text-[#1A2B4A] shadow-[0_4px_15px_rgba(201,168,76,0.4)]"
+      : "bg-[#1A2B4A] text-white shadow-lg";
+
   return (
     <button
       onClick={onClick}
       disabled={locked}
-      className={`flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
+      className={`flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold tracking-wider transition-all duration-300 ${
         locked
           ? "opacity-40 cursor-not-allowed bg-white/20 text-[#1A2B4A]/40"
           : active
-          ? "bg-[#1A2B4A] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-          : "bg-white/50 text-[#1A2B4A]/70 hover:bg-white/70 hover:text-[#1A2B4A]"
+          ? `${activeClasses} hover:shadow-xl hover:-translate-y-0.5`
+          : "bg-white/50 text-[#1A2B4A]/70 hover:bg-white/70 hover:text-[#1A2B4A] backdrop-blur-sm border border-white/40"
       }`}
     >
       {locked && <Lock size={14} />}
@@ -179,95 +186,111 @@ function InfinityDayTab({ tickets }: { tickets: number }) {
   const userProb = ((tickets * (8 / totalPool)) * 100).toFixed(2);
 
   return (
-    <div className="space-y-7">
-      {/* Header */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#C9A84C]/10 border border-[#C9A84C]/30">
-          <Sparkles size={11} className="text-[#C9A84C]" />
-          <span className="text-[#8A6F5C] text-[10px] font-bold tracking-[0.2em] uppercase">
-            5 / 24 · 20:00 開獎
-          </span>
-        </div>
-        <h2
-          className="font-heading font-semibold tracking-tight text-[#1A2B4A] leading-none"
-          style={{ fontSize: "clamp(1.8rem, 7vw, 2.4rem)" }}
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1A2B4A] to-[#0D1B36] shadow-[0_20px_50px_-15px_rgba(13,27,54,0.5)]">
+      {/* Decorative amber glows */}
+      <div className="absolute top-0 right-0 w-48 h-48 bg-[#C9A84C]/10 blur-3xl rounded-full pointer-events-none" />
+      <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-[#C9A84C]/5 blur-3xl rounded-full pointer-events-none" />
+
+      {/* Subtle infinity watermark */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+        <span
+          className="font-heading text-[#C9A84C]/[0.05] select-none leading-none"
+          style={{ fontSize: "16rem" }}
         >
-          Infinity Day
-        </h2>
-        <p className="text-xs text-[#8A6F5C]/80 font-medium tracking-wide">
-          無限日 ∞ 加碼抽獎
-        </p>
+          ∞
+        </span>
       </div>
 
-      {/* Countdown */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-[#C9A84C]/20" />
-          <p className="text-[9px] font-bold tracking-[0.25em] text-[#8A6F5C]/60 uppercase">
-            Countdown
+      <div className="relative p-7 space-y-7">
+        {/* Header */}
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#C9A84C]/10 border border-[#C9A84C]/30">
+            <Sparkles size={11} className="text-[#C9A84C]" />
+            <span className="text-[#C9A84C] text-[10px] font-bold tracking-[0.2em] uppercase">
+              5 / 24 · 20:00 開獎
+            </span>
+          </div>
+          <h2
+            className="font-heading font-semibold tracking-tight text-white leading-none"
+            style={{ fontSize: "clamp(1.8rem, 7vw, 2.4rem)" }}
+          >
+            Infinity Day
+          </h2>
+          <p className="text-xs text-white/50 font-medium tracking-wide">
+            無限日 ∞ 加碼抽獎
           </p>
-          <div className="h-px flex-1 bg-[#C9A84C]/20" />
         </div>
-        <div className="grid grid-cols-4 gap-2">
-          {[
-            { label: "天", value: timeLeft.days },
-            { label: "時", value: timeLeft.hours },
-            { label: "分", value: timeLeft.minutes },
-            { label: "秒", value: timeLeft.seconds },
-          ].map((item) => (
-            <div
-              key={item.label}
-              className="aspect-square flex flex-col items-center justify-center rounded-2xl bg-[#FDF8F0] border border-[#C9A84C]/20 shadow-[0_2px_8px_rgba(201,168,76,0.08)]"
-            >
-              <div className="font-heading text-2xl font-bold text-[#1A2B4A] tabular-nums tracking-tighter leading-none">
-                {String(item.value).padStart(2, "0")}
+
+        {/* Countdown */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-[#C9A84C]/20" />
+            <p className="text-[9px] font-bold tracking-[0.25em] text-[#C9A84C]/70 uppercase">
+              Countdown
+            </p>
+            <div className="h-px flex-1 bg-[#C9A84C]/20" />
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { label: "天", value: timeLeft.days },
+              { label: "時", value: timeLeft.hours },
+              { label: "分", value: timeLeft.minutes },
+              { label: "秒", value: timeLeft.seconds },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="aspect-square flex flex-col items-center justify-center rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-sm"
+              >
+                <div className="font-heading text-2xl font-bold text-white tabular-nums tracking-tighter leading-none">
+                  {String(item.value).padStart(2, "0")}
+                </div>
+                <p className="text-[9px] text-white/50 font-bold mt-1">{item.label}</p>
               </div>
-              <p className="text-[9px] text-[#8A6F5C]/70 font-bold mt-1">{item.label}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Status Stats */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-[#C9A84C]/20" />
-          <p className="text-[9px] font-bold tracking-[0.25em] text-[#8A6F5C]/60 uppercase">
-            Your Status
+        {/* Status Stats */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-[#C9A84C]/20" />
+            <p className="text-[9px] font-bold tracking-[0.25em] text-[#C9A84C]/70 uppercase">
+              Your Status
+            </p>
+            <div className="h-px flex-1 bg-[#C9A84C]/20" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-2xl bg-white/[0.04] p-4 border border-white/10 backdrop-blur-sm">
+              <p className="text-[10px] text-white/50 mb-2 font-bold tracking-[0.15em] uppercase">
+                已累積券數
+              </p>
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-heading text-3xl font-bold text-white tabular-nums tracking-tighter">
+                  {tickets}
+                </span>
+                <span className="text-[10px] font-bold text-white/50">張</span>
+              </div>
+            </div>
+            <div className="rounded-2xl bg-gradient-to-br from-[#C9A84C]/20 to-[#C9A84C]/5 p-4 border border-[#C9A84C]/40 shadow-[0_2px_12px_rgba(201,168,76,0.15)]">
+              <p className="text-[10px] text-[#C9A84C] mb-2 font-bold tracking-[0.15em] uppercase">
+                預估機率
+              </p>
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-heading text-3xl font-bold text-[#E5C97D] tabular-nums tracking-tighter">
+                  {userProb}
+                </span>
+                <span className="text-[10px] font-bold text-[#C9A84C]/80">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Instructions */}
+        <div className="rounded-2xl bg-white/[0.03] p-4 border border-white/10">
+          <p className="text-xs text-white/70 leading-relaxed">
+            <span className="font-bold text-[#C9A84C]">加碼說明 ·</span> 每日集滿 8 個印章並完成抽獎，可獲得 1 張加碼獎券。券數愈多，Infinity Day 中獎機率愈高。
           </p>
-          <div className="h-px flex-1 bg-[#C9A84C]/20" />
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-[#FDF8F0] p-4 border border-[#C9A84C]/15">
-            <p className="text-[10px] text-[#8A6F5C]/70 mb-2 font-bold tracking-[0.15em] uppercase">
-              已累積券數
-            </p>
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-heading text-3xl font-bold text-[#1A2B4A] tabular-nums tracking-tighter">
-                {tickets}
-              </span>
-              <span className="text-[10px] font-bold text-[#8A6F5C]/60">張</span>
-            </div>
-          </div>
-          <div className="rounded-2xl bg-gradient-to-br from-[#FDF8F0] to-[#F5E6BC]/40 p-4 border border-[#C9A84C]/30 shadow-[0_2px_8px_rgba(201,168,76,0.1)]">
-            <p className="text-[10px] text-[#8A6F5C]/70 mb-2 font-bold tracking-[0.15em] uppercase">
-              預估機率
-            </p>
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-heading text-3xl font-bold text-[#C9A84C] tabular-nums tracking-tighter">
-                {userProb}
-              </span>
-              <span className="text-[10px] font-bold text-[#C9A84C]/70">%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Instructions */}
-      <div className="rounded-2xl bg-[#1A2B4A]/[0.03] p-4 border border-[#1A2B4A]/8">
-        <p className="text-xs text-[#8A6F5C] leading-relaxed">
-          <span className="font-bold text-[#1A2B4A]">加碼說明 ·</span> 每日集滿 8 個印章並完成抽獎，可獲得 1 張加碼獎券。券數愈多，Infinity Day 中獎機率愈高。
-        </p>
       </div>
     </div>
   );
@@ -378,6 +401,7 @@ function MainContent() {
             label="INFINITY DAY"
             active={activeTab === "infinity"}
             locked={false}
+            variant="infinity"
             onClick={() => setActiveTab("infinity")}
           />
         </div>
@@ -422,9 +446,7 @@ function MainContent() {
 
         {/* Infinity Day View */}
         {user && state !== "F" && activeTab === "infinity" && infinityUnlocked && (
-          <PageCard className="p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white bg-white/90 backdrop-blur-xl">
-            <InfinityDayTab tickets={progress?.ticketsCount ?? 0} />
-          </PageCard>
+          <InfinityDayTab tickets={progress?.ticketsCount ?? 0} />
         )}
 
 
