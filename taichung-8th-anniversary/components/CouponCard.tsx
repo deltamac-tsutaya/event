@@ -22,6 +22,7 @@ const TIER_STYLE: Record<string, { bg: string; text: string; label: string }> = 
 const PROVIDER_LABEL: Record<string, string> = {
   WIRED: "WIRED TOKYO",
   TSUTAYA: "TSUTAYA BOOKSTORE",
+  BOTH: "WIRED TOKYO & TSUTAYA BOOKSTORE",
 };
 
 function getExpiryDate(drawDate: string, days: number): string {
@@ -137,7 +138,7 @@ export default function CouponCard({ drawId, reward, drawDate, isUsed, usedAt, u
               )}
             </div>
 
-            <p className="text-[11px] text-gray-500 leading-relaxed">{reward.conditions}</p>
+            <p className="text-[11px] text-gray-500 leading-relaxed" dangerouslySetInnerHTML={{ __html: reward.conditions }} />
 
             {redeemed && redeemedAt && (
               <p className="text-[10px] text-orange-500">
