@@ -13,9 +13,9 @@ const STAMP_POINTS_MAIN = [
 ];
 
 const STAMP_POINTS_EGG = [
-  { n: 'A', kw: '松鼠', phrase: '牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。', loc: '員工身上（隨機）', floor: '★', seed: 901, icon: 'assets/stamps/squirrel.svg' },
-  { n: 'B', kw: '小鳥', phrase: '這個位子空著。小鳥只停在不趕路的人身邊。',            loc: '戶外座位桌上',     floor: '★', seed: 914, icon: 'assets/stamps/bird.svg' },
-  { n: 'C', kw: '小鹿', phrase: '電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。', loc: '電梯告示', floor: '★', seed: 927, icon: 'assets/stamps/deer.svg' },
+  { n: 'A', kw: '松鼠', phrase: '牠等了你 8 分鐘。或者是 ∞ 分鐘——松鼠自己也數不清。', loc: '員工身上（隨機）', floor: '★', seed: 901, icon: 'assets/stamps/squirrel-color.svg' },
+  { n: 'B', kw: '小鳥', phrase: '這個位子空著。小鳥只停在不趕路的人身邊。',            loc: '戶外座位桌上',     floor: '★', seed: 914, icon: 'assets/stamps/bird-color.svg' },
+  { n: 'C', kw: '小鹿', phrase: '電梯只有上下，沒有 ∞。小鹿選擇住在這裡，等一個看得懂的人。', loc: '電梯告示', floor: '★', seed: 927, icon: 'assets/stamps/deer-color.svg' },
 ];
 
 function StampStand({ p, egg = false }) {
@@ -102,7 +102,7 @@ function StampStand({ p, egg = false }) {
           <img src={p.icon} alt={p.kw}
             style={{ width: 52, height: 52, objectFit: 'contain',
               filter: egg
-                ? 'brightness(0) saturate(100%) invert(40%) sepia(15%) saturate(500%) hue-rotate(10deg) opacity(0.65)'
+                ? 'none'
                 : 'brightness(0) saturate(100%) invert(12%) sepia(35%) saturate(700%) hue-rotate(190deg) brightness(90%) opacity(0.8)',
             }} />
           <div style={{
