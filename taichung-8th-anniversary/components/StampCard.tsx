@@ -173,7 +173,7 @@ export default function StampCard({ stamps, totalStamps, onStampClick }: StampCa
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px flex-1 bg-[#C9A84C]/30" />
             <p className="text-[10px] font-bold text-[#C9A84C] uppercase tracking-widest opacity-80">
-              ∞ 無限夥伴
+              INFINITY PARTNERS
             </p>
             <div className="h-px flex-1 bg-[#C9A84C]/30" />
           </div>
