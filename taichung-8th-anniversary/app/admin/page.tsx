@@ -727,6 +727,9 @@ export default function AdminPage() {
     sessionStorage.setItem("super_admin_verified", "1");
     setSuperVerified(true);
   };
+  const [recentLogs, setRecentLogs] = useState<Array<{
+    id: string; log_time: string; event_type: string; display_name: string | null; detail: Record<string, unknown>;
+  }>>([]);
 
   const fetchAllData = useCallback(async () => {
     setLoading(true);
@@ -740,6 +743,10 @@ export default function AdminPage() {
       if (uData.success) setUsers(uData.users);
       if (cData.success) setConfigs(cData.configs);
       if (sData.success) setStats(sData.stats);
+      fetch("/api/admin/logs?page=1")
+        .then(r => r.json())
+        .then(d => { if (d.success) setRecentLogs((d.logs ?? []).slice(0, 5)); })
+        .catch(() => {});
     } catch (e) {
       console.error("Fetch failed", e);
     } finally {
@@ -938,6 +945,44 @@ export default function AdminPage() {
             </div>
           </Link>
         </div>
+
+        {/* 最近活動 */}
+        {recentLogs.length > 0 && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">最近活動</p>
+              <Link href="/admin/logs" className="text-[10px] text-gray-400 hover:text-gray-600">查看完整日誌 →</Link>
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+              {recentLogs.map(log => {
+                const time = new Date(log.log_time).toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit", hour12: false });
+                const badgeColor =
+                  log.event_type.startsWith("stamp") ? "bg-blue-50 text-blue-600" :
+                  log.event_type.startsWith("draw")  ? "bg-amber-50 text-amber-700" :
+                  log.event_type === "coupon_redeemed" ? "bg-green-50 text-green-700" :
+                  "bg-orange-50 text-orange-700";
+                const eventLabel =
+                  log.event_type === "stamp_collected"  ? "集章" :
+                  log.event_type === "draw_completed"   ? "抽獎" :
+                  log.event_type === "coupon_redeemed"  ? "核銷" :
+                  log.event_type === "admin_stamp_add"  ? "補章" :
+                  log.event_type === "admin_stamp_delete" ? "刪章" :
+                  log.event_type === "admin_reset_daily" ? "重置今日" :
+                  log.event_type === "admin_reset_full"  ? "全部重置" : log.event_type;
+                const detail = log.event_type === "stamp_collected" ? `印章 ${log.detail.stamp_id ?? ""}` :
+                  log.event_type === "draw_completed" ? String(log.detail.reward_name ?? log.detail.reward_id ?? "") :
+                  log.event_type === "coupon_redeemed" ? String(log.detail.reward_name ?? "") : "";
+                return (
+                  <div key={log.id} className="flex items-center gap-3 px-4 py-2.5">
+                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${badgeColor}`}>{eventLabel}</span>
+                    <p className="flex-1 text-xs text-gray-700 truncate">{log.display_name ?? "—"}{detail ? ` · ${detail}` : ""}</p>
+                    <span className="text-[10px] text-gray-400 font-mono shrink-0">{time}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* 使用者 */}
         {activeTab === "users" && (
