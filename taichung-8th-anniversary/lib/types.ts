@@ -39,6 +39,18 @@ export interface DrawHistory {
   used_by: string | null;
 }
 
+export interface ActivityLog {
+  id: string;
+  log_date: string;
+  log_time: string;
+  event_type: string;
+  user_id: string | null;
+  line_user_id: string | null;
+  display_name: string | null;
+  detail: Record<string, unknown>;
+  actor: string;
+}
+
 export interface InfinityDayStats {
   totalTickets: number;
   userTickets: number;
