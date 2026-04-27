@@ -274,3 +274,19 @@
   pointer-events: none;
   animation: particle-out 0.7s ease-out forwards;
 }
+
+/* ── Print ───────────────────────────────────────────── */
+@page { size: A4 portrait; margin: 0; }
+
+@media print {
+  body { background: white !important; margin: 0; padding: 0; }
+
+  /* materials/page.tsx: reveal per-page wrappers and release overflow */
+  .print-page {
+    display: flex !important;
+    break-after: page;
+    page-break-after: always;
+  }
+  .h-svh        { height: auto     !important; }
+  .overflow-auto { overflow: visible !important; height: auto !important; }
+}

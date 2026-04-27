@@ -546,15 +546,6 @@ export default function MaterialsPage() {
         </div>
       )}
 
-      <style dangerouslySetInnerHTML={{ __html: `
-        @page { size: A4 portrait; margin: 0; }
-        @media print {
-          html, body { overflow: visible !important; height: auto !important; background: white !important; margin: 0; padding: 0; }
-          .h-svh { height: auto !important; }
-          .overflow-auto { overflow: visible !important; height: auto !important; }
-          .print-page { display: flex !important; break-after: page; page-break-after: always; }
-        }
-      `}} />
     </div>
   );
 }

@@ -216,12 +216,6 @@ export default function PrintPage() {
         </div>
       ))}
 
-      <style dangerouslySetInnerHTML={{ __html: `
-        @page { size: A4 portrait; margin: 0; }
-        @media print {
-          body { background: white !important; margin: 0; padding: 0; }
-        }
-      `}} />
     </div>
   );
 }
