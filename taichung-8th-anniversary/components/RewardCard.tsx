@@ -58,9 +58,10 @@ export default function RewardCard({ reward, drawDate = new Date().toISOString()
       </CardHeader>
 
       <CardContent className="space-y-3 pb-4">
-        <p className="text-sm text-gray-600 leading-relaxed">
-          {reward.conditions}
-        </p>
+        <p
+          className="text-sm text-gray-600 leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: reward.conditions }}
+        />
 
         <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-xs">
           <span className="text-gray-500">有效期限</span>

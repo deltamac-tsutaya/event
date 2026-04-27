@@ -200,7 +200,10 @@ function RedeemContent({ firebaseUser }: { firebaseUser: User }) {
                   </p>
                   <p className="text-base font-bold text-[#1A2B4A] mt-0.5">{coupon.reward.name}</p>
                 </div>
-                <p className="text-xs text-gray-500 leading-relaxed">{coupon.reward.conditions}</p>
+                <p
+                  className="text-xs text-gray-500 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: coupon.reward.conditions }}
+                />
                 <div className="flex justify-between text-[10px] text-gray-400 pt-2 border-t border-dashed border-gray-100">
                   <span>抽獎日：{coupon.draw.draw_date}</span>
                   <span>券號：{coupon.draw.id.slice(0, 8)}…</span>
