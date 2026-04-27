@@ -344,13 +344,13 @@ function MainContent() {
       {user && state !== "F" && infinityUnlocked && (
         <div className="relative z-20 -mt-6 mx-auto w-full max-w-2xl px-5 flex gap-3 justify-center pb-6">
           <TabButton
-            label="集章探索"
+            label="STAMPS"
             active={activeTab === "stamps"}
             locked={false}
             onClick={() => setActiveTab("stamps")}
           />
           <TabButton
-            label="無限夥伴"
+            label="INFINITY DAY"
             active={activeTab === "infinity"}
             locked={false}
             onClick={() => setActiveTab("infinity")}
