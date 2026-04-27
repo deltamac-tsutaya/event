@@ -32,13 +32,15 @@ function HeroSection({
   bitmask,
   onToggle,
   user,
-  infinityMode
+  infinityMode,
+  hasTabBar
 }: {
   compact: boolean;
   bitmask: number;
   onToggle: () => void;
   user: any;
   infinityMode?: boolean;
+  hasTabBar?: boolean;
 }) {
   return (
     <section
@@ -73,7 +75,7 @@ function HeroSection({
         </div>
       )}
 
-      <div className="relative z-10 px-6 pb-12 flex flex-col gap-4">
+      <div className={`relative z-10 px-6 flex flex-col gap-4 transition-[padding] duration-300 ${hasTabBar ? "pb-24" : "pb-12"}`}>
         <div className="flex items-center gap-2">
           <img src="/tsutaya-logo.svg" alt="TSUTAYA" className="h-4 w-auto opacity-80" />
           <span className="text-[#1A2B4A]/20 font-mono text-[10px]">×</span>
@@ -386,6 +388,7 @@ function MainContent() {
         onToggle={() => setUserHeroExpanded(!userHeroExpanded)}
         user={user}
         infinityMode={activeTab === "infinity"}
+        hasTabBar={!!user && state !== "F" && infinityUnlocked}
       />
 
       {/* Tab Bar */}
