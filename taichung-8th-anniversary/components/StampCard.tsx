@@ -24,59 +24,59 @@ export const STAMP_META: Record<
   { area: string; element: string; hint: string; isHidden?: boolean }
 > = {
   "01": {
-    area: "入口主題陳列區",
+    area: "靈感補給站",
     element: "♾️無限",
     hint: "這裡是起點，也是 ∞ 的第一筆。",
   },
   "02": {
-    area: "生活雜貨區",
+    area: "日常儀式感",
     element: "陶杯",
     hint: "手握一只杯，日常便有了份量。",
   },
   "03": {
-    area: "露台區",
+    area: "都市放空點",
     element: "風",
     hint: "露台的風，記住了每一個停留的午後。",
   },
   "04": {
-    area: "兒童繪本區",
+    area: "白日夢實驗室",
     element: "橡實",
     hint: "一顆橡實，藏著一整片森林的故事。",
   },
   "05": {
-    area: "後方深處書櫃",
+    area: "打卡神級背景",
     element: "書",
     hint: "每一格書牆，都是一個未讀的世界。",
   },
   "06": {
-    area: "WIRED TOKYO 吧檯",
+    area: "放鬆充電站",
     element: "咖啡",
     hint: "一杯咖啡的時間，夠讓生活重新對焦。",
   },
   "07": {
-    area: "WIRED TOKYO 座位",
+    area: "絕美光影濾鏡",
     element: "光點",
     hint: "光從天井落下，這一刻你也在其中。",
   },
   "08": {
-    area: "結帳櫃檯旁",
+    area: "情報交流道",
     element: "花朵",
     hint: "八年，每天都有一朵花悄悄開。",
   },
   A: {
-    area: "牆角角落",
+    area: "夥伴",
     element: "墨鏡-松鼠",
     hint: "你找到了松鼠。牠觀察你的時間比你想像的還久。",
     isHidden: true,
   },
   B: {
-    area: "窗邊位置",
+    area: "野生小夥伴",
     element: "墨鏡-小鳥",
     hint: "你讓自己慢下來，小鳥才現身。",
     isHidden: true,
   },
   C: {
-    area: "告示牌後",
+    area: "野生大夥伴",
     element: "墨鏡-小鹿",
     hint: "這不是告示牌，是小鹿留給觀察者的訊息。",
     isHidden: true,
