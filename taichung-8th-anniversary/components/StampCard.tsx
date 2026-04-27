@@ -173,7 +173,7 @@ export default function StampCard({ stamps, totalStamps, onStampClick }: StampCa
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px flex-1 bg-[#C9A84C]/30" />
             <p className="text-[10px] font-bold text-[#C9A84C] uppercase tracking-widest opacity-80">
-              BONUS SCAN
+              INFINITY PARTNERS
             </p>
             <div className="h-px flex-1 bg-[#C9A84C]/30" />
           </div>
@@ -186,7 +186,10 @@ export default function StampCard({ stamps, totalStamps, onStampClick }: StampCa
 
               return (
                 <div key={id} className={`flex flex-col items-center gap-1 ${isNew ? "animate-bounce" : ""}`}>
-                  <div className="w-12 h-12 rounded-xl bg-[#F9F6F0] flex items-center justify-center shadow-sm border border-[#C9A84C]/25">
+                  <div
+                    onClick={() => onStampClick?.(id)}
+                    className="w-12 h-12 rounded-xl bg-[#F9F6F0] flex items-center justify-center shadow-sm border border-[#C9A84C]/25 cursor-pointer hover:scale-110 active:scale-95 transition-transform"
+                  >
                     <StampIcon stampId={id} className="w-8 h-8" />
                   </div>
                   <span className="text-[9px] font-bold text-[#1A2B4A]">{meta.element.split('-')[1]}</span>

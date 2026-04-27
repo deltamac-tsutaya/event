@@ -271,7 +271,7 @@ function MainContent() {
                     : "bg-[#1A2B4A] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                 }`}
               >
-                {totalStamps >= 8 ? "繼續尋找隱藏點位" : "前往掃描 QR code"}
+                {totalStamps >= 8 ? "尋找無限夥伴" : "前往掃描 QR code"}
               </Button>
             </Link>
           </PageCard>
