@@ -22,7 +22,7 @@ const TIER_STYLE: Record<string, { bg: string; text: string; label: string }> = 
 const PROVIDER_LABEL: Record<string, string> = {
   WIRED: "WIRED TOKYO",
   TSUTAYA: "TSUTAYA BOOKSTORE",
-  BOTH: "WIRED TOKYO & TSUTAYA BOOKSTORE",
+  BOTH: "TSUTAYA BOOKSTORE & WIRED TOKYO",
 };
 
 function getExpiryDate(drawDate: string, days: number): string {

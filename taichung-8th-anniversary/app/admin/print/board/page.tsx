@@ -44,8 +44,8 @@ function PrizeBoard() {
         { name: "外帶飲品 買一送一",         provider: "WIRED TOKYO" },
         { name: "文具雜貨 88 折",            provider: "TSUTAYA BOOKSTORE" },
         { name: "書籍雜誌 88 折",            provider: "TSUTAYA BOOKSTORE" },
-        { name: "88 元抵用券（滿 888 元）",   provider: "WIRED TOKYO & TSUTAYA BOOKSTORE" },
-        { name: "8% off（92 折優惠券）",     provider: "WIRED TOKYO & TSUTAYA BOOKSTORE" },
+        { name: "88 元抵用券（滿 888 元）",   provider: "TSUTAYA BOOKSTORE & WIRED TOKYO" },
+        { name: "8% off（92 折優惠券）",     provider: "TSUTAYA BOOKSTORE & WIRED TOKYO" },
       ],
     },
   ];
