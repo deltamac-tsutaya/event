@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   ChevronLeft, Lock, RefreshCcw, SlidersHorizontal,
-  ShieldCheck, AlertCircle, CheckCircle, Eye, EyeOff, Save,
+  ShieldCheck, AlertCircle, CheckCircle, Eye, EyeOff, Save, Shield,
 } from "lucide-react";
 
 interface Reward {
@@ -375,7 +375,115 @@ export default function RewardsPage() {
             資料庫中尚無獎項設定
           </div>
         )}
+
+        {/* 授權碼管理（只有通過 PIN gate 才看得到） */}
+        <div className="border-t border-gray-200 pt-6 space-y-4">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+            <Shield size={12} /> 進階授權碼管理
+          </h2>
+          <SuperPinSettings />
+        </div>
       </div>
+    </div>
+  );
+}
+
+// ── 進階授權碼管理（在 PIN gate 之後才可見）─────────────────────────────────
+function SuperPinSettings() {
+  const [currentPin, setCurrentPin] = useState("");
+  const [newPin,     setNewPin]     = useState("");
+  const [showPin,    setShowPin]    = useState(false);
+  const [loading,    setLoading]    = useState(true);
+  const [saving,     setSaving]     = useState(false);
+  const [msg,        setMsg]        = useState<{ type: "ok" | "err"; text: string } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/admin/settings/super-pin")
+      .then(r => r.json())
+      .then(d => { setCurrentPin(d.pin ?? ""); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const save = async () => {
+    if (!newPin.trim() || newPin.trim().length < 4) {
+      setMsg({ type: "err", text: "授權碼至少需要 4 位" });
+      return;
+    }
+    setSaving(true);
+    setMsg(null);
+    try {
+      const res = await fetch("/api/admin/settings/super-pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: newPin.trim() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCurrentPin(newPin.trim());
+        setNewPin("");
+        setMsg({ type: "ok", text: "授權碼已更新" });
+      } else {
+        setMsg({ type: "err", text: data.error ?? "更新失敗" });
+      }
+    } catch {
+      setMsg({ type: "err", text: "網路錯誤" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="max-w-sm space-y-3">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+        <div className="space-y-1">
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">目前授權碼</p>
+          {loading ? (
+            <div className="h-10 bg-gray-100 rounded-xl animate-pulse" />
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 flex items-center font-mono text-sm tracking-widest">
+                {showPin ? currentPin : "●".repeat(currentPin.length || 4)}
+              </div>
+              <button onClick={() => setShowPin(v => !v)} className="text-gray-400 hover:text-gray-600 p-2">
+                {showPin ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">設定新授權碼</p>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={newPin}
+            onChange={e => { setNewPin(e.target.value); setMsg(null); }}
+            placeholder="輸入新授權碼（4 位以上）"
+            className="w-full h-10 border border-gray-200 rounded-xl px-3 font-mono text-sm tracking-widest focus:outline-none focus:border-[#1A2B4A]"
+          />
+        </div>
+
+        {msg && (
+          <div className={`flex items-center gap-2 text-xs px-3 py-2 rounded-lg ${msg.type === "ok" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}>
+            {msg.type === "ok" ? <CheckCircle size={12} /> : <AlertCircle size={12} />}
+            {msg.text}
+          </div>
+        )}
+
+        <button
+          onClick={save}
+          disabled={saving || !newPin.trim()}
+          className="w-full h-10 bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 disabled:opacity-50 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+        >
+          {saving ? <RefreshCcw size={13} className="animate-spin" /> : <CheckCircle size={13} />}
+          儲存授權碼
+        </button>
+      </div>
+
+      <p className="text-[10px] text-gray-400 px-1">
+        修改後立即生效。下次進入此頁面時需使用新的授權碼。
+      </p>
     </div>
   );
 }
