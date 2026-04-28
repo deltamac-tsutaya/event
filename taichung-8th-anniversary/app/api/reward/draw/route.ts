@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   const today = getTaipeiDateString();
 
   // 1. 查找用戶並確認抽獎資格
-  const { data: user } = await supabaseAdmin.from("users").select("id, tickets_count").eq("line_user_id", lineUserId).single();
+  const { data: user } = await supabaseAdmin.from("users").select("id, tickets_count, display_name").eq("line_user_id", lineUserId).single();
   if (!user) return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
 
   // 2. 檢查今日是否已抽過
@@ -88,6 +88,7 @@ export async function POST(request: NextRequest) {
     event_type: "draw_completed",
     user_id: user.id,
     line_user_id: lineUserId,
+    display_name: user.display_name ?? undefined,
     detail: { reward_id: selected.id, reward_name: selected.name, tier: selected.tier, draw_date: today },
   });
 
