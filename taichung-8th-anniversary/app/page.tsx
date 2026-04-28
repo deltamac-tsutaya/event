@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useLiffUser } from "@/hooks/useLiffUser";
 import { useStampProgress } from "@/hooks/useStampProgress";
 import { toast } from "sonner";
-import { Ticket, Sparkles, ChevronDown, Lock } from "lucide-react";
+import { Ticket, Sparkles, ChevronDown } from "lucide-react";
 import type { Reward } from "@/lib/types";
 import { DynamicHero } from "@/components/DynamicHero";
 import SideDrawer from "@/components/SideDrawer";
@@ -33,14 +33,12 @@ function HeroSection({
   onToggle,
   user,
   infinityMode,
-  hasTabBar
 }: {
   compact: boolean;
   bitmask: number;
   onToggle: () => void;
   user: any;
   infinityMode?: boolean;
-  hasTabBar?: boolean;
 }) {
   return (
     <section
@@ -85,7 +83,7 @@ function HeroSection({
         </div>
       )}
 
-      <div className={`relative z-10 px-6 flex flex-col transition-[padding,gap] duration-300 ${compact || infinityMode ? "pt-20" : ""} ${infinityMode ? "gap-2.5" : "gap-4"} ${hasTabBar ? "pb-24" : "pb-12"}`}>
+      <div className={`relative z-10 px-6 flex flex-col transition-[padding,gap] duration-300 ${compact || infinityMode ? "pt-20" : ""} ${infinityMode ? "gap-2.5" : "gap-4"} pb-12`}>
         <div className="flex items-center gap-2">
           <img
             src="/tsutaya-logo.svg"
@@ -211,42 +209,6 @@ function calcTimeLeft() {
   };
 }
 
-// ── TabButton Component ────────────────────────────────────────────────────
-function TabButton({
-  label,
-  active,
-  locked,
-  variant = "default",
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  locked: boolean;
-  variant?: "default" | "infinity";
-  onClick: () => void;
-}) {
-  const activeClasses =
-    variant === "infinity"
-      ? "bg-gradient-to-r from-[#C9A84C] to-[#E5C97D] text-[#1A2B4A] shadow-[0_4px_15px_rgba(201,168,76,0.4)]"
-      : "bg-[#1A2B4A] text-white shadow-lg";
-
-  return (
-    <button
-      onClick={onClick}
-      disabled={locked}
-      className={`flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold tracking-wider transition-all duration-300 ${
-        locked
-          ? "opacity-40 cursor-not-allowed bg-white/20 text-[#1A2B4A]/40"
-          : active
-          ? `${activeClasses} hover:shadow-xl hover:-translate-y-0.5`
-          : "bg-white/50 text-[#1A2B4A]/70 hover:bg-white/70 hover:text-[#1A2B4A] backdrop-blur-sm border border-white/40"
-      }`}
-    >
-      {locked && <Lock size={14} />}
-      {label}
-    </button>
-  );
-}
 
 // ── InfinityDayTab Component ──────────────────────────────────────────────
 function InfinityDayTab({ tickets }: { tickets: number }) {
@@ -463,25 +425,39 @@ function MainContent() {
         onToggle={() => setUserHeroExpanded(!userHeroExpanded)}
         user={user}
         infinityMode={activeTab === "infinity"}
-        hasTabBar={!!user && state !== "F" && infinityUnlocked}
       />
 
       {/* Tab Bar */}
       {user && state !== "F" && infinityUnlocked && (
-        <div className="relative z-30 -mt-6 mx-auto w-full max-w-2xl px-5 flex gap-3 justify-center pb-6">
-          <TabButton
-            label="STAMPS"
-            active={activeTab === "stamps"}
-            locked={false}
-            onClick={() => setActiveTab("stamps")}
-          />
-          <TabButton
-            label="INFINITY DAY"
-            active={activeTab === "infinity"}
-            locked={false}
-            variant="infinity"
-            onClick={() => setActiveTab("infinity")}
-          />
+        <div className="sticky top-0 z-30 bg-[#F5F2ED]/95 backdrop-blur-md border-b border-[#1A2B4A]/10">
+          <div className="mx-auto max-w-2xl flex">
+            {(["stamps", "infinity"] as const).map((tab) => {
+              const isActive = activeTab === tab;
+              const isInfinity = tab === "infinity";
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`flex-1 py-4 text-[11px] font-bold tracking-[0.2em] uppercase transition-all duration-300 relative ${
+                    isActive
+                      ? isInfinity ? "text-[#C9A84C]" : "text-[#1A2B4A]"
+                      : "text-[#1A2B4A]/30"
+                  }`}
+                >
+                  {tab === "stamps" ? "STAMPS" : "INFINITY DAY"}
+                  <div
+                    className={`absolute bottom-0 left-6 right-6 h-0.5 rounded-full transition-all duration-300 ${
+                      isActive
+                        ? isInfinity
+                          ? "bg-gradient-to-r from-[#C9A84C] to-[#E5C97D]"
+                          : "bg-[#1A2B4A]"
+                        : "bg-transparent"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 
