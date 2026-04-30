@@ -24,11 +24,13 @@ const storeBadge: Record<string, { bg: string; color: string }> = {
 
 function getHighlightStyle(highlight: string): { bg: string; color: string } {
   if (highlight.includes("母親節")) return { bg: "#C4607A", color: "#FDF8F2" };
-  if (highlight.includes("贈"))     return { bg: "#C8700A", color: "#FDF8F2" };
-  if (highlight.includes("新品"))   return { bg: "#2D6050", color: "#FDF8F2" };
-  if (highlight.includes("清倉"))   return { bg: "#3A3530", color: "#FDF8F2" };
-  if (highlight.includes("限定"))   return { bg: "#2D3A7A", color: "#FDF8F2" };
-  return { bg: "#8B5030", color: "#FDF8F2" };
+  if (highlight === "滿額贈")       return { bg: "#C8700A", color: "#FDF8F2" };
+  if (highlight === "新品上市")     return { bg: "#2D6050", color: "#FDF8F2" };
+  if (highlight === "清倉優惠")     return { bg: "#3A3530", color: "#FDF8F2" };
+  if (highlight === "門市限定")     return { bg: "#2D3A7A", color: "#FDF8F2" };
+  if (highlight === "組合優惠")     return { bg: "#8B5030", color: "#FDF8F2" };
+  if (highlight === "折扣優惠")     return { bg: "#6B5040", color: "#FDF8F2" };
+  return { bg: "#6B5040", color: "#FDF8F2" };
 }
 
 export default function PromoCard({
@@ -47,74 +49,89 @@ export default function PromoCard({
 
   return (
     <div
-      className="promo-card bg-white rounded-xl p-5 flex flex-col gap-3"
+      className="promo-card bg-white rounded-xl flex flex-col"
       style={{ border: "1px solid #EDE6DF" }}
     >
-      {/* Brand + highlight */}
-      <div className="flex items-start justify-between gap-2">
-        <span
-          className="text-[11px] font-semibold tracking-[0.12em] uppercase"
-          style={{ color }}
-        >
-          {brand}
-        </span>
-        {highlight && hlStyle && (
+      {/* Card header */}
+      <div className="px-5 pt-5 pb-4 flex flex-col gap-2.5">
+        {/* Row: brand + highlight badge */}
+        <div className="flex items-center justify-between gap-2">
           <span
-            className="flex-shrink-0 text-[11px] font-bold px-2.5 py-0.5 rounded"
-            style={{ background: hlStyle.bg, color: hlStyle.color }}
+            className="text-[11px] font-semibold tracking-[0.12em] uppercase"
+            style={{ color }}
           >
-            {highlight}
+            {brand}
           </span>
+          {highlight && hlStyle && (
+            <span
+              className="flex-shrink-0 text-[11px] font-bold px-2.5 py-0.5 rounded"
+              style={{ background: hlStyle.bg, color: hlStyle.color }}
+            >
+              {highlight}
+            </span>
+          )}
+        </div>
+
+        {/* Gift tag (送禮對象) */}
+        {giftTag && (
+          <p className="text-[11px]" style={{ color: "#A08060" }}>
+            {giftTag}
+          </p>
         )}
-      </div>
 
-      {/* Gift tag */}
-      {giftTag && (
-        <p className="text-[11px] tracking-wide" style={{ color: "#A08060" }}>
-          {giftTag}
+        {/* Headline — product name */}
+        <h3 className="text-base font-bold leading-snug" style={{ color: "#1C1410" }}>
+          {headline}
+        </h3>
+
+        {/* Description — 1 sentence */}
+        <p className="text-sm leading-relaxed" style={{ color: "#6B5040" }}>
+          {description}
         </p>
-      )}
-
-      {/* Headline */}
-      <h3 className="text-base font-bold leading-snug" style={{ color: "#1C1410" }}>
-        {headline}
-      </h3>
-
-      {/* Description */}
-      <p className="text-sm leading-relaxed flex-1" style={{ color: "#6B5040" }}>
-        {description}
-      </p>
+      </div>
 
       {/* Divider */}
       <div style={{ height: 1, background: "#EDE6DF" }} />
 
-      {/* Period */}
-      <p className="text-xs" style={{ color: "#A08060" }}>
-        {period}
-      </p>
+      {/* Card footer — period / stores / note */}
+      <div className="px-5 py-3.5 flex flex-col gap-2 mt-auto">
+        {/* Period */}
+        <div className="flex items-baseline gap-1.5 text-xs">
+          <span className="font-semibold flex-shrink-0" style={{ color: "#8B6F47" }}>
+            活動期間
+          </span>
+          <span style={{ color: "#A08060" }}>{period}</span>
+        </div>
 
-      {/* Stores */}
-      <div className="flex flex-wrap gap-1.5">
-        {stores.map((store) => {
-          const badge = storeBadge[store] ?? { bg: "#8B6F47", color: "#FDF8F2" };
-          return (
-            <span
-              key={store}
-              className="tag-badge text-[11px]"
-              style={{ background: badge.bg, color: badge.color }}
-            >
-              {store}
+        {/* Stores */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-xs font-semibold flex-shrink-0" style={{ color: "#8B6F47" }}>
+            適用門市
+          </span>
+          {stores.map((store) => {
+            const badge = storeBadge[store] ?? { bg: "#8B6F47", color: "#FDF8F2" };
+            return (
+              <span
+                key={store}
+                className="tag-badge text-[11px]"
+                style={{ background: badge.bg, color: badge.color }}
+              >
+                {store}
+              </span>
+            );
+          })}
+        </div>
+
+        {/* Note */}
+        {note && (
+          <div className="flex items-baseline gap-1.5 text-xs">
+            <span className="font-semibold flex-shrink-0" style={{ color: "#8B6F47" }}>
+              注意事項
             </span>
-          );
-        })}
+            <span className="italic" style={{ color: "#B09070" }}>{note}</span>
+          </div>
+        )}
       </div>
-
-      {/* Note */}
-      {note && (
-        <p className="text-xs italic" style={{ color: "#B09070" }}>
-          ＊{note}
-        </p>
-      )}
     </div>
   );
 }

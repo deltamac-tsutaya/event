@@ -17,7 +17,7 @@ const urgentItems = [
     description: "覺萃全品項單品 9 折。從居家清潔到身體照護，打造安心生活節奏。",
     period: "2026/4/1 至 2026/5/10",
     stores: ["台北信義店", "台中市政店"],
-    highlight: "9 折",
+    highlight: "折扣優惠",
     accent: "forest" as const,
   },
   {
@@ -26,7 +26,7 @@ const urgentItems = [
     description: "茶寶全品項單品 9 折。以茶籽保養，照顧日常肌膚與髮絲。",
     period: "2026/4/1 至 2026/5/10",
     stores: ["台北信義店", "台中市政店"],
-    highlight: "9 折",
+    highlight: "折扣優惠",
     accent: "forest" as const,
   },
   {
@@ -35,7 +35,7 @@ const urgentItems = [
     description: "Betterology 指定商品單盒 95 折。每日營養補給，從日常開始。",
     period: "2026/4/1 至 2026/5/10",
     stores: ["台北信義店", "台中市政店"],
-    highlight: "95 折",
+    highlight: "折扣優惠",
     accent: "apricot" as const,
   },
   {
@@ -44,7 +44,7 @@ const urgentItems = [
     description: "Handiin 全品牌商品 88 折。精選皮件與隨身配件，升級日常使用質感。",
     period: "2026/4/1 至 2026/5/10",
     stores: ["台北信義店", "台中市政店"],
-    highlight: "88 折",
+    highlight: "折扣優惠",
     accent: "apricot" as const,
   },
   {
@@ -53,7 +53,7 @@ const urgentItems = [
     description: "今治、Matsukan、MIYAZAKI TOWEL 品牌商品任選兩件 9 折。",
     period: "2026/4/1 至 2026/5/10",
     stores: ["台北信義店", "台中市政店"],
-    highlight: "兩件 9 折",
+    highlight: "折扣優惠",
     accent: "forest" as const,
   },
   {
