@@ -35,31 +35,41 @@ export default function CategoryNav() {
 
   return (
     <nav
-      className="sticky-nav py-3 px-4"
+      className="sticky-nav py-2.5 px-4"
       style={{
         background: scrolled
-          ? "rgba(253,248,242,0.95)"
-          : "rgba(253,248,242,0.8)",
-        borderBottom: "1px solid rgba(200,132,94,0.2)",
+          ? "rgba(253,248,242,0.97)"
+          : "rgba(253,248,242,0.85)",
+        borderBottom: scrolled
+          ? "1px solid rgba(200,132,94,0.25)"
+          : "1px solid rgba(200,132,94,0.12)",
+        boxShadow: scrolled ? "0 2px 16px rgba(61,43,31,0.07)" : "none",
+        transition: "background 0.3s, border-color 0.3s, box-shadow 0.3s",
       }}
     >
       <div className="max-w-5xl mx-auto flex gap-1 overflow-x-auto hide-scrollbar justify-start md:justify-center">
-        {categories.map((cat) => (
-          <a
-            key={cat.id}
-            href={`#${cat.id}`}
-            onClick={() => setActive(cat.id)}
-            className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap"
-            style={
-              active === cat.id
-                ? { background: "#3D2B1F", color: "#FDF8F2" }
-                : { background: "transparent", color: "#6B5040" }
-            }
-          >
-            <span>{cat.icon}</span>
-            <span>{cat.label}</span>
-          </a>
-        ))}
+        {categories.map((cat) => {
+          const isActive = active === cat.id;
+          return (
+            <a
+              key={cat.id}
+              href={`#${cat.id}`}
+              onClick={() => setActive(cat.id)}
+              className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap"
+              style={{
+                background: isActive ? "#3D2B1F" : "transparent",
+                color: isActive ? "#FDF8F2" : "#8B6F47",
+                border: isActive ? "1.5px solid #3D2B1F" : "1.5px solid transparent",
+                boxShadow: isActive ? "0 2px 10px rgba(61,43,31,0.18)" : "none",
+                transition: "all 0.2s ease",
+                letterSpacing: "0.03em",
+              }}
+            >
+              <span className="text-sm leading-none">{cat.icon}</span>
+              <span>{cat.label}</span>
+            </a>
+          );
+        })}
       </div>
     </nav>
   );
