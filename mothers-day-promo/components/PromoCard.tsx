@@ -22,6 +22,11 @@ const storeBadge: Record<string, { bg: string; color: string }> = {
   "台中市政店": { bg: "#2D4A3E", color: "#FDF8F2" },
 };
 
+const storeShort: Record<string, string> = {
+  "台北信義店": "信義",
+  "台中市政店": "台中",
+};
+
 function getHighlightStyle(highlight: string): { bg: string; color: string } {
   if (highlight.includes("母親節")) return { bg: "#C4607A", color: "#FDF8F2" };
   if (highlight === "滿額贈")       return { bg: "#C8700A", color: "#FDF8F2" };
@@ -108,12 +113,35 @@ export default function PromoCard({
           <span className="text-xs font-semibold flex-shrink-0" style={{ color: "#8B6F47" }}>
             適用門市
           </span>
+          {/* Mobile: 雙店 or abbreviated name */}
+          {stores.length >= 2 ? (
+            <span
+              className="tag-badge text-[11px] sm:hidden"
+              style={{ background: "#6B5040", color: "#FDF8F2" }}
+            >
+              雙店
+            </span>
+          ) : (
+            stores.map((store) => {
+              const badge = storeBadge[store] ?? { bg: "#8B6F47", color: "#FDF8F2" };
+              return (
+                <span
+                  key={`m-${store}`}
+                  className="tag-badge text-[11px] sm:hidden"
+                  style={{ background: badge.bg, color: badge.color }}
+                >
+                  {storeShort[store] ?? store}
+                </span>
+              );
+            })
+          )}
+          {/* Desktop: full store names */}
           {stores.map((store) => {
             const badge = storeBadge[store] ?? { bg: "#8B6F47", color: "#FDF8F2" };
             return (
               <span
-                key={store}
-                className="tag-badge text-[11px]"
+                key={`d-${store}`}
+                className="tag-badge text-[11px] hidden sm:inline-flex"
                 style={{ background: badge.bg, color: badge.color }}
               >
                 {store}

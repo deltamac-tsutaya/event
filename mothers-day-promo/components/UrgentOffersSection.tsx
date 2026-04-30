@@ -6,7 +6,7 @@ const urgentItems = [
     brand: "LASAI",
     headline: "母親節限定身體套組 NT$1,470",
     description: "母親節限定身體套組優惠價 NT$1,470，包含日常身體保養品項。",
-    period: "2026/4/1 至 2026/5/10",
+    period: "4/1 至 5/10",
     stores: ["台北信義店", "台中市政店"],
     highlight: "母親節限定",
     accent: "rose" as const,
@@ -15,7 +15,7 @@ const urgentItems = [
     brand: "覺萃",
     headline: "全品項單品 9 折",
     description: "覺萃全品項單品 9 折。從居家清潔到身體照護，打造安心生活節奏。",
-    period: "2026/4/1 至 2026/5/10",
+    period: "4/1 至 5/10",
     stores: ["台北信義店", "台中市政店"],
     highlight: "折扣優惠",
     accent: "forest" as const,
@@ -24,7 +24,7 @@ const urgentItems = [
     brand: "茶寶",
     headline: "全品項單品 9 折",
     description: "茶寶全品項單品 9 折。以茶籽保養，照顧日常肌膚與髮絲。",
-    period: "2026/4/1 至 2026/5/10",
+    period: "4/1 至 5/10",
     stores: ["台北信義店", "台中市政店"],
     highlight: "折扣優惠",
     accent: "forest" as const,
@@ -33,7 +33,7 @@ const urgentItems = [
     brand: "Betterology",
     headline: "單盒 95 折",
     description: "Betterology 指定商品單盒 95 折。每日營養補給，從日常開始。",
-    period: "2026/4/1 至 2026/5/10",
+    period: "4/1 至 5/10",
     stores: ["台北信義店", "台中市政店"],
     highlight: "折扣優惠",
     accent: "apricot" as const,
@@ -42,7 +42,7 @@ const urgentItems = [
     brand: "Handiin",
     headline: "全品牌 88 折",
     description: "Handiin 全品牌商品 88 折。精選皮件與隨身配件，升級日常使用質感。",
-    period: "2026/4/1 至 2026/5/10",
+    period: "4/1 至 5/10",
     stores: ["台北信義店", "台中市政店"],
     highlight: "折扣優惠",
     accent: "apricot" as const,
@@ -51,7 +51,7 @@ const urgentItems = [
     brand: "今治 / Matsukan / MIYAZAKI TOWEL",
     headline: "日本生活選品兩件 9 折",
     description: "今治、Matsukan、MIYAZAKI TOWEL 品牌商品任選兩件 9 折。",
-    period: "2026/4/1 至 2026/5/10",
+    period: "4/1 至 5/10",
     stores: ["台北信義店", "台中市政店"],
     highlight: "折扣優惠",
     accent: "forest" as const,
@@ -60,7 +60,7 @@ const urgentItems = [
     brand: "覓梅酒",
     headline: "不能梅柚你組合 NT$1,280",
     description: "⑤醺甜釀＋月神柚子酒組合優惠價 NT$1,280，原價 NT$1,800。",
-    period: "2026/4/1 至 2026/5/10",
+    period: "4/1 至 5/10",
     stores: ["台北信義店", "台中市政店"],
     highlight: "組合優惠",
     note: "未滿 18 歲請勿飲酒",
@@ -73,7 +73,7 @@ export default function UrgentOffersSection() {
     <section className="py-12 px-4 max-w-5xl mx-auto" id="limited-time">
       <SectionTitle
         title="5/10 前限時優惠"
-        subtitle="以下優惠於 2026/5/10 結束，把握時間選購。"
+        subtitle="以下優惠於 5/10 結束，把握時間選購。"
       />
 
       {/* Deadline banner */}
