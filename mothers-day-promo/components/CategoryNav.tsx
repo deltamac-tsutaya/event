@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 
 const categories = [
-  { id: "mothers-day",   label: "母親節送禮" },
-  { id: "limited-time",  label: "5/10 限時優惠" },
-  { id: "fragrance",     label: "香氛保養" },
-  { id: "tea-wine",      label: "茶咖酒禮盒" },
-  { id: "lifestyle",     label: "生活配件" },
-  { id: "kids",          label: "親子選品" },
+  { id: "mothers-day",    label: "母親節送禮" },
+  { id: "limited-time",   label: "5/10 限時優惠" },
+  { id: "budget",         label: "依預算挑選" },
+  { id: "fragrance",      label: "香氛保養" },
+  { id: "tea-wine",       label: "茶咖酒禮盒" },
+  { id: "lifestyle",      label: "生活配件" },
+  { id: "kids",           label: "親子選品" },
   { id: "store-specific", label: "門市限定" },
 ];
 

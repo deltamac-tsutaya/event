@@ -252,9 +252,10 @@ interface SubSectionProps {
   subtitle: string;
   items: Parameters<typeof PromoCard>[0][];
   notice?: string;
+  cta?: string;
 }
 
-function SubSection({ id, title, subtitle, items, notice }: SubSectionProps) {
+function SubSection({ id, title, subtitle, items, notice, cta }: SubSectionProps) {
   return (
     <section className="py-12 px-4 max-w-5xl mx-auto" id={id}>
       <SectionTitle title={title} subtitle={subtitle} />
@@ -271,6 +272,17 @@ function SubSection({ id, title, subtitle, items, notice }: SubSectionProps) {
           <PromoCard key={i} {...item} />
         ))}
       </div>
+      {cta && (
+        <div className="mt-8 text-center">
+          <a
+            href="#store-specific"
+            className="inline-block px-7 py-3 rounded text-sm font-semibold transition-opacity hover:opacity-80"
+            style={{ background: "transparent", color: "#6B5040", border: "1px solid #C8A882" }}
+          >
+            {cta}
+          </a>
+        </div>
+      )}
     </section>
   );
 }
@@ -283,6 +295,7 @@ export default function FullPromoList() {
         title="香氛保養"
         subtitle="從香氛、身體清潔到護手保養，挑選能融入日常的照護選品。"
         items={fragrancePromos}
+        cta="查看香氛保養優惠門市"
       />
 
       <SubSection
@@ -290,6 +303,7 @@ export default function FullPromoList() {
         title="生活配件"
         subtitle="從包款到晴雨傘，精選值得長期使用的日常好物。"
         items={lifestylePromos}
+        cta="查看生活配件優惠門市"
       />
 
       <SubSection
@@ -298,6 +312,7 @@ export default function FullPromoList() {
         subtitle="精選茶品、咖啡與酒款禮盒，適合節慶餐桌、聚會分享與日常贈禮。"
         items={teaWinePromos}
         notice="酒類商品請依門市販售規範購買。未滿十八歲請勿飲酒，禁止酒駕。"
+        cta="查看茶咖酒禮盒優惠門市"
       />
 
       <SubSection
@@ -305,6 +320,7 @@ export default function FullPromoList() {
         title="親子選品"
         subtitle="精選親子互動、收藏與設計選品，適合家庭日常與節慶贈禮。"
         items={kidsPromos}
+        cta="查看親子選品優惠門市"
       />
     </>
   );

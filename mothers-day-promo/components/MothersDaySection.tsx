@@ -69,12 +69,21 @@ export default function MothersDaySection() {
     <section className="py-12 px-4 max-w-5xl mx-auto" id="mothers-day">
       <SectionTitle
         title="母親節送禮推薦"
-        subtitle="從香氛、身體保養、茶咖禮盒到日常配件，挑選一份能融入生活的禮物。"
+        subtitle="從香氛、身體保養、茶咖酒禮盒到日常配件，挑選一份能融入生活的禮物。"
       />
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {giftPicks.map((item, i) => (
           <PromoCard key={i} {...item} />
         ))}
+      </div>
+      <div className="mt-8 text-center">
+        <a
+          href="#store-specific"
+          className="inline-block px-7 py-3 rounded text-sm font-semibold transition-opacity hover:opacity-80"
+          style={{ background: "#8B2E35", color: "#FDF8F2" }}
+        >
+          前往門市挑選母親節禮物
+        </a>
       </div>
     </section>
   );
