@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 
 const categories = [
-  { id: "mothers-day", label: "母親節送禮", icon: "🌸" },
-  { id: "fragrance", label: "香氛保養", icon: "🧴" },
-  { id: "lifestyle", label: "生活選品", icon: "🏠" },
-  { id: "tea-wine", label: "茶酒禮盒", icon: "🍵" },
-  { id: "kids", label: "親子選品", icon: "🧩" },
-  { id: "store-specific", label: "門市限定", icon: "📍" },
+  { id: "mothers-day", label: "母親節送禮" },
+  { id: "fragrance",   label: "香氛保養" },
+  { id: "lifestyle",   label: "生活選品" },
+  { id: "tea-wine",    label: "茶酒禮盒" },
+  { id: "kids",        label: "親子選品" },
+  { id: "store-specific", label: "門市限定" },
 ];
 
 export default function CategoryNav() {
@@ -18,7 +18,6 @@ export default function CategoryNav() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 80);
-
       const sections = categories.map((c) => document.getElementById(c.id));
       let current = "";
       for (const section of sections) {
@@ -28,26 +27,21 @@ export default function CategoryNav() {
       }
       setActive(current);
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav
-      className="sticky-nav py-2.5 px-4"
+      className="sticky-nav px-4"
       style={{
-        background: scrolled
-          ? "rgba(253,248,242,0.97)"
-          : "rgba(253,248,242,0.85)",
-        borderBottom: scrolled
-          ? "1px solid rgba(200,132,94,0.25)"
-          : "1px solid rgba(200,132,94,0.12)",
-        boxShadow: scrolled ? "0 2px 16px rgba(61,43,31,0.07)" : "none",
-        transition: "background 0.3s, border-color 0.3s, box-shadow 0.3s",
+        background: "rgba(253,248,242,0.96)",
+        borderBottom: scrolled ? "1px solid #E8E0D4" : "1px solid transparent",
+        boxShadow: scrolled ? "0 1px 8px rgba(28,20,16,0.06)" : "none",
+        transition: "border-color 0.2s, box-shadow 0.2s",
       }}
     >
-      <div className="max-w-5xl mx-auto flex gap-1 overflow-x-auto hide-scrollbar justify-start md:justify-center">
+      <div className="max-w-5xl mx-auto flex overflow-x-auto hide-scrollbar justify-start md:justify-center">
         {categories.map((cat) => {
           const isActive = active === cat.id;
           return (
@@ -55,18 +49,20 @@ export default function CategoryNav() {
               key={cat.id}
               href={`#${cat.id}`}
               onClick={() => setActive(cat.id)}
-              className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap"
+              className="flex-shrink-0 px-4 py-3.5 text-xs font-medium whitespace-nowrap relative"
               style={{
-                background: isActive ? "#3D2B1F" : "transparent",
-                color: isActive ? "#FDF8F2" : "#8B6F47",
-                border: isActive ? "1.5px solid #3D2B1F" : "1.5px solid transparent",
-                boxShadow: isActive ? "0 2px 10px rgba(61,43,31,0.18)" : "none",
-                transition: "all 0.2s ease",
-                letterSpacing: "0.03em",
+                color: isActive ? "#1C1410" : "#8B6F47",
+                transition: "color 0.2s",
+                letterSpacing: "0.06em",
               }}
             >
-              <span className="text-sm leading-none">{cat.icon}</span>
-              <span>{cat.label}</span>
+              {cat.label}
+              {isActive && (
+                <span
+                  className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full"
+                  style={{ background: "#8B2E35" }}
+                />
+              )}
             </a>
           );
         })}

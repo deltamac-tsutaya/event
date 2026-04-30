@@ -1,32 +1,31 @@
 interface SectionTitleProps {
   id?: string;
-  icon?: string;
   title: string;
   subtitle?: string;
 }
 
-export default function SectionTitle({ id, icon, title, subtitle }: SectionTitleProps) {
+export default function SectionTitle({ id, title, subtitle }: SectionTitleProps) {
   return (
-    <div id={id} className="pt-4 pb-2 scroll-mt-20">
-      <div className="ornament mb-4 justify-center">
-        <span
-          className="font-serif flex items-center gap-2.5 text-2xl font-bold whitespace-nowrap"
-          style={{ color: "#3D2B1F" }}
-        >
-          {icon && (
-            <span className="text-xl leading-none">{icon}</span>
-          )}
-          {title}
-        </span>
-      </div>
+    <div id={id} className="pt-4 pb-2 scroll-mt-16">
+      <h2
+        className="font-serif text-2xl sm:text-3xl font-bold text-center mb-3"
+        style={{ color: "#1C1410" }}
+      >
+        {title}
+      </h2>
       {subtitle && (
         <p
-          className="text-sm text-center max-w-xl mx-auto leading-relaxed mt-3"
+          className="text-sm text-center max-w-lg mx-auto leading-relaxed"
           style={{ color: "#8B6F47" }}
         >
           {subtitle}
         </p>
       )}
+      <div className="flex items-center justify-center gap-3 mt-4">
+        <div style={{ width: 32, height: 1, background: "#C8845E", opacity: 0.4 }} />
+        <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#C8845E", opacity: 0.5 }} />
+        <div style={{ width: 32, height: 1, background: "#C8845E", opacity: 0.4 }} />
+      </div>
     </div>
   );
 }

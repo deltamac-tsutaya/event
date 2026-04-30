@@ -68,7 +68,6 @@ export default function MothersDaySection() {
   return (
     <section className="py-12 px-4 max-w-5xl mx-auto" id="mothers-day">
       <SectionTitle
-        icon="🌸"
         title="母親節送禮推薦"
         subtitle="從香氛、身體保養、茶酒禮盒到日常配件，挑選一份能融入生活的禮物。"
       />
