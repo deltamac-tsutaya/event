@@ -6,6 +6,7 @@ interface PromoCardProps {
   stores: string[];
   note?: string;
   highlight?: string;
+  giftTag?: string;
   accent?: "rose" | "forest" | "wine" | "apricot";
 }
 
@@ -29,6 +30,7 @@ export default function PromoCard({
   stores,
   note,
   highlight,
+  giftTag,
   accent = "apricot",
 }: PromoCardProps) {
   const color = accentText[accent];
@@ -55,6 +57,13 @@ export default function PromoCard({
           </span>
         )}
       </div>
+
+      {/* Gift tag */}
+      {giftTag && (
+        <p className="text-[11px] tracking-wide" style={{ color: "#A08060" }}>
+          {giftTag}
+        </p>
+      )}
 
       {/* Headline */}
       <h3 className="text-base font-bold leading-snug" style={{ color: "#1C1410" }}>

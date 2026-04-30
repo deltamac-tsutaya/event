@@ -50,25 +50,25 @@ export default function HeroSection() {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
           <a
-            href="#xinyi"
+            href="#mothers-day"
             className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
             style={{ background: "#8B2E35", color: "#FDF8F2" }}
           >
-            台北信義店優惠
+            看母親節送禮推薦
+          </a>
+          <a
+            href="#xinyi"
+            className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
+            style={{ background: "#2D4A3E", color: "#FDF8F2" }}
+          >
+            看台北信義店優惠
           </a>
           <a
             href="#taichung"
             className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
-            style={{ background: "#2D4A3E", color: "#FDF8F2" }}
+            style={{ background: "transparent", color: "#1C1410", border: "1px solid #C8A882" }}
           >
-            台中市政店優惠
-          </a>
-          <a
-            href="#mothers-day"
-            className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
-            style={{ background: "transparent", color: "#8B2E35", border: "1px solid #8B2E35" }}
-          >
-            母親節送禮推薦
+            看台中市政店優惠
           </a>
         </div>
       </div>

@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 
 const categories = [
-  { id: "mothers-day", label: "母親節送禮" },
-  { id: "fragrance",   label: "香氛保養" },
-  { id: "lifestyle",   label: "生活選品" },
-  { id: "tea-wine",    label: "茶酒禮盒" },
-  { id: "kids",        label: "親子選品" },
+  { id: "mothers-day",   label: "母親節送禮" },
+  { id: "limited-time",  label: "5/10 限時優惠" },
+  { id: "fragrance",     label: "香氛保養" },
+  { id: "tea-wine",      label: "茶咖酒禮盒" },
+  { id: "lifestyle",     label: "生活配件" },
+  { id: "kids",          label: "親子選品" },
   { id: "store-specific", label: "門市限定" },
 ];
 
@@ -44,6 +45,7 @@ export default function CategoryNav() {
       <div className="max-w-5xl mx-auto flex overflow-x-auto hide-scrollbar justify-start md:justify-center">
         {categories.map((cat) => {
           const isActive = active === cat.id;
+          const isUrgent = cat.id === "limited-time";
           return (
             <a
               key={cat.id}
@@ -51,7 +53,7 @@ export default function CategoryNav() {
               onClick={() => setActive(cat.id)}
               className="flex-shrink-0 px-4 py-3.5 text-xs font-medium whitespace-nowrap relative"
               style={{
-                color: isActive ? "#1C1410" : "#8B6F47",
+                color: isUrgent && !isActive ? "#8B2E35" : isActive ? "#1C1410" : "#8B6F47",
                 transition: "color 0.2s",
                 letterSpacing: "0.06em",
               }}
