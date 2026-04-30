@@ -10,7 +10,7 @@ export default function HeroSection() {
           className="text-xs tracking-[0.25em] uppercase mb-6 font-medium"
           style={{ color: "#8B6F47" }}
         >
-          TSUTAYA BOOKSTORE &nbsp;·&nbsp; 2026 五月特惠
+          TSUTAYA BOOKSTORE &nbsp;·&nbsp; Promotional in May 2026
         </p>
 
         {/* Main heading */}
@@ -18,16 +18,8 @@ export default function HeroSection() {
           className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-4"
           style={{ color: "#1C1410" }}
         >
-          五月特惠活動
+          精選生活風格禮品
         </h1>
-
-        {/* Sub heading */}
-        <p
-          className="font-serif italic text-xl sm:text-2xl font-normal mb-8"
-          style={{ color: "#6B5040" }}
-        >
-          為日常挑選一份剛好的心意
-        </p>
 
         {/* Divider */}
         <div className="flex items-center justify-center gap-4 mb-8">
@@ -41,7 +33,7 @@ export default function HeroSection() {
           className="text-sm sm:text-base leading-relaxed mb-3 max-w-lg mx-auto"
           style={{ color: "#6B5040" }}
         >
-          精選香氛保養、茶酒禮盒、生活配件與親子選品，推出期間限定優惠。
+          精選溫馨母親節禮物，搭配淡雅香氛、細膩保養、茶韻酒香禮盒及點綴生活的日常小物，為心意注入詩意與美感。
         </p>
 
         {/* Date */}
