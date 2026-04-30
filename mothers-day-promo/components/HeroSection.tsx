@@ -10,7 +10,7 @@ export default function HeroSection() {
           className="text-xs tracking-[0.25em] uppercase mb-6 font-medium"
           style={{ color: "#8B6F47" }}
         >
-          TSUTAYA BOOKSTORE &nbsp;·&nbsp; 2026 五月特惠
+          TSUTAYA BOOKSTORE &nbsp;·&nbsp; Promotional in May 2026
         </p>
 
         {/* Main heading */}
@@ -18,16 +18,8 @@ export default function HeroSection() {
           className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-4"
           style={{ color: "#1C1410" }}
         >
-          五月特惠活動
+          精選生活風格禮品
         </h1>
-
-        {/* Sub heading */}
-        <p
-          className="font-serif italic text-xl sm:text-2xl font-normal mb-8"
-          style={{ color: "#6B5040" }}
-        >
-          為日常挑選一份剛好的心意
-        </p>
 
         {/* Divider */}
         <div className="flex items-center justify-center gap-4 mb-8">
@@ -41,7 +33,7 @@ export default function HeroSection() {
           className="text-sm sm:text-base leading-relaxed mb-3 max-w-lg mx-auto"
           style={{ color: "#6B5040" }}
         >
-          精選香氛保養、茶酒禮盒、生活配件與親子選品，推出期間限定優惠。
+          精選溫馨母親節禮物，搭配淡雅香氛、細膩保養、茶韻酒香禮盒及點綴生活的日常小物，為心意注入詩意與美感。
         </p>
 
         {/* Date */}
@@ -58,25 +50,28 @@ export default function HeroSection() {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
           <a
-            href="#xinyi"
+            href="#mothers-day"
             className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
             style={{ background: "#8B2E35", color: "#FDF8F2" }}
+            data-track="hero_cta_mothers_day"
           >
-            台北信義店優惠
+            看母親節送禮推薦
+          </a>
+          <a
+            href="#xinyi"
+            className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
+            style={{ background: "#2D4A3E", color: "#FDF8F2" }}
+            data-track="hero_cta_xinyi"
+          >
+            看台北信義店優惠
           </a>
           <a
             href="#taichung"
             className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
-            style={{ background: "#2D4A3E", color: "#FDF8F2" }}
+            style={{ background: "transparent", color: "#1C1410", border: "1px solid #C8A882" }}
+            data-track="hero_cta_taichung"
           >
-            台中市政店優惠
-          </a>
-          <a
-            href="#mothers-day"
-            className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
-            style={{ background: "transparent", color: "#8B2E35", border: "1px solid #8B2E35" }}
-          >
-            母親節送禮推薦
+            看台中市政店優惠
           </a>
         </div>
       </div>

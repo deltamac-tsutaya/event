@@ -6,6 +6,7 @@ interface PromoCardProps {
   stores: string[];
   note?: string;
   highlight?: string;
+  giftTag?: string;
   accent?: "rose" | "forest" | "wine" | "apricot";
 }
 
@@ -21,6 +22,15 @@ const storeBadge: Record<string, { bg: string; color: string }> = {
   "台中市政店": { bg: "#2D4A3E", color: "#FDF8F2" },
 };
 
+function getHighlightStyle(highlight: string): { bg: string; color: string } {
+  if (highlight.includes("母親節")) return { bg: "#C4607A", color: "#FDF8F2" };
+  if (highlight.includes("贈"))     return { bg: "#C8700A", color: "#FDF8F2" };
+  if (highlight.includes("新品"))   return { bg: "#2D6050", color: "#FDF8F2" };
+  if (highlight.includes("清倉"))   return { bg: "#3A3530", color: "#FDF8F2" };
+  if (highlight.includes("限定"))   return { bg: "#2D3A7A", color: "#FDF8F2" };
+  return { bg: "#8B5030", color: "#FDF8F2" };
+}
+
 export default function PromoCard({
   brand,
   headline,
@@ -29,9 +39,11 @@ export default function PromoCard({
   stores,
   note,
   highlight,
+  giftTag,
   accent = "apricot",
 }: PromoCardProps) {
   const color = accentText[accent];
+  const hlStyle = highlight ? getHighlightStyle(highlight) : null;
 
   return (
     <div
@@ -46,15 +58,22 @@ export default function PromoCard({
         >
           {brand}
         </span>
-        {highlight && (
+        {highlight && hlStyle && (
           <span
             className="flex-shrink-0 text-[11px] font-bold px-2.5 py-0.5 rounded"
-            style={{ background: color, color: "#FDF8F2" }}
+            style={{ background: hlStyle.bg, color: hlStyle.color }}
           >
             {highlight}
           </span>
         )}
       </div>
+
+      {/* Gift tag */}
+      {giftTag && (
+        <p className="text-[11px] tracking-wide" style={{ color: "#A08060" }}>
+          {giftTag}
+        </p>
+      )}
 
       {/* Headline */}
       <h3 className="text-base font-bold leading-snug" style={{ color: "#1C1410" }}>
@@ -81,7 +100,7 @@ export default function PromoCard({
           return (
             <span
               key={store}
-              className="tag-badge"
+              className="tag-badge text-[11px]"
               style={{ background: badge.bg, color: badge.color }}
             >
               {store}
