@@ -282,16 +282,15 @@ const kidsPromos = [
 
 interface SubSectionProps {
   id: string;
-  icon: string;
   title: string;
   subtitle: string;
   items: Parameters<typeof PromoCard>[0][];
 }
 
-function SubSection({ id, icon, title, subtitle, items }: SubSectionProps) {
+function SubSection({ id, title, subtitle, items }: SubSectionProps) {
   return (
     <section className="py-12 px-4 max-w-5xl mx-auto" id={id}>
-      <SectionTitle icon={icon} title={title} subtitle={subtitle} />
+      <SectionTitle title={title} subtitle={subtitle} />
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {items.map((item, i) => (
           <PromoCard key={i} {...item} />
@@ -306,7 +305,6 @@ export default function FullPromoList() {
     <>
       <SubSection
         id="fragrance"
-        icon="🧴"
         title="香氛保養"
         subtitle="讓日常護膚成為生活中的小確幸，為自己或送給重要的她。"
         items={fragrancePromos}
@@ -314,7 +312,6 @@ export default function FullPromoList() {
 
       <SubSection
         id="lifestyle"
-        icon="🏠"
         title="生活選品"
         subtitle="從包包到晴雨傘，每件都是值得納入日常的好物。"
         items={lifestylePromos}
@@ -322,7 +319,6 @@ export default function FullPromoList() {
 
       <SubSection
         id="tea-wine"
-        icon="🍵"
         title="茶酒禮盒"
         subtitle="一杯好茶、一瓶好酒，讓味覺成為連結彼此的橋樑。"
         items={teaWinePromos}
@@ -330,7 +326,6 @@ export default function FullPromoList() {
 
       <SubSection
         id="kids"
-        icon="🧩"
         title="親子選品"
         subtitle="療癒、創意、有趣，送給一同成長的孩子與大人。"
         items={kidsPromos}
