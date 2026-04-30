@@ -22,7 +22,7 @@ export default function TermsSection() {
           <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#C8845E", opacity: 0.5 }} />
           <div style={{ width: 32, height: 1, background: "#C8845E", opacity: 0.4 }} />
         </div>
-        <ul className="flex flex-col gap-3">
+        <ul className="list-none flex flex-col gap-3">
           {terms.map((term, i) => (
             <li
               key={i}
