@@ -6,6 +6,7 @@ const categories = [
   { id: "mothers-day",    label: "母親節送禮" },
   { id: "limited-time",   label: "5/10 限時優惠" },
   { id: "budget",         label: "依預算挑選" },
+  { id: "recipient",      label: "依對象挑選" },
   { id: "fragrance",      label: "香氛保養" },
   { id: "tea-wine",       label: "茶咖酒禮盒" },
   { id: "lifestyle",      label: "生活配件" },

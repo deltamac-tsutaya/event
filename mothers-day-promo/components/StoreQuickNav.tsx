@@ -49,6 +49,7 @@ export default function StoreQuickNav() {
             href="#store-specific"
             className="mt-auto block text-center py-2.5 rounded text-sm font-semibold transition-opacity hover:opacity-80"
             style={{ background: "#8B2E35", color: "#FDF8F2" }}
+            data-track="store_nav_xinyi"
           >
             查看台北信義店優惠
           </a>
@@ -91,6 +92,7 @@ export default function StoreQuickNav() {
             href="#store-specific"
             className="mt-auto block text-center py-2.5 rounded text-sm font-semibold transition-opacity hover:opacity-80"
             style={{ background: "#2D4A3E", color: "#FDF8F2" }}
+            data-track="store_nav_taichung"
           >
             查看台中市政店優惠
           </a>

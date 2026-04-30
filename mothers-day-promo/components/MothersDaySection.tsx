@@ -81,6 +81,7 @@ export default function MothersDaySection() {
           href="#store-specific"
           className="inline-block px-7 py-3 rounded text-sm font-semibold transition-opacity hover:opacity-80"
           style={{ background: "#8B2E35", color: "#FDF8F2" }}
+          data-track="cta_mothers_day_store"
         >
           前往門市挑選母親節禮物
         </a>

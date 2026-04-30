@@ -53,6 +53,7 @@ export default function HeroSection() {
             href="#mothers-day"
             className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
             style={{ background: "#8B2E35", color: "#FDF8F2" }}
+            data-track="hero_cta_mothers_day"
           >
             看母親節送禮推薦
           </a>
@@ -60,6 +61,7 @@ export default function HeroSection() {
             href="#xinyi"
             className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
             style={{ background: "#2D4A3E", color: "#FDF8F2" }}
+            data-track="hero_cta_xinyi"
           >
             看台北信義店優惠
           </a>
@@ -67,6 +69,7 @@ export default function HeroSection() {
             href="#taichung"
             className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
             style={{ background: "transparent", color: "#1C1410", border: "1px solid #C8A882" }}
+            data-track="hero_cta_taichung"
           >
             看台中市政店優惠
           </a>

@@ -4,6 +4,7 @@ import MothersDaySection from "@/components/MothersDaySection";
 import UrgentOffersSection from "@/components/UrgentOffersSection";
 import StoreQuickNav from "@/components/StoreQuickNav";
 import BudgetSection from "@/components/BudgetSection";
+import RecipientSection from "@/components/RecipientSection";
 import FullPromoList from "@/components/FullPromoList";
 import StoreSpecificSection from "@/components/StoreSpecificSection";
 import TermsSection from "@/components/TermsSection";
@@ -35,6 +36,11 @@ export default function Home() {
       {/* 依預算挑選 */}
       <div style={{ background: "#F9F3EB" }}>
         <BudgetSection />
+      </div>
+
+      {/* 依對象挑選 */}
+      <div style={{ background: "#FDF8F2" }}>
+        <RecipientSection />
       </div>
 
       {/* 香氛保養 / 生活配件 / 茶咖酒禮盒 / 親子選品 */}
