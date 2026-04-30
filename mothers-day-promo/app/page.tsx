@@ -1,15 +1,32 @@
+import HeroSection from "@/components/HeroSection";
+import CategoryNav from "@/components/CategoryNav";
+import MothersDaySection from "@/components/MothersDaySection";
+import FullPromoList from "@/components/FullPromoList";
+import StoreSpecificSection from "@/components/StoreSpecificSection";
+import TermsSection from "@/components/TermsSection";
+import FooterSection from "@/components/FooterSection";
+
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-4">
-        母親節優惠活動
-      </h1>
-      <p className="text-xl text-center text-gray-600 mb-8">
-        特別的日子，特別的優惠
-      </p>
-      <p className="text-center text-gray-500">
-        Coming soon... 敬請期待
-      </p>
+    <main>
+      <HeroSection />
+      <CategoryNav />
+
+      {/* Sections with alternating bg */}
+      <div style={{ background: "#FDF8F2" }}>
+        <MothersDaySection />
+      </div>
+
+      <div style={{ background: "#F9F3EB" }}>
+        <FullPromoList />
+      </div>
+
+      <div style={{ background: "#FDF8F2" }}>
+        <StoreSpecificSection />
+      </div>
+
+      <TermsSection />
+      <FooterSection />
     </main>
   );
 }

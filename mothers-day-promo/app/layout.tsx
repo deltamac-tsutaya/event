@@ -1,24 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
-  title: "母親節優惠活動 | Mother's Day Promotion",
-  description: "特別的日子，特別的優惠。献给母亲最好的礼物。",
-  icons: {
-    icon: "/icon",
-    apple: "/icon",
+  title: "TSUTAYA BOOKSTORE 5 月特惠活動｜母親節送禮與生活選品優惠",
+  description:
+    "TSUTAYA BOOKSTORE 5 月特惠活動開跑，精選母親節送禮、香氛保養、茶酒禮盒、生活配件與親子選品。台北信義店與台中市政店限定優惠同步展開。活動期間：2026/5/1 至 2026/5/31。",
+  openGraph: {
+    title: "TSUTAYA BOOKSTORE 5 月特惠活動",
+    description:
+      "母親節送禮、香氛保養、茶酒禮盒與生活配件，精選品牌限時優惠。台北信義店・台中市政店同步開跑。",
+    locale: "zh_TW",
+    type: "website",
   },
 };
 
@@ -28,14 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="zh-TW"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        {children}
-        <Toaster position="top-center" richColors />
-      </body>
+    <html lang="zh-TW" className="h-full">
+      <body className="min-h-full font-noto">{children}</body>
     </html>
   );
 }
