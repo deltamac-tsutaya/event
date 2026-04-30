@@ -5,6 +5,13 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx}",
     "./app/**/*.{js,ts,jsx,tsx}",
   ],
+  theme: {
+    extend: {
+      screens: {
+        xs: "480px",
+      },
+    },
+  },
 };
 
 export default config;

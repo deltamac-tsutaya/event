@@ -35,6 +35,7 @@ body {
   background-color: #FDF8F2;
   color: #3D2B1F;
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 .font-noto {

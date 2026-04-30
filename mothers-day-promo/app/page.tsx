@@ -5,6 +5,10 @@ import FullPromoList from "@/components/FullPromoList";
 import StoreSpecificSection from "@/components/StoreSpecificSection";
 import TermsSection from "@/components/TermsSection";
 import FooterSection from "@/components/FooterSection";
+import AutoRefresh from "@/components/AutoRefresh";
+
+// Revalidate page every 5 minutes on the server
+export const revalidate = 300;
 
 export default function Home() {
   return (
@@ -12,7 +16,6 @@ export default function Home() {
       <HeroSection />
       <CategoryNav />
 
-      {/* Sections with alternating bg */}
       <div style={{ background: "#FDF8F2" }}>
         <MothersDaySection />
       </div>
@@ -27,6 +30,9 @@ export default function Home() {
 
       <TermsSection />
       <FooterSection />
+
+      {/* Auto-refresh overlay indicator */}
+      <AutoRefresh />
     </main>
   );
 }
