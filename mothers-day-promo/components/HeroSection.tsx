@@ -1,6 +1,6 @@
 export default function HeroSection() {
   return (
-    <section className="hero-gradient min-h-[96vh] flex flex-col items-center justify-center px-6 pt-24 pb-20 text-center relative overflow-hidden">
+    <section className="hero-gradient min-h-[100svh] sm:min-h-[96vh] flex flex-col items-center justify-center px-5 sm:px-6 pt-20 sm:pt-24 pb-16 sm:pb-20 text-center relative overflow-hidden">
       {/* Soft background blobs */}
       <div
         className="absolute top-[-140px] right-[-100px] w-[480px] h-[480px] rounded-full pointer-events-none"
@@ -74,7 +74,7 @@ export default function HeroSection() {
 
         {/* Brand name */}
         <p
-          className="fade-in-up fade-in-up-delay-1 font-serif text-base sm:text-lg tracking-[0.22em] uppercase mb-3"
+          className="fade-in-up fade-in-up-delay-1 font-serif text-sm sm:text-base tracking-[0.18em] sm:tracking-[0.22em] uppercase mb-3"
           style={{ color: "#8B6F47" }}
         >
           TSUTAYA BOOKSTORE
@@ -82,14 +82,14 @@ export default function HeroSection() {
 
         {/* Main heading */}
         <h1
-          className="fade-in-up fade-in-up-delay-2 font-serif text-5xl sm:text-6xl md:text-7xl font-bold mb-5 leading-tight"
+          className="fade-in-up fade-in-up-delay-2 font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-5 leading-tight"
         >
           <span className="gradient-text-wine">五月</span>
           <span style={{ color: "#3D2B1F" }}>，</span>
           <span style={{ color: "#3D2B1F" }}>特惠</span>
           <br />
           <span
-            className="font-serif italic font-normal text-3xl sm:text-4xl md:text-5xl"
+            className="font-serif italic font-normal text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
             style={{ color: "#6B5040" }}
           >
             為日常挑選一份剛好的心意
@@ -136,10 +136,10 @@ export default function HeroSection() {
         </div>
 
         {/* CTA Buttons */}
-        <div className="fade-in-up fade-in-up-delay-4 flex flex-col sm:flex-row gap-3 justify-center items-center mt-10">
+        <div className="fade-in-up fade-in-up-delay-4 flex flex-col sm:flex-row gap-3 justify-center items-center mt-8 sm:mt-10 w-full sm:w-auto">
           <a
             href="#xinyi"
-            className="px-8 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 hover:opacity-90 hover:scale-[1.03] hover:shadow-lg"
+            className="w-full sm:w-auto px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 hover:opacity-90 hover:scale-[1.03] hover:shadow-lg text-center"
             style={{
               background: "linear-gradient(135deg, #8B2E35 0%, #A8363E 100%)",
               color: "#FDF8F2",
@@ -150,7 +150,7 @@ export default function HeroSection() {
           </a>
           <a
             href="#taichung"
-            className="px-8 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 hover:opacity-90 hover:scale-[1.03] hover:shadow-lg"
+            className="w-full sm:w-auto px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 hover:opacity-90 hover:scale-[1.03] hover:shadow-lg text-center"
             style={{
               background: "linear-gradient(135deg, #2D4A3E 0%, #3A6050 100%)",
               color: "#FDF8F2",
@@ -161,7 +161,7 @@ export default function HeroSection() {
           </a>
           <a
             href="#mothers-day"
-            className="px-8 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 hover:bg-rose-50"
+            className="w-full sm:w-auto px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 hover:bg-red-50 text-center"
             style={{
               background: "transparent",
               color: "#8B2E35",
