@@ -1,30 +1,33 @@
 import SectionTitle from "./SectionTitle";
 
-const xinyiBrands = [
-  { brand: "美珂媞歐", detail: "全品牌 7 折", icon: "💄" },
+const xinyiOnlyBrands = [
+  { brand: "美珂媞歐", detail: "全品牌 7 折", icon: "🌹" },
   { brand: "J-scent", detail: "任選 2 件 85 折", icon: "🌸" },
 ];
 
-const taichungBrands = [
+const taichungOnlyBrands = [
   { brand: "MAGBLOX", detail: "磁力片單盒 9 折", icon: "🧩" },
   { brand: "沃堤思世界茶莊園", detail: "盒裝茶任選 3 件 NT$990", icon: "🍵" },
 ];
 
 const bothStoresBrands = [
-  "Yoreh 悠若",
-  "Betterology",
-  "Handiin",
-  "LASAI",
-  "覺萃",
-  "茶寶",
-  "聖朵波緹",
-  "蒔年一晌",
-  "Panier des Sens 潘提香頌",
-  "今治 / Matsukan / MIYAZAKI TOWEL",
-  "覓梅酒",
-  "EcoScential",
-  "SONNY ANGEL",
-  "黑白小姐",
+  { name: "Yoreh 悠若", detail: "指定傘款 9 折" },
+  { name: "Betterology", detail: "單盒 95 折 ＋ 滿額贈" },
+  { name: "Handiin", detail: "全品牌 88 折" },
+  { name: "LASAI", detail: "母親節套組 NT$1,470" },
+  { name: "覺萃", detail: "全品項 9 折" },
+  { name: "茶寶", detail: "全品項 9 折" },
+  { name: "聖朵波緹", detail: "多項優惠" },
+  { name: "蒔年一晌", detail: "茶咖 88 折 ／ 酒品 8 折" },
+  { name: "Panier des Sens 潘提香頌", detail: "全系列 75 折" },
+  { name: "今治 / Matsukan / MIYAZAKI TOWEL", detail: "兩件 9 折" },
+  { name: "覓梅酒", detail: "組合 NT$1,280" },
+  { name: "EcoScential", detail: "新品牌上市" },
+  { name: "SONNY ANGEL", detail: "滿三件贈書籤" },
+  { name: "黑白小姐", detail: "滿 NT$200 贈卡片" },
+  { name: "KIND BAG", detail: "清倉 3 折" },
+  { name: "郁郁", detail: "兩件 95 折" },
+  { name: "Hellome", detail: "新品 NT$590" },
 ];
 
 export default function StoreSpecificSection() {
@@ -37,14 +40,14 @@ export default function StoreSpecificSection() {
       />
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Xinyi Store */}
+        {/* Xinyi */}
         <div
           className="rounded-2xl p-6"
           style={{ background: "#FBF0F1", border: "1px solid #E8A5A0" }}
         >
           <div className="flex items-center gap-3 mb-5">
             <div
-              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
               style={{ background: "#8B2E35", color: "#FDF8F2" }}
             >
               信
@@ -59,7 +62,7 @@ export default function StoreSpecificSection() {
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            {xinyiBrands.map((item) => (
+            {xinyiOnlyBrands.map((item) => (
               <div
                 key={item.brand}
                 className="flex items-center gap-3 p-3 rounded-xl"
@@ -79,14 +82,14 @@ export default function StoreSpecificSection() {
           </div>
         </div>
 
-        {/* Taichung Store */}
+        {/* Taichung */}
         <div
           className="rounded-2xl p-6"
           style={{ background: "#EEF5F2", border: "1px solid #7AA898" }}
         >
           <div className="flex items-center gap-3 mb-5">
             <div
-              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
               style={{ background: "#2D4A3E", color: "#FDF8F2" }}
             >
               中
@@ -101,7 +104,7 @@ export default function StoreSpecificSection() {
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            {taichungBrands.map((item) => (
+            {taichungOnlyBrands.map((item) => (
               <div
                 key={item.brand}
                 className="flex items-center gap-3 p-3 rounded-xl"
@@ -151,24 +154,27 @@ export default function StoreSpecificSection() {
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {bothStoresBrands.map((brand) => (
-            <span
-              key={brand}
-              className="px-3 py-1.5 rounded-full text-sm font-medium"
-              style={{ background: "#FDF8F2", color: "#3D2B1F", border: "1px solid #E5A882" }}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {bothStoresBrands.map((b) => (
+            <div
+              key={b.name}
+              className="rounded-xl px-3 py-2.5"
+              style={{ background: "#FDF8F2", border: "1px solid #E5A882" }}
             >
-              {brand}
-            </span>
+              <p className="font-semibold text-sm leading-snug" style={{ color: "#3D2B1F" }}>
+                {b.name}
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: "#8B6F47" }}>
+                {b.detail}
+              </p>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Store info IDs for CTA links */}
-      <div className="mt-0">
-        <span id="xinyi" className="block h-0" />
-        <span id="taichung" className="block h-0" />
-      </div>
+      {/* Anchor targets for Hero CTA */}
+      <span id="xinyi" className="block h-0 -mt-20 pt-20" />
+      <span id="taichung" className="block h-0" />
     </section>
   );
 }

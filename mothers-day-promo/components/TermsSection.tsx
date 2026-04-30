@@ -1,18 +1,15 @@
 const terms = [
   "活動商品、折扣與贈品數量依現場庫存為準，售完為止。",
   "優惠不得與其他折扣、折價券及會員優惠合併使用，另有規定者依現場公告為準。",
-  "贈品數量有限，贈完為止，恕不提前告知。",
-  "部分品牌活動期間與適用門市不同，請依各活動說明或現場標示為準。",
+  "贈品數量有限，贈完為止，恕不另行通知。",
   "酒類商品請依門市販售規範執行，未滿十八歲請勿飲酒。",
+  "部分品牌活動期間與適用門市不同，請依各活動說明或現場標示為準。",
   "活動最終解釋權歸 TSUTAYA BOOKSTORE 所有，如有任何調整，以門市公告為準。",
 ];
 
 export default function TermsSection() {
   return (
-    <section
-      className="py-14 px-4"
-      style={{ background: "#F5EDE0" }}
-    >
+    <section className="py-14 px-4" style={{ background: "#F5EDE0" }}>
       <div className="max-w-3xl mx-auto">
         <h2
           className="text-lg font-bold text-center mb-6"
