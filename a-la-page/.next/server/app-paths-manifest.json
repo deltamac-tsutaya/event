@@ -1,0 +1,10 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/page": "app/page.js",
+  "/(public)/collaboration/page": "app/(public)/collaboration/page.js",
+  "/(public)/stores/page": "app/(public)/stores/page.js",
+  "/(public)/contact/page": "app/(public)/contact/page.js",
+  "/(public)/issues/page": "app/(public)/issues/page.js",
+  "/(public)/issues/[yyyy-mm]/[event-slug]/page": "app/(public)/issues/[yyyy-mm]/[event-slug]/page.js",
+  "/(public)/issues/[yyyy-mm]/page": "app/(public)/issues/[yyyy-mm]/page.js"
+}
