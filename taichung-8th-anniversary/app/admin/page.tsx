@@ -944,6 +944,17 @@ export default function AdminPage() {
               </div>
             </div>
           </Link>
+          <Link href="/admin/dispatch" className="block">
+            <div className="bg-white rounded-2xl border border-blue-100 shadow-sm px-5 py-4 flex items-center gap-4 hover:shadow-md hover:border-blue-300 transition-all group">
+              <div className="p-3 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors shrink-0">
+                <Send size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-sm text-gray-800">派券管理</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">補發 LINE 優惠券訊息</p>
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* 最近活動 */}
