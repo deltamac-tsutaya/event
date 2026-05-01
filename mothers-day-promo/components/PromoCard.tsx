@@ -7,6 +7,7 @@ interface PromoCardProps {
   note?: string;
   highlight?: string;
   giftTag?: string;
+  image?: string;
   accent?: "rose" | "forest" | "wine" | "apricot";
 }
 
@@ -15,6 +16,13 @@ const accentText = {
   forest:  "#2D4A3E",
   wine:    "#6B1F25",
   apricot: "#8B5030",
+};
+
+const accentBar = {
+  rose:    "#C4607A",
+  forest:  "#2D4A3E",
+  wine:    "#8B2E35",
+  apricot: "#C8845E",
 };
 
 const storeBadge: Record<string, { bg: string; color: string }> = {
@@ -47,6 +55,7 @@ export default function PromoCard({
   note,
   highlight,
   giftTag,
+  image,
   accent = "apricot",
 }: PromoCardProps) {
   const color = accentText[accent];
@@ -54,11 +63,23 @@ export default function PromoCard({
 
   return (
     <div
-      className="promo-card bg-white rounded-xl flex flex-col"
+      className="promo-card bg-white rounded-xl flex flex-col overflow-hidden"
       style={{ border: "1px solid #EDE6DF" }}
     >
+      {/* Accent bar or product image */}
+      {image ? (
+        <img
+          src={image}
+          alt={headline}
+          className="w-full object-cover"
+          style={{ height: 160 }}
+        />
+      ) : (
+        <div style={{ height: 4, background: accentBar[accent] }} />
+      )}
+
       {/* Card header */}
-      <div className="px-5 pt-5 pb-4 flex flex-col gap-2.5">
+      <div className="px-5 pt-4 pb-4 flex flex-col gap-2.5">
         {/* Row: brand + highlight badge */}
         <div className="flex items-center justify-between gap-2">
           <span
@@ -84,12 +105,12 @@ export default function PromoCard({
           </p>
         )}
 
-        {/* Headline — product name */}
+        {/* Headline */}
         <h3 className="text-base font-bold leading-snug" style={{ color: "#1C1410" }}>
           {headline}
         </h3>
 
-        {/* Description — 1 sentence */}
+        {/* Description */}
         <p className="text-sm leading-relaxed" style={{ color: "#6B5040" }}>
           {description}
         </p>
