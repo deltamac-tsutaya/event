@@ -1,0 +1,10 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/page": "/",
+  "/(public)/collaboration/page": "/collaboration",
+  "/(public)/stores/page": "/stores",
+  "/(public)/contact/page": "/contact",
+  "/(public)/issues/page": "/issues",
+  "/(public)/issues/[yyyy-mm]/[event-slug]/page": "/issues/[yyyy-mm]/[event-slug]",
+  "/(public)/issues/[yyyy-mm]/page": "/issues/[yyyy-mm]"
+}
