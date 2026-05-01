@@ -1,0 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Playfair+Display:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: #ffffff;
+  color: #000000;
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* 全域間距系統 */
+:root {
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 40px;
+  --spacing-3xl: 48px;
+  --spacing-4xl: 60px;
+  --spacing-5xl: 80px;
+
+  /* 區塊間距 */
+  --section-gap-mobile: 30px;
+  --section-gap-tablet: 40px;
+  --section-gap-desktop: 60px;
+}
+
+/* 裝飾線 */
+.divider {
+  width: 60px;
+  height: 1px;
+  background: #d4af37;
+  margin: var(--spacing-3xl) auto;
+  opacity: 0.5;
+}
+
+/* 書籤式 CTA 按鈕裝飾 */
+.bookmark-accent::before,
+.bookmark-accent::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+
+.bookmark-accent::before {
+  top: -6px;
+  border-top: 6px solid currentColor;
+}
+
+.bookmark-accent::after {
+  bottom: -6px;
+  border-bottom: 6px solid currentColor;
+}
+
+/* 響應式 */
+@media (max-width: 767px) {
+  :root {
+    --section-gap-mobile: 20px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  :root {
+    --section-gap-tablet: 40px;
+  }
+}
+
+@media (min-width: 1025px) {
+  :root {
+    --section-gap-desktop: 80px;
+  }
+}
