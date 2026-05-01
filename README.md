@@ -22,10 +22,21 @@ Key Features:
 ### `/daffy-queue`
 Queue management system for event venues
 
-- **Tech Stack**: HTML/JavaScript display and admin interfaces
-- **Purpose**: Queue management and waitlist system for WIRED TOKYO events
-- **Features**: Real-time queue display, admin management interface
-- **Start Development**: Open `index.html` in a web server
+- **Tech Stack**: HTML/JavaScript + Firebase Realtime Database
+- **Purpose**: Real-time queue management for Daffy POPUP portrait drawing event
+- **Features**: 
+  - Customer display page (auto-refresh, real-time updates)
+  - Staff admin panel (password-gated, +1/skip controls)
+  - Event display board (rotated for sideways TV mounting)
+- **Status**: Production-ready
+- **Deployment**: Vercel (root directory: `daffy-queue`)
+- **Start Development**: 
+  ```bash
+  python3 -m http.server 8000
+  # Open http://localhost:8000/
+  ```
+- **Configuration**: Edit `assets/config.js` with Firebase credentials and staff password
+- **Pre-Event Setup**: See `daffy-queue/SETUP.md` for complete deployment checklist
 
 ### `/taichung-8th-anniversary`
 Taichung location 8th anniversary celebration website
