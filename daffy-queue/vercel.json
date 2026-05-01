@@ -1,10 +1,11 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    { "source": "/admin", "destination": "/admin/index.html" },
-    { "source": "/admin/", "destination": "/admin/index.html" },
-    { "source": "/display", "destination": "/display/index.html" },
-    { "source": "/display/", "destination": "/display/index.html" }
+  "version": 2,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/admin/?$", "dest": "/admin/index.html" },
+    { "src": "/display/?$", "dest": "/display/index.html" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
