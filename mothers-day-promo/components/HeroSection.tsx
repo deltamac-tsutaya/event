@@ -1,7 +1,7 @@
 export default function HeroSection() {
   return (
     <section
-      className="min-h-[100svh] sm:min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-16 text-center relative"
+      className="min-h-[100svh] sm:min-h-screen flex flex-col items-center justify-center px-6 pt-14 pb-10 sm:pt-20 sm:pb-16 text-center relative"
       style={{ background: "linear-gradient(180deg, #F5EDE0 0%, #FDF8F2 100%)" }}
     >
       <div className="max-w-2xl mx-auto w-full">
@@ -15,7 +15,7 @@ export default function HeroSection() {
 
         {/* Main heading */}
         <h1
-          className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-4"
+          className="font-serif text-3xl sm:text-5xl md:text-6xl font-bold leading-tight mb-4"
           style={{ color: "#1C1410" }}
         >
           精選生活風格禮品
@@ -41,9 +41,9 @@ export default function HeroSection() {
           className="text-xs tracking-wider mb-2"
           style={{ color: "#A08060" }}
         >
-          活動期間：2026 / 5 / 1 — 2026 / 5 / 31
+          活動期間：5/1 至 5/31
         </p>
-        <p className="text-xs mb-10" style={{ color: "#B89070" }}>
+        <p className="text-xs mb-6 sm:mb-10" style={{ color: "#B89070" }}>
           台北信義店・台中市政店
         </p>
 
@@ -51,7 +51,7 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
           <a
             href="#mothers-day"
-            className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
+            className="w-full sm:w-auto px-7 py-3.5 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
             style={{ background: "#8B2E35", color: "#FDF8F2" }}
             data-track="hero_cta_mothers_day"
           >
@@ -59,7 +59,7 @@ export default function HeroSection() {
           </a>
           <a
             href="#xinyi"
-            className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
+            className="w-full sm:w-auto px-7 py-3.5 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
             style={{ background: "#2D4A3E", color: "#FDF8F2" }}
             data-track="hero_cta_xinyi"
           >
@@ -67,7 +67,7 @@ export default function HeroSection() {
           </a>
           <a
             href="#taichung"
-            className="w-full sm:w-auto px-7 py-3 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
+            className="w-full sm:w-auto px-7 py-3.5 rounded text-sm font-semibold tracking-wide transition-opacity hover:opacity-80"
             style={{ background: "transparent", color: "#1C1410", border: "1px solid #C8A882" }}
             data-track="hero_cta_taichung"
           >
