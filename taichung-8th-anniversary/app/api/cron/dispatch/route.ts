@@ -3,11 +3,15 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { broadcastMessage, multicastMessage, buildTextMessage, buildAnnouncementCard } from "@/lib/line-message";
 
 export async function GET(request: NextRequest) {
-  // Vercel Cron 會在 Authorization header 帶 Bearer CRON_SECRET
-  const auth = request.headers.get("authorization");
+  // 支援兩種驗證方式：
+  //   Authorization: Bearer <CRON_SECRET>   (header，Vercel Cron / 進階服務)
+  //   ?secret=<CRON_SECRET>                 (query string，cron-job.org 等免費服務)
   const secret = process.env.CRON_SECRET;
-  if (secret && auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (secret) {
+    const auth        = request.headers.get("authorization");
+    const querySecret = new URL(request.url).searchParams.get("secret");
+    const valid       = auth === `Bearer ${secret}` || querySecret === secret;
+    if (!valid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const now = new Date().toISOString();
