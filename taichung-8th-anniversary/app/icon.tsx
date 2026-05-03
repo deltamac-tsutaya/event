@@ -3,6 +3,10 @@ import { ImageResponse } from "next/og";
 export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
+// Shared infinity path centered at 256,256
+const PATH =
+  "M 256,256 C 256,182 206,136 158,136 C 110,136 66,182 66,256 C 66,330 110,376 158,376 C 206,376 256,330 256,256 C 256,182 306,136 354,136 C 402,136 446,182 446,256 C 446,330 402,376 354,376 C 306,376 256,330 256,256";
+
 export default function Icon() {
   return new ImageResponse(
     (
@@ -10,102 +14,31 @@ export default function Icon() {
         style={{
           width: 512,
           height: 512,
-          background: "#1A2B4A",
+          background: "#0D1829",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           borderRadius: 96,
         }}
       >
-        {/* Outer gold ring */}
-        <div
-          style={{
-            position: "absolute",
-            width: 420,
-            height: 420,
-            borderRadius: "50%",
-            border: "6px solid #C9A84C",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        />
-        {/* ∞ symbol */}
-        <svg
-          width="280"
-          height="140"
-          viewBox="0 0 280 140"
-          fill="none"
-        >
-          {/* Left loop */}
-          <path
-            d="M 70 70 C 70 40, 30 20, 10 40 C -10 60, -10 80, 10 100 C 30 120, 80 110, 140 70"
-            stroke="#C9A84C"
-            strokeWidth="18"
-            strokeLinecap="round"
-            fill="none"
-          />
-          {/* Right loop */}
-          <path
-            d="M 140 70 C 200 30, 250 20, 270 40 C 290 60, 290 80, 270 100 C 250 120, 210 110, 140 70"
-            stroke="#C9A84C"
-            strokeWidth="18"
-            strokeLinecap="round"
-            fill="none"
-          />
-          {/* Inner highlights */}
-          <path
-            d="M 70 70 C 70 40, 30 20, 10 40"
-            stroke="#E8C97A"
-            strokeWidth="6"
-            strokeLinecap="round"
-            fill="none"
-            opacity="0.6"
-          />
-          <path
-            d="M 210 70 C 210 40, 250 20, 270 40"
-            stroke="#E8C97A"
-            strokeWidth="6"
-            strokeLinecap="round"
-            fill="none"
-            opacity="0.6"
-          />
+        <svg width="512" height="512" viewBox="0 0 512 512" fill="none">
+          {/* Shadow / depth layer */}
+          <path d={PATH} stroke="#3A2000" strokeWidth={72} strokeLinecap="round" fill="none" />
+          {/* Dark base */}
+          <path d={PATH} stroke="#7A4E1A" strokeWidth={60} strokeLinecap="round" fill="none" />
+          {/* Mid gold */}
+          <path d={PATH} stroke="#B8821E" strokeWidth={50} strokeLinecap="round" fill="none" />
+          {/* Main rose-gold */}
+          <path d={PATH} stroke="#C9963A" strokeWidth={42} strokeLinecap="round" fill="none" />
+          {/* Warm gold highlight */}
+          <path d={PATH} stroke="#DEB86A" strokeWidth={30} strokeLinecap="round" fill="none" />
+          {/* Bright highlight */}
+          <path d={PATH} stroke="#EDD090" strokeWidth={16} strokeLinecap="round" fill="none" opacity="0.85" />
+          {/* Top shine */}
+          <path d={PATH} stroke="#FFF2CC" strokeWidth={6} strokeLinecap="round" fill="none" opacity="0.55" />
         </svg>
-        {/* "8th" text */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 88,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-          <span
-            style={{
-              color: "#C9A84C",
-              fontSize: 36,
-              fontWeight: 700,
-              fontFamily: "serif",
-              letterSpacing: 2,
-            }}
-          >
-            8
-          </span>
-          <span
-            style={{
-              color: "#C9A84C",
-              fontSize: 22,
-              fontWeight: 400,
-              fontFamily: "serif",
-              marginTop: -8,
-            }}
-          >
-            th
-          </span>
-        </div>
       </div>
     ),
-    { ...size }
+    { ...size },
   );
 }
