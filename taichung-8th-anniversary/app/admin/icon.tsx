@@ -3,6 +3,9 @@ import { ImageResponse } from "next/og";
 export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
+const PATH =
+  "M 256,256 C 256,182 206,136 158,136 C 110,136 66,182 66,256 C 66,330 110,376 158,376 C 206,376 256,330 256,256 C 256,182 306,136 354,136 C 402,136 446,182 446,256 C 446,330 402,376 354,376 C 306,376 256,330 256,256";
+
 export default function Icon() {
   return new ImageResponse(
     (
@@ -10,73 +13,24 @@ export default function Icon() {
         style={{
           width: 512,
           height: 512,
-          background: "#6D28D9",
+          background: "#0D1829",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           borderRadius: 96,
         }}
       >
-        {/* Shield shape */}
-        <svg
-          width="260"
-          height="300"
-          viewBox="0 0 260 300"
-          fill="none"
-        >
-          {/* Shield body */}
-          <path
-            d="M 130 10 L 240 55 L 240 155 C 240 220, 180 270, 130 295 C 80 270, 20 220, 20 155 L 20 55 Z"
-            fill="rgba(255,255,255,0.12)"
-            stroke="rgba(255,255,255,0.9)"
-            strokeWidth="10"
-            strokeLinejoin="round"
-          />
-          {/* Shield inner border */}
-          <path
-            d="M 130 32 L 222 70 L 222 158 C 222 212, 172 255, 130 276 C 88 255, 38 212, 38 158 L 38 70 Z"
-            fill="none"
-            stroke="rgba(255,255,255,0.3)"
-            strokeWidth="4"
-            strokeLinejoin="round"
-          />
-          {/* Crown */}
-          <g transform="translate(70, 95)">
-            {/* Crown base */}
-            <rect x="0" y="55" width="120" height="22" rx="4" fill="white" />
-            {/* Crown body */}
-            <path
-              d="M 5 55 L 5 20 L 30 40 L 60 5 L 90 40 L 115 20 L 115 55 Z"
-              fill="white"
-            />
-            {/* Crown jewels */}
-            <circle cx="60" cy="10" r="7" fill="#A78BFA" />
-            <circle cx="12" cy="22" r="5" fill="#A78BFA" />
-            <circle cx="108" cy="22" r="5" fill="#A78BFA" />
-          </g>
+        <svg width="512" height="512" viewBox="0 0 512 512" fill="none">
+          <path d={PATH} stroke="#3A2000" strokeWidth={72} strokeLinecap="round" fill="none" />
+          <path d={PATH} stroke="#7A4E1A" strokeWidth={60} strokeLinecap="round" fill="none" />
+          <path d={PATH} stroke="#B8821E" strokeWidth={50} strokeLinecap="round" fill="none" />
+          <path d={PATH} stroke="#C9963A" strokeWidth={42} strokeLinecap="round" fill="none" />
+          <path d={PATH} stroke="#DEB86A" strokeWidth={30} strokeLinecap="round" fill="none" />
+          <path d={PATH} stroke="#EDD090" strokeWidth={16} strokeLinecap="round" fill="none" opacity="0.85" />
+          <path d={PATH} stroke="#FFF2CC" strokeWidth={6}  strokeLinecap="round" fill="none" opacity="0.55" />
         </svg>
-        {/* ADMIN label */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 82,
-            display: "flex",
-          }}
-        >
-          <span
-            style={{
-              color: "rgba(255,255,255,0.85)",
-              fontSize: 28,
-              fontWeight: 700,
-              fontFamily: "sans-serif",
-              letterSpacing: 6,
-            }}
-          >
-            ADMIN
-          </span>
-        </div>
       </div>
     ),
-    { ...size }
+    { ...size },
   );
 }
