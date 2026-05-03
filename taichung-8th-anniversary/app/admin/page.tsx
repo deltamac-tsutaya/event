@@ -14,7 +14,7 @@ import {
   BarChart3, ShieldCheck, Search, RotateCcw, Plus, Percent,
   ChevronRight, Zap, CheckCircle, AlertCircle,
   X, Printer, FileText, Send, Layers, ScrollText, CalendarX,
-  KeyRound, Eye, EyeOff, SlidersHorizontal, Lock, BadgeCheck, Minus,
+  KeyRound, Eye, EyeOff, SlidersHorizontal, Lock, BadgeCheck, Minus, Radio,
 } from "lucide-react";
 
 // ── 型別 ──────────────────────────────────────────────────────────────────
@@ -952,6 +952,17 @@ export default function AdminPage() {
               <div>
                 <p className="font-bold text-sm text-gray-800">派券管理</p>
                 <p className="text-[10px] text-gray-400 mt-0.5">補發 LINE 優惠券訊息</p>
+              </div>
+            </div>
+          </Link>
+          <Link href="/admin/broadcast" className="block">
+            <div className="bg-white rounded-2xl border border-purple-100 shadow-sm px-5 py-4 flex items-center gap-4 hover:shadow-md hover:border-purple-300 transition-all group">
+              <div className="p-3 rounded-xl bg-purple-50 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors shrink-0">
+                <Radio size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-sm text-gray-800">訊息傳送中心</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">廣播公告 · 預約排程發送</p>
               </div>
             </div>
           </Link>
