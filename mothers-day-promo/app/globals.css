@@ -1,7 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
 @import "tailwindcss";
 
 @theme inline {
+  /* Editorial design tokens (kappa) */
+  --color-paper: oklch(0.972 0.012 85);
+  --color-paper-deep: oklch(0.945 0.018 80);
+  --color-ink: oklch(0.22 0.012 60);
+  --color-ink-soft: oklch(0.42 0.015 60);
+  --color-wine: oklch(0.42 0.11 25);
+  --color-forest: oklch(0.38 0.06 155);
+  --color-ochre: oklch(0.62 0.1 70);
+  --color-rule: oklch(0.78 0.02 70);
+
+  /* Legacy hex aliases */
   --color-cream: #FDF8F2;
   --color-cream-dark: #F5EDE0;
   --color-rose: #D4827C;
@@ -10,14 +21,16 @@
   --color-apricot-light: #E5A882;
   --color-tea: #8B6F47;
   --color-tea-dark: #6B5230;
-  --color-wine: #8B2E35;
+  --color-wine-hex: #8B2E35;
   --color-wine-dark: #6B1F25;
-  --color-forest: #2D4A3E;
+  --color-forest-hex: #2D4A3E;
   --color-forest-dark: #1E3329;
   --color-text: #1C1410;
   --color-text-light: #6B5040;
-  --font-sans: 'Noto Sans TC', sans-serif;
-  --font-serif: 'Playfair Display', Georgia, serif;
+
+  --font-display: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  --font-serif: 'Noto Serif TC', 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', 'Noto Serif TC', sans-serif;
 }
 
 *, *::before, *::after {
@@ -29,16 +42,68 @@ html {
 }
 
 body {
-  background-color: #FDF8F2;
-  color: #1C1410;
-  font-family: 'Noto Sans TC', sans-serif;
+  background-color: var(--color-paper, #FDF8F2);
+  color: var(--color-ink, #1C1410);
+  font-family: var(--font-sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  font-feature-settings: "palt", "kern";
 }
 
-.font-serif {
-  font-family: 'Playfair Display', Georgia, serif;
+::selection {
+  background-color: var(--color-wine, #8B2E35);
+  color: var(--color-paper, #FDF8F2);
+}
+
+/* === Editorial utility classes (from kappa) === */
+
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+.font-serif-tc {
+  font-family: var(--font-serif);
+}
+
+/* Small uppercase italic editorial label */
+.eyebrow {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.78rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft, #6B5040);
+}
+
+/* Numbered section badge */
+.num-index {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--color-wine, #8B2E35);
+  letter-spacing: 0.2em;
+}
+
+.rule-line {
+  height: 1px;
+  background: var(--color-rule, #C8B89A);
+  width: 100%;
+}
+
+.vrule {
+  width: 1px;
+  background: var(--color-rule, #C8B89A);
+}
+
+.paper-grain {
+  background-color: var(--color-paper, #FDF8F2);
+  background-image:
+    radial-gradient(circle at 25% 20%, oklch(0.92 0.02 80 / 0.5) 0, transparent 40%),
+    radial-gradient(circle at 80% 70%, oklch(0.94 0.025 60 / 0.4) 0, transparent 45%);
 }
 
 /* Card hover */
@@ -46,7 +111,7 @@ body {
   transition: box-shadow 0.2s ease;
 }
 .promo-card:hover {
-  box-shadow: 0 6px 24px rgba(28, 20, 16, 0.1);
+  box-shadow: 0 4px 20px rgba(28, 20, 16, 0.08);
 }
 
 /* Sticky nav */
@@ -63,7 +128,7 @@ body {
   display: inline-flex;
   align-items: center;
   padding: 2px 10px;
-  border-radius: 999px;
+  border-radius: 2px;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.04em;

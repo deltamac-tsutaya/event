@@ -3,15 +3,15 @@
 import { useState, useEffect } from "react";
 
 const categories = [
-  { id: "mothers-day",    label: "母親節送禮" },
-  { id: "limited-time",   label: "5/10 限時優惠" },
-  { id: "budget",         label: "依預算挑選" },
-  { id: "recipient",      label: "依對象挑選" },
-  { id: "fragrance",      label: "香氛保養" },
-  { id: "tea-wine",       label: "茶咖酒禮盒" },
-  { id: "lifestyle",      label: "生活配件" },
-  { id: "kids",           label: "親子選品" },
-  { id: "store-specific", label: "門市限定" },
+  { id: "mothers-day",    label: "送禮推薦",   en: "Gifts" },
+  { id: "limited-time",   label: "限時優惠",   en: "Limited" },
+  { id: "budget",         label: "依預算",     en: "Budget" },
+  { id: "recipient",      label: "依對象",     en: "For" },
+  { id: "fragrance",      label: "香氛保養",   en: "Care" },
+  { id: "tea-wine",       label: "茶咖酒",     en: "Tea・Wine" },
+  { id: "lifestyle",      label: "生活配件",   en: "Lifestyle" },
+  { id: "kids",           label: "親子選品",   en: "Family" },
+  { id: "store-specific", label: "門市限定",   en: "Stores" },
 ];
 
 export default function CategoryNav() {
@@ -39,7 +39,9 @@ export default function CategoryNav() {
       className="sticky-nav px-4"
       style={{
         background: "rgba(253,248,242,0.96)",
-        borderBottom: scrolled ? "1px solid #E8E0D4" : "1px solid transparent",
+        borderBottom: scrolled
+          ? "1px solid var(--color-rule, #C8B89A)"
+          : "1px solid transparent",
         boxShadow: scrolled ? "0 1px 8px rgba(28,20,16,0.06)" : "none",
         transition: "border-color 0.2s, box-shadow 0.2s",
       }}
@@ -53,18 +55,34 @@ export default function CategoryNav() {
               key={cat.id}
               href={`#${cat.id}`}
               onClick={() => setActive(cat.id)}
-              className="flex-shrink-0 px-4 py-3.5 text-xs font-medium whitespace-nowrap relative"
-              style={{
-                color: isUrgent && !isActive ? "#8B2E35" : isActive ? "#1C1410" : "#8B6F47",
-                transition: "color 0.2s",
-                letterSpacing: "0.06em",
-              }}
+              className="flex-shrink-0 px-4 py-2.5 flex flex-col items-center relative group"
             >
-              {cat.label}
+              <span
+                className="font-display text-[10px] tracking-[0.25em]"
+                style={{
+                  fontStyle: "italic",
+                  color: isUrgent ? "#8B2E35" : "var(--color-wine, #8B2E35)",
+                  opacity: isActive ? 1 : 0.45,
+                  transition: "opacity 0.2s",
+                }}
+              >
+                {cat.en}
+              </span>
+              <span
+                className="font-serif-tc text-xs tracking-[0.1em] mt-0.5 whitespace-nowrap"
+                style={{
+                  color: isActive
+                    ? "var(--color-ink, #1C1410)"
+                    : "var(--color-ink-soft, #6B5040)",
+                  transition: "color 0.2s",
+                }}
+              >
+                {cat.label}
+              </span>
               {isActive && (
                 <span
-                  className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full"
-                  style={{ background: "#8B2E35" }}
+                  className="absolute bottom-0 left-3 right-3 h-px"
+                  style={{ background: "var(--color-wine, #8B2E35)" }}
                 />
               )}
             </a>

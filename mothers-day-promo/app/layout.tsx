@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-TW" className="h-full">
-      <body className="min-h-full font-noto">
+      <body className="min-h-full">
         {GA_ID && (
           <>
             <Script
