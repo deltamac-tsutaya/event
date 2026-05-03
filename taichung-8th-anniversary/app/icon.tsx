@@ -3,7 +3,6 @@ import { ImageResponse } from "next/og";
 export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
-// Shared infinity path centered at 256,256
 const PATH =
   "M 256,256 C 256,182 206,136 158,136 C 110,136 66,182 66,256 C 66,330 110,376 158,376 C 206,376 256,330 256,256 C 256,182 306,136 354,136 C 402,136 446,182 446,256 C 446,330 402,376 354,376 C 306,376 256,330 256,256";
 
@@ -22,20 +21,13 @@ export default function Icon() {
         }}
       >
         <svg width="512" height="512" viewBox="0 0 512 512" fill="none">
-          {/* Shadow / depth layer */}
           <path d={PATH} stroke="#3A2000" strokeWidth={72} strokeLinecap="round" fill="none" />
-          {/* Dark base */}
           <path d={PATH} stroke="#7A4E1A" strokeWidth={60} strokeLinecap="round" fill="none" />
-          {/* Mid gold */}
           <path d={PATH} stroke="#B8821E" strokeWidth={50} strokeLinecap="round" fill="none" />
-          {/* Main rose-gold */}
           <path d={PATH} stroke="#C9963A" strokeWidth={42} strokeLinecap="round" fill="none" />
-          {/* Warm gold highlight */}
           <path d={PATH} stroke="#DEB86A" strokeWidth={30} strokeLinecap="round" fill="none" />
-          {/* Bright highlight */}
-          <path d={PATH} stroke="#EDD090" strokeWidth={16} strokeLinecap="round" fill="none" opacity="0.85" />
-          {/* Top shine */}
-          <path d={PATH} stroke="#FFF2CC" strokeWidth={6} strokeLinecap="round" fill="none" opacity="0.55" />
+          <path d={PATH} stroke="#EDD090" strokeWidth={16} strokeLinecap="round" fill="none" />
+          <path d={PATH} stroke="#FFF2CC" strokeWidth={6}  strokeLinecap="round" fill="none" />
         </svg>
       </div>
     ),
